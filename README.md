@@ -41,6 +41,7 @@ All widgets have a method *_"triggerEvent"_* which take an Event object and even
 You can also use *"_WUI.dispatchEvent_"*, this will call triggerEvent for each widgets.
 
 ======
+
 <a name="tabs"></a>
 ## Tabs ##
 
@@ -83,6 +84,7 @@ WUI_Tabs.create("my_tabs", {
 <br/>
 
 ======
+
 <a name="dialog"></a>
 ### Dialog/Panel ###
 
@@ -135,6 +137,7 @@ WUI_Dialog.open(my_dialog);
 <br/>
 
 ======
+
 <a name="dropdown"></a>
 ### DropDown ###
 
@@ -176,6 +179,7 @@ WUI_DropDown.create("my_dropdown", {
 <br/>
 
 ======
+
 <a name="toolbar"></a>
 ### ToolBar ###
 
@@ -236,6 +240,7 @@ var my_toolbar = WUI_ToolBar.create("my_toolbar", {
 <br/>
 
 ======
+
 <a name="rangeslider"></a>
 ### RangeSlider ###
 
@@ -287,6 +292,7 @@ WUI_RangeSlider.create("my_range_slider", {
 <br/>
 
 ======
+
 <a name="compat"></a>
 ### Compatibility ###
 
@@ -296,6 +302,7 @@ This library was not built to target mobiles devices (but it may, in the *future
 <br/>
 
 ======
+
 <a name="license"></a>
 ### License ###
 
