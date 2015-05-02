@@ -42,11 +42,6 @@
     border-bottom: solid 2px black;
     border-left: solid 1px #222222;
     border-top: solid 1px #222222;
-    
-    -moz-user-select: none;
-    -webkit-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
 }
 
 .wui-rangeslider-title-ontop .wui-rangeslider-title {
@@ -78,6 +73,11 @@
     text-align: initial;
     
     line-height: normal;
+    
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 
 .wui-rangeslider-filler {
@@ -121,6 +121,11 @@
     line-height: normal;
     
     cursor: default;
+    
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 
 .wui-rangeslider-value {
@@ -167,11 +172,6 @@
     text-align: center;
 
     line-height: normal;
-    
-    -moz-user-select: all;
-    -webkit-user-select: all;
-    -ms-user-select: all;
-    user-select: all;
 }
 
 .wui-rangeslider-input::-webkit-outer-spin-button,
