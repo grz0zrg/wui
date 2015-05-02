@@ -7,6 +7,14 @@ Collection of **easy to use** and **lightweight** (*~3kb css*, *~5kb js* gzipped
 
 Made this for an audio app and a wargame engine.
 
+<<<<<<< HEAD
+=======
+####Demo
+- [Demo](http://grz0zrg.github.io/wui-demo/)
+<br/>
+- [Demo repository](https://github.com/grz0zrg/wui-demo)
+
+>>>>>>> a9943ad9c1879090418f10adec74ceeae9aa17ab
 ####Widgets
 
 *   [WUI_Tabs](#tabs)
@@ -16,6 +24,7 @@ Made this for an audio app and a wargame engine.
 *   [WUI_RangeSlider](#rangeslider)
 
 ####Links
+<<<<<<< HEAD
 - [Demo](#demo)
 - [Documentation](#doc)
 - [Compatibility](#compat)
@@ -28,6 +37,11 @@ Made this for an audio app and a wargame engine.
 [Demo](http://grz0zrg.github.io/wui-demo/)
 <br/>
 [Demo repository](https://github.com/grz0zrg/wui-demo)
+=======
+- [Documentation](#doc)
+- [Compatibility](#compat)
+- [License](#license)
+>>>>>>> a9943ad9c1879090418f10adec74ceeae9aa17ab
 
 ----------
 
