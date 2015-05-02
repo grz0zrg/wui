@@ -36,7 +36,7 @@ HTML elements with a specific layout are required to use some widgets (like tabs
 
 A bit of style hacking may be necessary if you want widgets to suit your need or your taste, the demo page can be helpful.
 
-All widgets have a method *_"triggerEvent"_* which take an Event object and event type string as argument, you can use it if you want to handle all events by yourself without letting the library add event listeners.
+All widgets have a method *_"triggerEvent"_* which take an Event object and event type string as argument, you can use it if you want to handle all events by yourself, preventing the library to add event listeners.
 
 You can also use *"_WUI.dispatchEvent_"*, this will call triggerEvent for each widgets.
 
