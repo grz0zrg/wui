@@ -16,9 +16,9 @@ Made this for an audio app and a wargame engine.
 *   [WUI_RangeSlider](#rangeslider)
 
 ####Demo
-[Demo](http://grz0zrg.github.io/wui-demo/)
+- [Demo](http://grz0zrg.github.io/wui-demo/)
 <br/>
-[Demo repository](https://github.com/grz0zrg/wui-demo)
+- [Demo repository](https://github.com/grz0zrg/wui-demo)
 
 ####Links
 - [Documentation](#doc)
