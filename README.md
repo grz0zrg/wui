@@ -12,28 +12,7 @@ Made this for an audio app and a wargame engine.
 <br/>
 - [Demo repository](https://github.com/grz0zrg/wui-demo)
 
-####Widgets
-
-*   [WUI_Tabs](#tabs)
-*   [WUI_Dialog](#dialog)
-*   [WUI_DropDown](#dropdown)
-*   [WUI_ToolBar](#toolbar)
-*   [WUI_RangeSlider](#rangeslider)
-
 ####Links
-- [Demo](#demo)
-- [Documentation](#doc)
-- [Compatibility](#compat)
-- [License](#license)
-
-<a name="demo"></a>
-### Demo ###
-
-[Demo](http://grz0zrg.github.io/wui-demo/)
-<br/>
-[Demo repository](https://github.com/grz0zrg/wui-demo)
-
-======
 - [Documentation](#doc)
 - [Compatibility](#compat)
 - [License](#license)
@@ -42,6 +21,14 @@ Made this for an audio app and a wargame engine.
 
 <a name="doc"></a>
 # Documentation #
+
+####Widgets
+
+*   [WUI_Tabs](#tabs)
+*   [WUI_Dialog](#dialog)
+*   [WUI_DropDown](#dropdown)
+*   [WUI_ToolBar](#toolbar)
+*   [WUI_RangeSlider](#rangeslider)
 
 The API is simple, all widgets have a method *_"create"_*, a DOM element id as first argument (which is used as a bind target) and an options object as second or third argument (toolbar case) to customize it, widgets cannot (for now) be destroyed.
 
