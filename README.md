@@ -1,167 +1,219 @@
-This is a collection of easy to use and lightweight (~3kb css, ~5kb js gzipped) vanilla GUI widgets for the web.
+WUI
+=====
 
-Require no dependencies, all widgets can be used on their own.
+ - [Demo](#demo)
+ - [Documentation](#doc)
+ - [Compatibility](#compat)
+ - [License](#license)
 
-The API is simple, all widgets have a method "create" taking an element id as a binding target and an option object to customize the widget, they cannot (for now) be destroyed.
+----------
 
-All "create" methods return a reference to the widget which can be used later to do stuff with it.
+Collection of **easy to use** and **lightweight** (*~3kb css*, *~5kb js* gzipped) vanilla GUI widgets for the web.
 
-HTML elements with a specific layout are required to use some widgets (like tabs, see documentation)
+*Require no dependencies, all widgets can be used on their own.*
 
-A bit of style hacking may be required if you want them to suit your needs or your taste, the demo page can be helpfull.
+####Widgets
+
+*   [WUI_Tabs](#tabs)
+*   [WUI_Dialog](#dialog)
+*   [WUI_DropDown](#dropdown)
+*   [WUI_ToolBar](#toolbar)
+*   [WUI_RangeSlider](#rangeslider)
 
 Made them for an audio app and a wargame engine.
 
-#### Documentation ####
+----------
+<a name="demo"></a>
+### Demo ###
 
-Widget list
+[Demo](http://grz0zrg.github.io/wui-demo/)
+[Demo repository](https://github.com/grz0zrg/wui-demo)
 
-*   WUI_Tabs
-*   WUI_Dialog
-*   WUI_DropDown
-*   WUI_ToolBar
-*   WUI_RangeSlider
+----------
 
-### Tabs ###
+<a name="doc"></a>
+# Documentation #
 
-Methods:
+The API is simple, all widgets have a method "create", a DOM element id as first argument (which is used as a bind target) and an options object as second or third argument (toolbar case) to customize it, widgets cannot (for now) be destroyed.
 
-*   create(id, options)
+All "create" functions return a reference of the widget which can be used later to do stuff with the widget.
+
+HTML elements with a specific layout are required to use some widgets (like tabs, see the documentation)
+
+A bit of style hacking may be necessary if you want widgets to suit your need or your taste, the demo page can be helpful.
+
+----------
+<a name="tabs"></a>
+## Tabs ##
+
+*Methods*:
+
+>*   create(id, options)
 *   getContentElement(wui_tabs_id, tab_index)
 *   getTabName(wui_tabs, tab_index)
 
-Usage example:
+<br/>*Example*:
 
-  <div id="my_tabs">
-    <div>
-        <!-- a list of tabs name -->
-        <div>Tab 1</div>
+```html
+<div id="my_tabs">
+	<div>
+		<!-- a list of tabs name -->
+		<div>Tab 1</div>
         <div>Tab 2</div>
-    </div>
+	</div>
     
-    <div>
-      <!-- a list of tabs content -->
-      <div>
-        Tab 1 content
-      </div>
+	<div>
+		<!-- a list of tabs content -->
+	    <div>
+			Tab 1 content
+	    </div>
       
-      <div>
-        Tab 2 content
-      </div>
-    </div>
-  </div>
-    
-  WUI_Tabs.create("my_tabs", {
-    on_tab_click: tab_clicked   // function which will be called when a tab is clicked (tab index will be passed as argument to that function)
-  });
-  
+	    <div>
+	        Tab 2 content
+	    </div>
+	</div>
+</div>
+```
+ 
+```javascript
+WUI_Tabs.create("my_tabs", {
+	// function called when a tab is clicked (tab index will be passed as argument)
+	on_tab_click: tab_clicked
+});
+```
+
+<br/>
+
+----------
+<a name="dialog"></a>
 ### Dialog/Panel ###
 
-Dialogs can be draggable, closable, minimizable and act as cheap panels, they also go in front of others when you drag them.
+The dialogs can be draggable, closable, minimizable and act as panels, they also go in front of others when you move them.
 
-Methods:
+<br/>*Methods*:
 
-*   create(id, options)
+>*   create(id, options)
 *   open(wui_dialog)
   
-Usage example:
+<br/>*Example*:
   
-  <div id="my_dialog">
-    <div>
-      dialog content
-    </div>
-  </div>
-  
-  var my_dialog = WUI_Dialog.create("my_dialog", {    
-    title: "dialog title",
+```html
+<div id="my_dialog">
+	<div>
+		the dialog content
+	</div>
+</div>
+```
+
+```javascript
+var my_dialog = WUI_Dialog.create("my_dialog", {    
+	title: "dialog title",
     
     width: "20%",
     height: "50%",
     
-    halign: "left",   // 'left', 'center', 'right' or 'none'
-    valign: "center", // 'top', 'center', 'bottom' or 'none'
+    // 'left', 'center', 'right' or 'none'
+    halign: "left",
+    // 'top', 'center', 'bottom' or 'none'
+    valign: "center",
     
     closable: false,
     draggable: true,
     minimizable: true,
     
-    // theses can be used to position (or offset) the dialog
+    // can be used to position the dialog
     top: "0px",
     bottom: "0px",
     left: "0px",
     right: "0px"
-  });
-  
-Was closed and want to open it again? Use "open"
+});
+```
+<br/>
+Closed and want to open it again?
 
-  WUI_Dialog.open(my_dialog);
-  
+```javascript
+WUI_Dialog.open(my_dialog);
+```
+<br/>
+
+----------
+<a name="dropdown"></a>
 ### DropDown ###
 
 A simple and automatically opening/closing dropdown.
 
-Methods:
+<br/>*Method*:
 
-*   create(id, options, entry_name_array)
-  
-Usage example:
+>*   create(id, options, entry_name_array)
 
-  <div id="my_dropdown"></div>
+<br/>*Example*:
 
-  WUI_DropDown.create("my_dropdown", {
-      width: "100px",
-      height: 24,
+```html
+<div id="my_dropdown"></div>
+```
 
-      // spacing of the floating list from the main button
-      vspacing: 4,
-
-      // time before the list hide
-      ms_before_hiding: 1000,
-
-      // default item to be selected after creation
-      selected_id: 0,
-
-      vertical: false,
-
-      // function to call when an item is selected, the item index is passed as argument
-      on_item_selected: item_selected
+```javascript
+WUI_DropDown.create("my_dropdown", {
+		width: "100px",
+	    height: "24px",
+	
+	    // the space between the floating list of items and the dropdown "button"
+	    vspacing: 4,
+	
+	    // time before the floating list close
+	    ms_before_hiding: 1000,
+	
+	    // default item (id) to be selected after creation
+	    selected_id: 0,
+	
+	    vertical: false,
+	
+	    // function called when an item is selected, the item index is passed as argument
+	    on_item_selected: item_selected
     },
-    // list of items
+    // a list of items
     ["First item", "Second item", "Third item"]
-  );
-  
+);
+```
+<br/>
+
+----------
+<a name="toolbar"></a>
 ### ToolBar ###
 
-Toolbar can be horizontal or vertical, have groups and minimizable groups, have two type of buttons, simple and toggle, a set of toggle buttons can linked (grouped), buttons can be icon, text or both.
+The toolbar can be horizontal or vertical, have groups and minimizable groups, dispose of two type of buttons, simple and toggling, a set of toggle buttons can be linked (grouped), buttons can be an icon, a text or both.
 
-Methods:
+<br/>*Method*:
 
-*   create(id, tools, options)
+>*   create(id, tools, options)
   
-Usage example:
+<br/>*Example*:
 
-  <div id="my_toolbar"></div>
+```html
+<div id="my_toolbar"></div>
+```
   
-  var my_toolbar = WUI_ToolBar.create("my_toolbar", {  
-    // any fields added there are recognized automatically as new groups
+```javascript
+var my_toolbar = WUI_ToolBar.create("my_toolbar", {  
+	// properties added to this object are recognized automatically as new groups by the widget
     my_first_group_of_tools: [
       {
-        // CSS class name with a background-image property
+        // CSS class name
         icon: "pencil-icon",
         
-        // the button text
+        // button text
         text: "",
         
-        // "toggle" or nothing for a standard button
+        // "toggle" or nothing for a non-toggle button
         type: "toggle",
         
-        // a toggle group id
+        // a toggling group id, another button with the same toggling group id will be linked to this one and will be off when this one will be switched on
         toggle_group: 0,
         
-        // toggle state after creation
+        // toggle state after creation, if it is a toggle button
         toggle_state: true,
         
-        // function to call when an item is clicked, if the item is of type "toggle", an object containing a field "type" and "state" will be passed as argument
+        // function called when a button is clicked, if the item is of type "toggle", an object containing a field "type" and "state" will be passed as argument
         onClick: toolbar_item_toggle,
         
         // tooltip
@@ -176,26 +228,33 @@ Usage example:
     // display the minimize icon for each groups
     allow_groups_minimize: true,
     
-    // can also be used for text only buttons, in this case it will change the size of the bouton
+    // in case of a text button, this will modify the size of the button
     icon_width: 32,
     icon_height: 32,
   
     vertical: false
   });
-  
+```
+<br/>
+
+----------
+<a name="rangeslider"></a>
 ### RangeSlider ###
 
-Advanced slider widget, can be horizontal or vertical, support negative/positive range, the value can be changed with the mouse wheel or by dragging the hook point or by clicking on the slider bar, a double click on the slider also reset the value to its default value, the value also appear as an input which perform automatically all the checks and indicate if the value is correct or not (red)
+Range slider widget can be horizontal or vertical, have a negative/positive range, the value can be changed with the mouse wheel or by moving the hook point by dragging or by clicking on the slider bar, a double click on the slider will reset the value to its default value, the value also appear as an input which perform automatically all sanity check and will indicate if the value is correct or not (red)
 
-Methods:
+<br/>*Method*:
 
-*   create(id, options)
+>*   create(id, options)
   
-Usage example:
+<br/>*Example*:
 
-  <div id="my_range_slider"></div>
-  
-  WUI_RangeSlider.create("my_range_slider", {
+```html
+<div id="my_range_slider"></div>
+```
+
+```javascript
+WUI_RangeSlider.create("my_range_slider", {
     // width/height of the slider, if you make a vertical slider, you should swap theses values
     width: 300,
     height: 8,
@@ -226,15 +285,20 @@ Usage example:
     // function to call when the slider value change with the value passed as argument
     on_change: slider_change
   });
+```
+<br/>
 
-### Demo ###
-
-[Demo page](http://wui_demo.github.com)
-
+----------
+<a name="compat"></a>
 ### Compatibility ###
 
-Not well tested but should work in all modern browsers supporting ECMAScript 5 and CSS3.
+Not well tested but should work in all modern browsers supporting **_ECMAScript 5_** and **_CSS3_**.
 
+This library was not built to target mobiles devices (but it may, in the *future*) and does not support touch events.
+<br/>
+
+----------
+<a name="license"></a>
 ### License ###
 
-Revised BSD.
+[Revised BSD](https://github.com/grz0zrg/wui/blob/master/LICENSE)
