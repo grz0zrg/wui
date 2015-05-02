@@ -1,16 +1,11 @@
 WUI
 =====
 
- - [Demo](#demo)
- - [Documentation](#doc)
- - [Compatibility](#compat)
- - [License](#license)
-
-----------
-
 Collection of **easy to use** and **lightweight** (*~3kb css*, *~5kb js* gzipped) vanilla GUI widgets for the web.
 
 *Require no dependencies, all widgets can be used on their own.*
+
+Made this for an audio app and a wargame engine.
 
 ####Widgets
 
@@ -20,13 +15,18 @@ Collection of **easy to use** and **lightweight** (*~3kb css*, *~5kb js* gzipped
 *   [WUI_ToolBar](#toolbar)
 *   [WUI_RangeSlider](#rangeslider)
 
-Made them for an audio app and a wargame engine.
+####Links
+- [Demo](#demo)
+- [Documentation](#doc)
+- [Compatibility](#compat)
+- [License](#license)
 
 ----------
 <a name="demo"></a>
 ### Demo ###
 
 [Demo](http://grz0zrg.github.io/wui-demo/)
+<br/>
 [Demo repository](https://github.com/grz0zrg/wui-demo)
 
 ----------
