@@ -88,7 +88,7 @@ WUI_Tabs.create("my_tabs", {
 <a name="dialog"></a>
 ### Dialog/Panel ###
 
-The dialogs can be draggable, closable, minimizable and act as panels, they also go in front of others when you move them.
+>The dialogs can be draggable, closable, minimizable and act as panels, they also go in front of others when you move them.
 
 <br/>*Methods*:
 
@@ -141,7 +141,7 @@ WUI_Dialog.open(my_dialog);
 <a name="dropdown"></a>
 ### DropDown ###
 
-A simple and automatically opening/closing dropdown.
+>A simple and automatically opening/closing dropdown.
 
 <br/>*Method*:
 
@@ -183,7 +183,7 @@ WUI_DropDown.create("my_dropdown", {
 <a name="toolbar"></a>
 ### ToolBar ###
 
-The toolbar can be horizontal or vertical, have groups and minimizable groups, dispose of two type of buttons, simple and toggling, a set of toggle buttons can be linked (grouped), buttons can be an icon, a text or both.
+>The toolbar can be horizontal or vertical, have groups and minimizable groups, dispose of two type of buttons, simple and toggling, a set of toggle buttons can be linked (grouped), buttons can be an icon, a text or both.
 
 <br/>*Method*:
 
@@ -244,7 +244,7 @@ var my_toolbar = WUI_ToolBar.create("my_toolbar", {
 <a name="rangeslider"></a>
 ### RangeSlider ###
 
-Range slider widget can be horizontal or vertical, have a negative/positive range, the value can be changed with the mouse wheel or by moving the hook point by dragging or by clicking on the slider bar, a double click on the slider will reset the value to its default value, the value also appear as an input which perform automatically all sanity check and will indicate if the value is correct or not (red)
+>Range slider widget can be horizontal or vertical, have a negative/positive range, the value can be changed with the mouse wheel or by moving the hook point by dragging or by clicking on the slider bar, a double click on the slider will reset the value to its default value, the value also appear as an input which perform automatically all sanity check and will indicate if the value is correct or not (red)
 
 <br/>*Method*:
 
