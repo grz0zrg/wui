@@ -1,0 +1,12 @@
+{
+	"name": "WUI",
+  	"version": "0.1.0",
+  	"main": "Gruntfile.js",
+  	"author": "Verneuil Julien",
+  	"devDependencies": {
+    	"grunt": "~0.4.0",
+    	"grunt-contrib-uglify": "~0.2.4",
+    	"grunt-contrib-cssmin": "",
+    	"grunt-contrib-compress": ""
+  	}
+}
