@@ -15,19 +15,17 @@ Made this for an audio app and a wargame engine.
 *   [WUI_ToolBar](#toolbar)
 *   [WUI_RangeSlider](#rangeslider)
 
+<a name="demo"></a>
+####Demo
+[Demo](http://grz0zrg.github.io/wui-demo/)
+<br/>
+[Demo repository](https://github.com/grz0zrg/wui-demo)
+
 ####Links
 - [Demo](#demo)
 - [Documentation](#doc)
 - [Compatibility](#compat)
 - [License](#license)
-
-----------
-<a name="demo"></a>
-### Demo ###
-
-[Demo](http://grz0zrg.github.io/wui-demo/)
-<br/>
-[Demo repository](https://github.com/grz0zrg/wui-demo)
 
 ----------
 
