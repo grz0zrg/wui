@@ -11,7 +11,7 @@ Made this for an audio app and a wargame engine.
 - [Demo](http://grz0zrg.github.io/wui-demo/)
 <br/>
 - [Demo repository](https://github.com/grz0zrg/wui-demo)
-- 
+
 ####Widgets
 
 *   [WUI_Tabs](#tabs)
