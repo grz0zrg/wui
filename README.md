@@ -17,8 +17,6 @@ Made this for an audio app and a wargame engine.
 - [Compatibility](#compat)
 - [License](#license)
 
-======
-
 <a name="doc"></a>
 # Documentation #
 
