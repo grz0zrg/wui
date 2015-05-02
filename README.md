@@ -7,7 +7,6 @@ Collection of **easy to use** and **lightweight** (*~3kb css*, *~5kb js* gzipped
 
 Made this for an audio app and a wargame engine.
 
-======
 ####Demo
 - [Demo](http://grz0zrg.github.io/wui-demo/)
 <br/>
@@ -27,7 +26,6 @@ Made this for an audio app and a wargame engine.
 - [Compatibility](#compat)
 - [License](#license)
 
-----------
 <a name="demo"></a>
 ### Demo ###
 
@@ -35,12 +33,12 @@ Made this for an audio app and a wargame engine.
 <br/>
 [Demo repository](https://github.com/grz0zrg/wui-demo)
 
-----------
+======
 - [Documentation](#doc)
 - [Compatibility](#compat)
 - [License](#license)
 
-----------
+======
 
 <a name="doc"></a>
 # Documentation #
@@ -57,7 +55,7 @@ All widgets have a method *_"triggerEvent"_* which take an Event object and even
 
 You can also use *"_WUI.dispatchEvent_"*, this will call triggerEvent for each widgets.
 
-----------
+======
 <a name="tabs"></a>
 ## Tabs ##
 
@@ -99,7 +97,7 @@ WUI_Tabs.create("my_tabs", {
 
 <br/>
 
-----------
+======
 <a name="dialog"></a>
 ### Dialog/Panel ###
 
@@ -151,7 +149,7 @@ WUI_Dialog.open(my_dialog);
 ```
 <br/>
 
-----------
+======
 <a name="dropdown"></a>
 ### DropDown ###
 
@@ -192,7 +190,7 @@ WUI_DropDown.create("my_dropdown", {
 ```
 <br/>
 
-----------
+======
 <a name="toolbar"></a>
 ### ToolBar ###
 
@@ -252,7 +250,7 @@ var my_toolbar = WUI_ToolBar.create("my_toolbar", {
 ```
 <br/>
 
-----------
+======
 <a name="rangeslider"></a>
 ### RangeSlider ###
 
@@ -303,7 +301,7 @@ WUI_RangeSlider.create("my_range_slider", {
 ```
 <br/>
 
-----------
+======
 <a name="compat"></a>
 ### Compatibility ###
 
@@ -312,7 +310,7 @@ Not well tested but should work in all modern browsers supporting **_ECMAScript 
 This library was not built to target mobiles devices (but it may, in the *future*) and does not support touch events.
 <br/>
 
-----------
+======
 <a name="license"></a>
 ### License ###
 
