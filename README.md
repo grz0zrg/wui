@@ -7,7 +7,7 @@ Collection of **easy to use** and **lightweight** (*~3kb css*, *~5kb js* gzipped
 
 Made this for an audio app and a wargame engine.
 
-----------
+======
 ####Demo
 - [Demo](http://grz0zrg.github.io/wui-demo/)
 <br/>
