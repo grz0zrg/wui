@@ -1,16 +1,11 @@
 WUI
 =====
 
- - [Demo](#demo)
- - [Documentation](#doc)
- - [Compatibility](#compat)
- - [License](#license)
-
-----------
-
 Collection of **easy to use** and **lightweight** (*~3kb css*, *~5kb js* gzipped) vanilla GUI widgets for the web.
 
 *Require no dependencies, all widgets can be used on their own.*
+
+Made this for an audio app and a wargame engine.
 
 ####Widgets
 
@@ -20,13 +15,18 @@ Collection of **easy to use** and **lightweight** (*~3kb css*, *~5kb js* gzipped
 *   [WUI_ToolBar](#toolbar)
 *   [WUI_RangeSlider](#rangeslider)
 
-Made them for an audio app and a wargame engine.
+####Links
+- [Demo](#demo)
+- [Documentation](#doc)
+- [Compatibility](#compat)
+- [License](#license)
 
 ----------
 <a name="demo"></a>
 ### Demo ###
 
 [Demo](http://grz0zrg.github.io/wui-demo/)
+<br/>
 [Demo repository](https://github.com/grz0zrg/wui-demo)
 
 ----------
@@ -34,13 +34,17 @@ Made them for an audio app and a wargame engine.
 <a name="doc"></a>
 # Documentation #
 
-The API is simple, all widgets have a method "create", a DOM element id as first argument (which is used as a bind target) and an options object as second or third argument (toolbar case) to customize it, widgets cannot (for now) be destroyed.
+The API is simple, all widgets have a method *_"create"_*, a DOM element id as first argument (which is used as a bind target) and an options object as second or third argument (toolbar case) to customize it, widgets cannot (for now) be destroyed.
 
 All "create" functions return a reference of the widget which can be used later to do stuff with the widget.
 
 HTML elements with a specific layout are required to use some widgets (like tabs, see the documentation)
 
 A bit of style hacking may be necessary if you want widgets to suit your need or your taste, the demo page can be helpful.
+
+All widgets have a method *_"triggerEvent"_* which take an Event object and event type string as argument, you can use it if you want to handle all events by yourself without letting the library add event listeners.
+
+You can also use *"_WUI.dispatchEvent_"*, this will call triggerEvent for each widgets.
 
 ----------
 <a name="tabs"></a>

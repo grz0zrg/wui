@@ -48,11 +48,6 @@
 
     background: -webkit-linear-gradient(rgba(32, 32, 32, 1.0), rgba(24, 24, 24, 1.0), rgba(24, 24, 24, 1.0)) no-repeat border-box;
     background: linear-gradient(rgba(32, 32, 32, 1.0), rgba(24, 24, 24, 1.0), rgba(24, 24, 24, 1.0)) no-repeat border-box;
-
-    -moz-user-select: all;
-    -webkit-user-select: all;
-    -ms-user-select: all;
-    user-select: all;
     
     overflow: auto;
 }
