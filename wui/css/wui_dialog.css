@@ -99,8 +99,8 @@
     margin-left: 1px;
     margin-right: 3px;
     
-    border-radius: 2px;
-    
+    /*border-radius: 2px;
+    */
     outline: 1px solid #404040;
     
     z-index: 1;
@@ -115,7 +115,7 @@
 .wui-dialog-btn:hover {
     background-color: #141414;
     
-    outline-color: #707070 !important;
+    outline: 1px solid #707070 !important;
 
     cursor: pointer;
 }

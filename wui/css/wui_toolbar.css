@@ -134,13 +134,13 @@
 }
 
 .wui-toolbar-toggle:hover {
-    background-color: #505050;
+    background-color: #404040;
     
     cursor: pointer;
 }
 
 .wui-toolbar-toggle-on {
-    background-color: #605040 !important;
+    background-color: #403020 !important;
 }
 
 .wui-toolbar-button {
