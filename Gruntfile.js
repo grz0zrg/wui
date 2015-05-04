@@ -35,7 +35,7 @@ module.exports = function(grunt) {
  
 		  	target: {
 		    	files: {
-		      		'dist/wui.min.js': ['wui/js/wui.js', 'wui/js/wui_dialog.js', 'wui/js/wui_dropdown.js', 'wui/js/wui_range_slider.js', 'wui/js/wui_tabs.js', 'wui/js/wui_toolbar.js']
+		      		'dist/wui.min.js': ['wui/js/wui_dialog.js', 'wui/js/wui_dropdown.js', 'wui/js/wui_range_slider.js', 'wui/js/wui_tabs.js', 'wui/js/wui_toolbar.js', 'wui/js/wui.js']
 		    	}
 		  	}
     	},
