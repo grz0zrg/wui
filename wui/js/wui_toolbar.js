@@ -258,6 +258,12 @@ var WUI_ToolBar = new (function() {
             
             key;
         
+        if (_widget_list[id] !== undefined) {
+            console.log("WUI_Toolbar id '" + id + "' already created, aborting.");
+            
+            return;
+        }
+        
         for (key in _known_options) {
             if (_known_options.hasOwnProperty(key)) {
                 opts[key] = _known_options[key];

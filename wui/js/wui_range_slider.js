@@ -16,6 +16,8 @@ var WUI_RangeSlider = new (function() {
         _grabbed_widget = null,
         _grabbed_hook_element = null,
         
+        _touch_identifier = null,
+        
         _class_name = {
             hook:   "wui-rangeslider-hook",
             bar:    "wui-rangeslider-bar",
@@ -148,6 +150,10 @@ var WUI_RangeSlider = new (function() {
     };
     
     var _mouseMove = function (ev) {
+        if(ev.preventDefault) {
+            ev.preventDefault();
+        }
+        
         if (_grabbed_hook_element !== null) {
             var value_input = _grabbed_widget.element.lastElementChild,
             
@@ -157,14 +163,36 @@ var WUI_RangeSlider = new (function() {
                 bar_offset = _getElementOffset(bar),
                 max_pos = bar.offsetWidth,
                 
-                cursor_relative_pos = 0;
+                cursor_relative_pos = 0,
+                
+                x = ev.clientX,
+                y = ev.clientY,
+            
+                touches = ev.changedTouches,
+            
+                touch = null,
+            
+                i;
+            
+            if (touches) {
+                for (i = 0; i < touches.length; i += 1) {
+                    touch = touches[i];
+
+                    if (touch.identifier === _touch_identifier) {
+                        x = touches[i].clientX;
+                        y = touches[i].clientY;
+
+                        break;
+                    }
+                }
+            }
             
             if (_grabbed_widget.opts.vertical) {
                 max_pos = bar.offsetHeight;
                 
-                cursor_relative_pos = Math.round((bar_offset.top + bar.offsetHeight - ev.clientY) / _grabbed_widget.opts.step) * _grabbed_widget.opts.step;
+                cursor_relative_pos = Math.round((bar_offset.top + bar.offsetHeight - y) / _grabbed_widget.opts.step) * _grabbed_widget.opts.step;
             } else {
-                cursor_relative_pos = Math.round((ev.clientX - bar_offset.left) / _grabbed_widget.opts.step) * _grabbed_widget.opts.step;   
+                cursor_relative_pos = Math.round((x - bar_offset.left) / _grabbed_widget.opts.step) * _grabbed_widget.opts.step;   
             }
 
             if (cursor_relative_pos > max_pos) {
@@ -199,22 +227,69 @@ var WUI_RangeSlider = new (function() {
         }
     };
     
-    var _rsMouseUp = function () {
-        _grabbed_hook_element.classList.remove("wui-rangeslider-hook-focus");
+    var _rsMouseUp = function (ev) {
+        var touches = ev.changedTouches,
+            
+            touch = null,
+            
+            stop_drag = false,
+            
+            i;
         
-        _grabbed_hook_element = null;
-        _grabbed_widget = null;
+        if (touches) {
+            for (i = 0; i < touches.length; i += 1) {
+                touch = touches[i];
+                
+                if (touch.identifier === _touch_identifier) {
+                    stop_drag = true;
+                    
+                    window.removeEventListener("touchend", _rsMouseUp, false);
+                    window.removeEventListener("touchmove", _mouseMove, false);
+                    
+                    break;
+                }
+            }
+        } else {
+            stop_drag = true;
+            
+            window.removeEventListener("mouseup", _rsMouseUp, false);
+            window.removeEventListener("mousemove", _mouseMove, false);
+        }
         
-        document.body.style.cursor = "default";
-        
-        window.removeEventListener("mouseup", _rsMouseUp, false);
-        window.removeEventListener("mousemove", _mouseMove, false);
+        if (stop_drag) {
+            _grabbed_hook_element.classList.remove("wui-rangeslider-hook-focus");
+
+            _grabbed_hook_element = null;
+            _grabbed_widget = null;
+
+            document.body.style.cursor = "default";
+        }
     };
     
     var _rsMouseDown = function (ev) {
-        if (ev.button === 0) {
-            var rs_element = null;
+        if(ev.preventDefault) {
+            ev.preventDefault();
+        }
+        
+        var rs_element = null,
             
+            drag_slider = false,
+            
+            touches = ev.changedTouches;
+        
+        if (_grabbed_widget === null) {
+            if (touches) {
+                _touch_identifier = touches[0].identifier;
+                
+                drag_slider = true;
+            }
+        }
+        
+        if (ev.button === 0) {
+            drag_slider = true;
+        }
+        
+        if (drag_slider) {
             _grabbed_hook_element = _getHookElementFromTarget(ev.target);
             
             _grabbed_hook_element.classList.add("wui-rangeslider-hook-focus");
@@ -222,17 +297,23 @@ var WUI_RangeSlider = new (function() {
             rs_element = _grabbed_hook_element.parentElement.parentElement.parentElement;
             
             _grabbed_widget = _widget_list[rs_element.id];
-            
+
             document.body.style.cursor = "pointer";
             
             _mouseMove(ev);
             
             window.addEventListener("mousemove", _mouseMove, false);
+            window.addEventListener("touchmove", _mouseMove, false);
             window.addEventListener("mouseup", _rsMouseUp, false);
+            window.addEventListener("touchend", _rsMouseUp, false);
         }
     };
     
     var _rsDblClick = function (ev) {
+        if(ev.preventDefault) {
+            ev.preventDefault();
+        }
+        
         var hook_element = ev.target,
             
             rs_element = hook_element.parentElement.parentElement.parentElement,
@@ -243,10 +324,14 @@ var WUI_RangeSlider = new (function() {
 
         _update(grabbed_widget, value);
 
-        _onChange(_grabbed_widget.opts.on_change, value);
+        _onChange(grabbed_widget.opts.on_change, value);
     };
     
     var _rsMouseWheel = function (ev) {   
+        if(ev.preventDefault) {
+            ev.preventDefault();
+        }
+        
         var hook_element = _getHookElementFromTarget(ev.target),
             
             rs_element = hook_element.parentElement.parentElement.parentElement,
@@ -271,7 +356,7 @@ var WUI_RangeSlider = new (function() {
         
         _update(grabbed_widget, value);
         
-        _onChange(_grabbed_widget.opts.on_change, value);
+        _onChange(grabbed_widget.opts.on_change, value);
     };
     
     var _inputChange = function (ev) {
@@ -293,7 +378,7 @@ var WUI_RangeSlider = new (function() {
 
         _update(grabbed_widget, ev.target.value);
         
-        _onChange(_grabbed_widget.opts.on_change, ev.target.value);
+        _onChange(grabbed_widget.opts.on_change, ev.target.value);
     };
     
     /***********************************************************
@@ -352,6 +437,12 @@ var WUI_RangeSlider = new (function() {
             opts = {},
             
             key;
+        
+        if (_widget_list[id] !== undefined) {
+            console.log("WUI_RangeSlider id '" + id + "' already created, aborting.");
+            
+            return;
+        }
         
         for (key in _known_options) {
             if (_known_options.hasOwnProperty(key)) {
@@ -461,6 +552,8 @@ var WUI_RangeSlider = new (function() {
         
         if (opts.use_event_listener) {
             bar.addEventListener("mousedown", _rsMouseDown, false);
+            bar.addEventListener("touchstart", _rsMouseDown, false);
+            
             hook.addEventListener("dblclick", _rsDblClick, false);
             
             value_input.addEventListener("input", _inputChange, false);

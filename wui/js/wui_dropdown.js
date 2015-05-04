@@ -192,6 +192,12 @@ var WUI_DropDown = new (function() {
             
             i = 0;
         
+        if (_widget_list[id] !== undefined) {
+            console.log("WUI_DropDown id '" + id + "' already created, aborting.");
+            
+            return;
+        }
+        
         for (key in _known_options) {
             if (_known_options.hasOwnProperty(key)) {
                 opts[key] = _known_options[key];

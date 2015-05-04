@@ -12,6 +12,8 @@ var WUI_Dialog = new (function() {
         
         _dragged_dialog = null,
         
+        _touch_identifier = null,
+        
         _drag_x = 0,
         _drag_y = 0,
         
@@ -70,10 +72,38 @@ var WUI_Dialog = new (function() {
     };
     
     var _windowMouseMove = function (ev) {
-        var new_x = ev.clientX - _drag_x,
-            new_y  = ev.clientY - _drag_y,
+        if(ev.preventDefault) {
+            ev.preventDefault();
+        }
+        
+        var x = ev.clientX,
+            y = ev.clientY,
+            
+            touches = ev.changedTouches,
+            
+            touch = null,
+            
+            i,
+            
+            new_x, new_y,
             
             widget = _widget_list[_dragged_dialog.id];   
+        
+        if (touches) {
+            for (i = 0; i < touches.length; i += 1) {
+                touch = touches[i];
+                
+                if (touch.identifier === _touch_identifier) {
+                    x = touches[i].clientX;
+                    y = touches[i].clientY;
+                    
+                    break;
+                }
+            }
+        }
+        
+        new_x = x - _drag_x;
+        new_y = y - _drag_y;
         
         _dragged_dialog.style.left = new_x + 'px';
         _dragged_dialog.style.top  = new_y + 'px';
@@ -91,31 +121,71 @@ var WUI_Dialog = new (function() {
         }
     };
     
-    var _windowMouseUp = function () {
-        _dragged_dialog = null;
+    var _windowMouseUp = function (ev) {
+        var touches = ev.changedTouches,
+            
+            touch = null,
+            
+            i;
         
-        document.body.style.cursor = "default";
-        
-        window.removeEventListener('mousemove', _windowMouseMove, true);
+        if (touches) {
+            for (i = 0; i < touches.length; i += 1) {
+                touch = touches[i];
+                
+                if (touch.identifier === _touch_identifier) {
+                    _dragged_dialog = null;
+                    
+                    document.body.style.cursor = "default";
+                    
+                    window.removeEventListener('touchmove', _windowMouseMove, false);
+                    
+                    break;
+                }
+            }
+        } else {
+            _dragged_dialog = null;
+            
+            document.body.style.cursor = "default";
+            
+            window.removeEventListener('mousemove', _windowMouseMove, false);
+        }
     };
     
     var _onMouseDown = function (ev) {
-        _dragged_dialog = ev.target.parentElement;
+        var z_index = 100,
+            
+            cz_index = 0,
+            
+            dialog = null,
+            
+            x = ev.clientX,
+            y = ev.clientY,
+            
+            touches = ev.changedTouches;
+        
+        if(ev.preventDefault) {
+            ev.preventDefault();
+        }
         
         if (ev.button !== 0) {
             return;   
         }
-
+        
+        if (_dragged_dialog === null) {
+            if (touches) {
+                _touch_identifier = touches[0].identifier;
+                
+                x = touches[0].clientX;
+                y = touches[0].clientY;
+            }
+        }
+        
+        _dragged_dialog = ev.target.parentElement;
+        
         if (_dragged_dialog.classList.contains(_class_name.maximize) ||
            !_dragged_dialog.classList.contains(_class_name.draggable)) {
             return;
         }
-        
-        var z_index = 0,
-            
-            cz_index = 0,
-            
-            dialog = null;
         
         for (var i in _widget_list) {
             if (_widget_list.hasOwnProperty(i)) {
@@ -139,10 +209,11 @@ var WUI_Dialog = new (function() {
         
         document.body.style.cursor = "move";
         
-        _drag_x = ev.clientX - parseInt(_dragged_dialog.style.left, 10);
-        _drag_y = ev.clientY - parseInt(_dragged_dialog.style.top,  10);
+        _drag_x = x - parseInt(_dragged_dialog.style.left, 10);
+        _drag_y = y - parseInt(_dragged_dialog.style.top,  10);
 
-        window.addEventListener('mousemove', _windowMouseMove, true);
+        window.addEventListener('mousemove', _windowMouseMove, false);
+        window.addEventListener('touchmove', _windowMouseMove, false);
     };
     
     /***********************************************************
@@ -189,6 +260,12 @@ var WUI_Dialog = new (function() {
         var opts = {},
             
             key;
+        
+        if (_widget_list[id] !== undefined) {
+            console.log("WUI_Dialog id '" + id + "' already created, aborting.");
+            
+            return;
+        }
         
         for (key in _known_options) {
             if (_known_options.hasOwnProperty(key)) {
@@ -303,10 +380,12 @@ var WUI_Dialog = new (function() {
             
             if (opts.use_event_listener) {
                 header.addEventListener("mousedown", _onMouseDown, false);
+                header.addEventListener("touchstart", _onMouseDown, false);
             }
             
             // exception for this one
             window.addEventListener('mouseup', _windowMouseUp, false);
+            window.addEventListener('touchend', _windowMouseUp, false);
         }
         
         // go!

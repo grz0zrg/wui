@@ -65,9 +65,9 @@ var WUI_Tabs = new (function() {
         
         ev.target.classList.remove(_class_name.disabled);
         ev.target.classList.toggle(_class_name.enabled);
-        
-        if (_widget_list[widget_id] !== undefined) {
-            _widget_list[widget_id](tab_index);
+
+        if (_widget_list[widget_id].opts.on_tab_click) {
+            _widget_list[widget_id].opts.on_tab_click(tab_index);
         }
     };
     
@@ -119,6 +119,12 @@ var WUI_Tabs = new (function() {
             key,
 
             i = 0;
+        
+        if (_widget_list[id] !== undefined) {
+            console.log("WUI_Tabs id '" + id + "' already created, aborting.");
+            
+            return;
+        }
         
         for (key in _known_options) {
             if (_known_options.hasOwnProperty(key)) {
@@ -178,9 +184,7 @@ var WUI_Tabs = new (function() {
             tab_content.classList.add(_class_name.display_none);   
         }
         
-        if (_widget_list[id] === undefined) {
-            _widget_list[id] = opts.on_tab_click;
-        }
+        _widget_list[id] = { opts : opts };
         
         return id;
     };
