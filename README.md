@@ -5,7 +5,7 @@ Collection of **easy to use** and **lightweight** (*~3kb css*, *~5kb js* gzipped
 
 *Require no dependencies, all widgets can be used on their own.*
 
-Made this for an audio app and a wargame engine.
+This was made for an audio app and the map editor of a wargame engine.
 
 ####Demo
 - [Demo](http://grz0zrg.github.io/wui-demo/)
@@ -36,7 +36,7 @@ HTML elements with a specific layout are required to use some widgets (like tabs
 
 A bit of style hacking may be necessary if you want widgets to suit your need or your taste, the demo page can be helpful.
 
-All widgets have a method *_"triggerEvent"_* which take an Event object and event type string as argument, you can use it if you want to handle all events by yourself, preventing the library to add event listeners.
+Also, altough not documented below, all widgets have a method *_"triggerEvent"_* which take an Event object and event type string as argument, you can use it if you want to handle all events by yourself, preventing the library to add event listeners.
 
 You can also use *"_WUI.dispatchEvent_"*, this will call triggerEvent for each widgets.
 
@@ -183,7 +183,7 @@ WUI_DropDown.create("my_dropdown", {
 <a name="toolbar"></a>
 ### ToolBar ###
 
->The toolbar can be horizontal or vertical, have groups and minimizable groups, dispose of two type of buttons, simple and toggling, a set of toggle buttons can be linked (grouped), buttons can be an icon, a text or both.
+>The toolbar can be horizontal or vertical, have groups and minimizable groups, dispose of two type of buttons, simple and toggle, a set of toggle buttons can be linked (grouped), buttons can be an icon, a text or both.
 
 <br/>*Method*:
 
@@ -212,7 +212,7 @@ var my_toolbar = WUI_ToolBar.create("my_toolbar", {
         // a toggling group id, another button with the same toggling group id will be linked to this one and will be off when this one will be switched on
         toggle_group: 0,
         
-        // toggle state after creation, if it is a toggle button
+        // toggle state of the button after creation, only if it is a toggle button
         toggle_state: true,
         
         // function called when a button is clicked, if the item is of type "toggle", an object containing a field "type" and "state" will be passed as argument
@@ -298,7 +298,9 @@ WUI_RangeSlider.create("my_range_slider", {
 
 Not well tested but should work in all modern browsers supporting **_ECMAScript 5_** and **_CSS3_**.
 
-This library was not built to target mobiles devices (but it may, in the *future*) and does not support touch events.
+IE < 11 *may* have minor problems due to the use of 'pointer-events'
+
+This library was not built to target mobiles devices (it may, in the *future*), but it support touch events and the demo work ok with Safari on Ipad.
 <br/>
 
 ======
