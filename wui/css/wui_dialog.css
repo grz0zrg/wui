@@ -1,7 +1,11 @@
 .wui-dialog {
-    -webkit-transition: width 1s, height 1s, opacity 750ms ease;
+    -webkit-transition: visibility 0s ease 500ms, width 1s, height 1s, opacity 500ms ease;
     
-    transition: width 1s, height 1s, opacity 750ms ease;
+    transition: visibility 0s ease 500ms, width 1s, height 1s, opacity 500ms ease;
+
+    visibility: hidden;
+
+    opacity: 0;
     
     pointer-events: none;
     
@@ -16,6 +20,16 @@
     overflow: hidden;
     
     box-shadow: 0px 0px 4px 1px #080808;
+}
+
+.wui-dialog-open {
+    visibility: visible;
+
+    opacity: 1;
+
+    -webkit-transition-delay: 0s;
+
+    transition-delay: 0s;
 }
 
 .wui-dialog-header {
@@ -140,10 +154,4 @@
     width: 100%;
     position: absolute;
     text-align: center;
-}
-
-.wui-dialog-transition-750 {
-    visibility: hidden;
-
-    opacity: 0;
 }

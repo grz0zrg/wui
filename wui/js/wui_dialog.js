@@ -23,7 +23,7 @@ var WUI_Dialog = new (function() {
             minimize:      "wui-dialog-minimize",
             maximize:      "wui-dialog-maximize",
             header:        "wui-dialog-header",
-            transition750: "wui-dialog-transition-750",
+            open:          "wui-dialog-open",
             draggable:     "wui-dialog-draggable"
         },
         
@@ -33,6 +33,8 @@ var WUI_Dialog = new (function() {
             width: "80%",
             height: "40%",
             
+            open: true,
+
             closable: true,
             minimizable: false,
             draggable: false,
@@ -57,7 +59,7 @@ var WUI_Dialog = new (function() {
     var _onCloseBtnClick = function (ev) {
         var dialog = ev.target.parentElement.parentElement;
         
-        dialog.classList.toggle(_class_name.transition750);
+        dialog.classList.remove(_class_name.open);
     };
     
     var _onMinimaxiBtnClick = function (ev) {
@@ -316,6 +318,7 @@ var WUI_Dialog = new (function() {
             dialog.style.right = "0";
         } else if (opts.halign === "right") {
             dialog.style.right = "0";
+            dialog.style.left = "auto";
         } else if (opts.halign === "left") {
             dialog.style.left = "0";
         } else {
@@ -327,6 +330,7 @@ var WUI_Dialog = new (function() {
             dialog.style.top    = "0";
             dialog.style.bottom = "0";
         } else if (opts.valign === "bottom") {
+            dialog.style.top = "auto";
             dialog.style.bottom = "0";
         } else if (opts.valign === "top") {
             dialog.style.top = "0";
@@ -353,6 +357,23 @@ var WUI_Dialog = new (function() {
             header.appendChild(header_title);
         }
         
+        if (opts.open) {
+            dialog.classList.add(_class_name.open);
+        }
+
+        if (opts.draggable) {
+            dialog.classList.toggle(_class_name.draggable);
+
+            if (opts.use_event_listener) {
+                header.addEventListener("mousedown", _onMouseDown, false);
+                header.addEventListener("touchstart", _onMouseDown, false);
+            }
+
+            // exception for this one
+            window.addEventListener('mouseup', _windowMouseUp, false);
+            window.addEventListener('touchend', _windowMouseUp, false);
+        }
+
         if (opts.closable) {
             header_close_btn = document.createElement("div"); 
             header_close_btn.className = _class_name.btn + " " + _class_name.btn_close;
@@ -374,20 +395,7 @@ var WUI_Dialog = new (function() {
             
             header.appendChild(header_minimaxi_btn);
         }
-        
-        if (opts.draggable) {
-            dialog.classList.toggle(_class_name.draggable);
-            
-            if (opts.use_event_listener) {
-                header.addEventListener("mousedown", _onMouseDown, false);
-                header.addEventListener("touchstart", _onMouseDown, false);
-            }
-            
-            // exception for this one
-            window.addEventListener('mouseup', _windowMouseUp, false);
-            window.addEventListener('touchend', _windowMouseUp, false);
-        }
-        
+
         // go!
         dialog.insertBefore(header, content);
         
@@ -411,6 +419,6 @@ var WUI_Dialog = new (function() {
             return;   
         }
         
-        _widget_list[id].dialog.classList.remove(_class_name.transition750);
+        _widget_list[id].dialog.classList.add(_class_name.open);
     };
 })();

@@ -47,10 +47,12 @@
 }
 
 .wui-dropdown-content {
-    opacity: 1;
+    visibility: hidden;
+
+    opacity: 0;
     
-    -webkit-transition: opacity 250ms ease;
-    transition: opacity 250ms ease;
+    -webkit-transition: visibility 0s ease 250ms, opacity 250ms ease;
+    transition: visibility 0s ease 250ms, opacity 250ms ease;
     
     position: absolute;
     
@@ -72,7 +74,7 @@
     
     height: 26px;
     
-    z-index: 100;
+    z-index: 99999;
 }
 
 .wui-dropdown-horizontal {
@@ -135,10 +137,14 @@
     color: cadetblue;
 }
 
-.wui-dropdown-transition {
-    visibility: hidden;
+.wui-dropdown-open {
+    visibility: visible;
 
-    opacity: 0;
+    opacity: 1;
+
+    -webkit-transition-delay: 0s;
+
+    transition-delay: 0s;
 }
 
 @media only screen and (max-device-width: 800px) {

@@ -117,6 +117,9 @@ var my_dialog = WUI_Dialog.create("my_dialog", {
     // 'top', 'center', 'bottom' or 'none'
     valign: "center",
     
+    // wether the dialog is opened or closed after creation
+    open: true,
+    
     closable: false,
     draggable: true,
     minimizable: true,

@@ -16,7 +16,7 @@ var WUI_DropDown = new (function() {
             item:       "wui-dropdown-item",
             content:    "wui-dropdown-content",
             selected:   "wui-dropdown-selected",
-            transition: "wui-dropdown-transition"
+            open: "wui-dropdown-open"
         },
         
         _known_options = {
@@ -60,14 +60,34 @@ var WUI_DropDown = new (function() {
     };
     
     var _close = function (widget) {
-        widget.floating_content.classList.add(_class_name.transition);
+        widget.floating_content.classList.remove(_class_name.open);
         
         widget.element.classList.remove("wui-dropdown-on");
         
         widget.close_timeout = null;
     };
     
-    var _click = function (ev) {
+    var _dd_click = function (ev) {
+        var current_element = ev.target,
+
+            widget = null,
+
+            floating_content = null;
+
+        if (current_element.classList.contains(_class_name.dropdown)) {
+            widget = _widget_list[current_element.id];
+
+            floating_content = widget.floating_content;
+
+            if (widget.floating_content.classList.contains(_class_name.open)) {
+                _close(widget);
+            }
+        } else {
+            return;
+        }
+    };
+
+    var _item_click = function (ev) {
         var current_element = ev.target,
             
             widget = _widget_list[current_element.id],
@@ -78,7 +98,7 @@ var WUI_DropDown = new (function() {
             
             i;
         
-        if ( current_element.classList.contains(_class_name.item)) {
+        if (current_element.classList.contains(_class_name.item)) {
             floating_content = current_element.parentElement;
             
             widget = _widget_list[floating_content.dataset.linkedto];
@@ -104,23 +124,25 @@ var WUI_DropDown = new (function() {
     var _mouseOver = function (ev) {
         var current_element = ev.target,
             
-            widget = _widget_list[current_element.id],
+            widget = null,
             
             offset = null,
             
             floating_content = null;
 
         if (current_element.classList.contains(_class_name.dropdown)) {
-            floating_content = widget.floating_content;
+            widget = _widget_list[current_element.id];
             
             widget.element.classList.add("wui-dropdown-on");
+
+            floating_content = widget.floating_content;
 
             offset = _getElementOffset(current_element);
 
             floating_content.style.top = (offset.top - floating_content.offsetHeight - widget.opts.vspacing) + "px";
             floating_content.style.left = offset.left + "px";
 
-            floating_content.classList.remove(_class_name.transition);
+            floating_content.classList.add(_class_name.open);
         } else if ( current_element.classList.contains(_class_name.content)) {
             widget = _widget_list[current_element.dataset.linkedto];
         } else if ( current_element.classList.contains(_class_name.item)) {
@@ -171,7 +193,7 @@ var WUI_DropDown = new (function() {
         if (e_type === "mouseover") {
             _mouseOver(event);
         } else if (e_type === "click") {
-            _click(event);
+            _item_click(event);
         }
                 
         return false;
@@ -237,6 +259,7 @@ var WUI_DropDown = new (function() {
         
         if (opts.use_event_listener) {
             dropdown.addEventListener("mouseover", _mouseOver, false);
+            dropdown.addEventListener("click", _dd_click, false);
             floating_content.addEventListener("mouseover", _mouseOver, false);
         }
         
@@ -260,7 +283,7 @@ var WUI_DropDown = new (function() {
             items.push(div_item);
                 
             if (opts.use_event_listener) {
-                div_item.addEventListener("click", _click, false);
+                div_item.addEventListener("click", _item_click, false);
                 div_item.addEventListener("mouseover", _mouseOver, false);
             }
             
@@ -270,7 +293,6 @@ var WUI_DropDown = new (function() {
         }
         
         floating_content.classList.add(_class_name.content);
-        floating_content.classList.add(_class_name.transition);
         
         floating_content.dataset.linkedto = id;
         
