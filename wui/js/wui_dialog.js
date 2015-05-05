@@ -392,7 +392,7 @@ var WUI_Dialog = new (function() {
             
             if (opts.use_event_listener) {
                 header_minimaxi_btn.addEventListener("click", _onMinimaxiBtnClick, false);
-                header_close_btn.addEventListener("touchstart", _onMinimaxiBtnClick, false);
+                header_minimaxi_btn.addEventListener("touchstart", _onMinimaxiBtnClick, false);
             }
             
             header.appendChild(header_minimaxi_btn);
