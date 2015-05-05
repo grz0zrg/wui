@@ -147,7 +147,8 @@
     transition-delay: 0s;
 }
 
-@media only screen and (max-device-width: 800px) {
+/*TODO*/
+/*@media only screen and (max-device-width: 800px) {
     .wui-dropdown-text {
         display: none;
     }
@@ -163,4 +164,4 @@
     .wui-dropdown-content {
         font-size: 8pt !important;   
     }
-}
+}*/

@@ -332,6 +332,12 @@ var WUI_ToolBar = new (function() {
                 var group_element = document.createElement("div");
                 group_element.className = group_class;
 
+                if (opts.vertical) {
+                    group_element.style.maxWidth = opts.icon_width + "px";
+                } else {
+                    group_element.style.maxHeight = opts.icon_height + "px";
+                }
+
                 for (var i = 0; i < group.length; i += 1) {
                     var tool = group[i],
                         tool_element = document.createElement("div"),
