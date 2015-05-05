@@ -303,15 +303,12 @@ Not well tested but should work in all modern browsers supporting **_ECMAScript 
 
 This library was not built to target mobile devices, but it support touch events and the demo work ok with Safari on the Ipad.
 
-Tested and work ok with Chrome (30, 35, 40), Firefox (31, 37) and Safari (6, 7, 8).
+Tested and work ok with IE 11, Opera 12, Chrome (30, 35, 40), Firefox (31, 37) and Safari (6, 7, 8).
 
-Tested and work ok with Opera 12.
-
->IE 11   -> ok
-<br/>
-IE 10   -> WUI_ToolBar does not work correctly, due to the use of 'pointer-events' and 'flexbox'
-<br/>
-IE < 10 -> Not compatible
+>
+IE   10 - WUI_ToolBar does not work correctly, due to the use of 'pointer-events' and 'flexbox'
+<br/><br/>
+IE < 10 - Not compatible
 
 ======
 
