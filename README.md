@@ -308,9 +308,10 @@ Tested and work ok with Chrome (30, 35, 40), Firefox (31, 37) and Safari (6, 7, 
 Tested and work ok with Opera 12.
 
 >IE 11   -> ok
-IE 10   -> WUI_ToolBar does not work correctly, due to the use of 'pointer-events' and 'flexbox'
-IE < 10 -> Not compatible
 <br/>
+IE 10   -> WUI_ToolBar does not work correctly, due to the use of 'pointer-events' and 'flexbox'
+<br/>
+IE < 10 -> Not compatible
 
 ======
 
