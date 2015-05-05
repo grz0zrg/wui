@@ -301,9 +301,9 @@ WUI_RangeSlider.create("my_range_slider", {
 
 Not well tested but should work in all modern browsers supporting **_ECMAScript 5_** and **_CSS3_**.
 
-IE < 11 *may* have minor problems due to the use of 'pointer-events'
+Untested but **_IE < 11_** *may* have minor problems due to the use of 'pointer-events', 'flexbox' and others
 
-This library was not built to target mobiles devices (it may, in the *future*), but it support touch events and the demo work ok with Safari on Ipad.
+This library was not built to target mobiles devices, but it support touch events and the demo work ok with Safari on Ipad.
 <br/>
 
 ======
