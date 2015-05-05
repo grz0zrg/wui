@@ -58,13 +58,11 @@
     padding-bottom: 2px;
 
     border-radius: 2px;
-    
-    overflow: hidden;
 }
 
 .wui-toolbar-group-vertical {
     margin-right: 4px;
-    margin-left: 4px;
+    margin-left: 2px;
 }
 
 .wui-toolbar-spacer {
@@ -174,7 +172,7 @@
     height: 12px;
     background-size: 12px 12px;
     pointer-events: all;
-    margin-bottom: 7px;
+    margin-bottom: 5px;
     -webkit-align-self: flex-end;
     -ms-flex-item-align: end;
     align-self: flex-end;

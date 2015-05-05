@@ -302,9 +302,9 @@ var WUI_ToolBar = new (function() {
             spacer_class = "wui-toolbar-spacer-vertical";
             group_minimize_class = "wui-toolbar-minimize-group-vertical";
 
-            toolbar.style.maxWidth = opts.icon_width + "px";
+            toolbar.style.maxWidth = (opts.icon_width + 4) + "px";
         } else {
-            toolbar.style.maxHeight = opts.icon_height + "px";
+            toolbar.style.maxHeight = (opts.icon_height + 4) + "px";
         }
         
         group_minimize_class = _class_name.button + " " + _class_name.minimize_icon + " " + group_minimize_class;
