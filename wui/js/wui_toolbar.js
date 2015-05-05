@@ -301,6 +301,10 @@ var WUI_ToolBar = new (function() {
             item_class += " wui-toolbar-item-vertical";
             spacer_class = "wui-toolbar-spacer-vertical";
             group_minimize_class = "wui-toolbar-minimize-group-vertical";
+
+            toolbar.style.maxWidth = opts.icon_width + "px";
+        } else {
+            toolbar.style.maxHeight = opts.icon_height + "px";
         }
         
         group_minimize_class = _class_name.button + " " + _class_name.minimize_icon + " " + group_minimize_class;
