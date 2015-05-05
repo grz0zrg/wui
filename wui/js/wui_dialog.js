@@ -167,9 +167,7 @@ var WUI_Dialog = new (function() {
             ev.preventDefault();
         }
         
-        if (ev.button !== 0) {
-            return;   
-        }
+
         
         if (_dragged_dialog === null) {
             if (touches) {
@@ -177,6 +175,8 @@ var WUI_Dialog = new (function() {
                 
                 x = touches[0].clientX;
                 y = touches[0].clientY;
+            } else if (ev.button !== 0) {
+                return;
             }
         }
         
