@@ -68,6 +68,10 @@ var WUI_DropDown = new (function() {
     };
     
     var _dd_click = function (ev) {
+        if(ev.preventDefault) {
+            ev.preventDefault();
+        }
+
         var current_element = ev.target,
 
             widget = null,
@@ -88,6 +92,10 @@ var WUI_DropDown = new (function() {
     };
 
     var _item_click = function (ev) {
+        if(ev.preventDefault) {
+            ev.preventDefault();
+        }
+
         var current_element = ev.target,
             
             widget = _widget_list[current_element.id],
@@ -122,6 +130,10 @@ var WUI_DropDown = new (function() {
     };
     
     var _mouseOver = function (ev) {
+        if(ev.preventDefault) {
+            ev.preventDefault();
+        }
+
         var current_element = ev.target,
             
             widget = null,
@@ -157,6 +169,10 @@ var WUI_DropDown = new (function() {
     };
     
     var _mouseLeave = function (ev) {
+        if(ev.preventDefault) {
+            ev.preventDefault();
+        }
+
         var current_element = ev.target,
             
             widget = null;

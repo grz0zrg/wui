@@ -139,10 +139,6 @@ var WUI_ToolBar = new (function() {
     };
     
     var _onClick = function (ev, toolbar_id) {
-        if(ev.preventDefault) {
-            ev.preventDefault();
-        }
-
         var element = ev.target,
 
             widget = null;
@@ -155,10 +151,6 @@ var WUI_ToolBar = new (function() {
     };
     
     var _onMinimizeGroup = function (ev) {
-        if(ev.preventDefault) {
-            ev.preventDefault();
-        }
-
         var element = ev.target,
 
             group = element.nextSibling,
@@ -266,12 +258,6 @@ var WUI_ToolBar = new (function() {
             
             key;
         
-        if (_widget_list[id] !== undefined) {
-            console.log("WUI_Toolbar id '" + id + "' already created, aborting.");
-            
-            return;
-        }
-        
         for (key in _known_options) {
             if (_known_options.hasOwnProperty(key)) {
                 opts[key] = _known_options[key];
@@ -309,10 +295,6 @@ var WUI_ToolBar = new (function() {
             item_class += " wui-toolbar-item-vertical";
             spacer_class = "wui-toolbar-spacer-vertical";
             group_minimize_class = "wui-toolbar-minimize-group-vertical";
-
-            toolbar.style.maxWidth = (opts.icon_width + 4) + "px";
-        } else {
-            toolbar.style.maxHeight = (opts.icon_height + 4) + "px";
         }
         
         group_minimize_class = _class_name.button + " " + _class_name.minimize_icon + " " + group_minimize_class;
@@ -344,12 +326,8 @@ var WUI_ToolBar = new (function() {
                 var group_element = document.createElement("div");
                 group_element.className = group_class;
 
-                if (opts.vertical) {
-                    group_element.style.maxWidth = opts.icon_width + "px";
-                } else {
-                    group_element.style.maxHeight = opts.icon_height + "px";
-                }
-
+                //group_element.style.height = toolbar_group_height;
+                
                 for (var i = 0; i < group.length; i += 1) {
                     var tool = group[i],
                         tool_element = document.createElement("div"),

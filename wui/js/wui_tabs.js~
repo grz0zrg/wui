@@ -30,10 +30,6 @@ var WUI_Tabs = new (function() {
     ************************************************************/
     
     var _onTabClick = function (ev) {
-        if(ev.preventDefault) {
-            ev.preventDefault();
-        }
-
         var tab_elem = ev.target,
             
             tabs = tab_elem.parentElement,
@@ -70,7 +66,7 @@ var WUI_Tabs = new (function() {
         ev.target.classList.remove(_class_name.disabled);
         ev.target.classList.toggle(_class_name.enabled);
 
-        if (_widget_list[widget_id].opts.on_tab_click) {
+        if (_widget_list[widget_id].opts.on_tab_click !== undefined) {
             _widget_list[widget_id].opts.on_tab_click(tab_index);
         }
     };

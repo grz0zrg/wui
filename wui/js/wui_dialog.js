@@ -57,12 +57,20 @@ var WUI_Dialog = new (function() {
     ************************************************************/
     
     var _onCloseBtnClick = function (ev) {
+        if(ev.preventDefault) {
+            ev.preventDefault();
+        }
+
         var dialog = ev.target.parentElement.parentElement;
         
         dialog.classList.remove(_class_name.open);
     };
     
     var _onMinimaxiBtnClick = function (ev) {
+        if(ev.preventDefault) {
+            ev.preventDefault();
+        }
+
         var btn = ev.target,
             
             dialog = ev.target.parentElement.parentElement;
@@ -168,9 +176,7 @@ var WUI_Dialog = new (function() {
         if(ev.preventDefault) {
             ev.preventDefault();
         }
-        
 
-        
         if (_dragged_dialog === null) {
             if (touches) {
                 _touch_identifier = touches[0].identifier;
