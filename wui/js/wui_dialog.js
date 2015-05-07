@@ -38,6 +38,7 @@ var WUI_Dialog = new (function() {
             closable: true,
             minimizable: false,
             draggable: false,
+            resizable: false,
             
             halign: "none", // 'left', 'center', 'right' or 'none'
             valign: "none", // 'top', 'center', 'bottom' or 'none'
@@ -365,6 +366,10 @@ var WUI_Dialog = new (function() {
         
         if (opts.open) {
             dialog.classList.add(_class_name.open);
+        }
+
+        if (opts.resizable) {
+            dialog.style.resize = "both";
         }
 
         if (opts.draggable) {
