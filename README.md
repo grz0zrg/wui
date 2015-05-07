@@ -1,7 +1,7 @@
 WUI
 =====
 
-Collection of **easy to use** and **lightweight** (*~3kb css*, *~5kb js* gzipped) vanilla GUI widgets for the web.
+Collection of **easy to use** and **lightweight** (*~3.4kb css*, *~6kb js* gzipped) vanilla GUI widgets for the web.
 
 *Require no dependencies, all widgets can be used on their own.*
 
@@ -88,12 +88,13 @@ WUI_Tabs.create("my_tabs", {
 <a name="dialog"></a>
 ### Dialog/Panel ###
 
->The dialogs can be draggable, closable, minimizable and act as panels, they also go in front of others when you move them.
+>The dialogs can be draggable, closable, minimizable, resizable (CSS3 feature) and act as panels, they also go in front of others when you move them.
 
 <br/>*Methods*:
 
 >*   create(id, options)
 *   open(wui_dialog)
+*   close(wui_dialog, propagate)
   
 <br/>*Example*:
   
@@ -120,6 +121,9 @@ var my_dialog = WUI_Dialog.create("my_dialog", {
     // wether the dialog is opened or closed after creation
     open: true,
     
+    // function called when the dialog has been closed
+    on_close: null,
+    
     closable: false,
     draggable: true,
     minimizable: true,
@@ -139,6 +143,12 @@ WUI_Dialog.open(my_dialog);
 ```
 <br/>
 
+Open and want to close it programmatically?
+
+```javascript
+WUI_Dialog.close(my_dialog, true); // last argument (optional) mean the on_close function will be called
+```
+<br/>
 ======
 
 <a name="dropdown"></a>
@@ -191,7 +201,8 @@ WUI_DropDown.create("my_dropdown", {
 <br/>*Method*:
 
 >*   create(id, tools, options)
-  
+*   toggle(wui_toolbar, tool_id, propagate)
+
 <br/>*Example*:
 
 ```html
@@ -240,6 +251,13 @@ var my_toolbar = WUI_ToolBar.create("my_toolbar", {
     vertical: false
   });
 ```
+<br/>
+You can toggle a specific button programmatically with:
+
+```javascript
+WUI_ToolBar.toggle(my_toolbar, 0, true); // the last argument is optional and mean that the toggle event will call the onClick function
+```
+
 <br/>
 
 ======

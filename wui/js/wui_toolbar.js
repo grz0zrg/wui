@@ -62,7 +62,7 @@ var WUI_ToolBar = new (function() {
         }
     };
     
-    var _onToggle = function (ev, toolbar_id) {
+    var _onToggle = function (ev, toolbar_id, propagate) {
         var element = ev.target,
 
             widget = null,
@@ -130,12 +130,16 @@ var WUI_ToolBar = new (function() {
                         tool.element.classList.add(tool.icon);
                     }
 
-                    _propagate(tool, "toggle", false);
+                    if (propagate) {
+                        _propagate(tool, "toggle", false);
+                    }
                 }
             }
         }
 
-        _propagate(my_tool, "toggle", state);
+        if (propagate) {
+            _propagate(my_tool, "toggle", state);
+        }
     };
     
     var _onClick = function (ev, toolbar_id) {
@@ -226,7 +230,7 @@ var WUI_ToolBar = new (function() {
 
         if (e_type === "click") {
             if (element.classList.contains(_class_name.toggle)) {
-                _onToggle({target: element});
+                _onToggle({target: element}, undefined, true);
                 
                 return true;
             } else if (element.classList.contains(_class_name.minimize_group) ||
@@ -400,7 +404,7 @@ var WUI_ToolBar = new (function() {
                         if (tool.toggle_state) {
                             tool_element.dataset.on = "0";
                             
-                            _onToggle({target: tool_element}, id);
+                            _onToggle({target: tool_element}, id, true);
                         }
                         
                         if (opts.use_event_listener) {
@@ -426,5 +430,19 @@ var WUI_ToolBar = new (function() {
         }
         
         return id;
+    };
+
+    this.toggle = function (toolbar_id, tool_index, propagate) {
+        var widget = _widget_list[toolbar_id];
+
+        if (widget === undefined) {
+            if (typeof console !== "undefined") {
+                console.log("Cannot toggle, WUI toolbar \"" + toolbar_id + "\" was not created.");
+            }
+
+            return;
+        }
+
+        _onToggle({target: widget.tools[tool_index].element}, toolbar_id, propagate);
     };
 })();

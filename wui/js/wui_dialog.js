@@ -38,6 +38,7 @@ var WUI_Dialog = new (function() {
             closable: true,
             minimizable: false,
             draggable: false,
+            resizable: false,
             
             halign: "none", // 'left', 'center', 'right' or 'none'
             valign: "none", // 'top', 'center', 'bottom' or 'none'
@@ -47,6 +48,8 @@ var WUI_Dialog = new (function() {
             left: "0px",
             right: "0px",
             
+            on_close: null,
+
             use_event_listener: true
         };
     
@@ -61,9 +64,19 @@ var WUI_Dialog = new (function() {
             ev.preventDefault();
         }
 
-        var dialog = ev.target.parentElement.parentElement;
+        var dialog = ev.target.parentElement.parentElement,
+
+            widget = _widget_list[dialog.id];
+
+        if (!widget.dialog.classList.contains(_class_name.open)) {
+            return;
+        }
         
         dialog.classList.remove(_class_name.open);
+
+        if (widget.opts.on_close !== null) {
+            widget.opts.on_close();
+        }
     };
     
     var _onMinimaxiBtnClick = function (ev) {
@@ -319,6 +332,10 @@ var WUI_Dialog = new (function() {
         dialog.style.width  = opts.width;
         dialog.style.height = opts.height;
         
+        if (opts.resizable) {
+            dialog.style.resize = "both";
+        }
+
         if (opts.halign === "center") {
             dialog.style.left  = "0";
             dialog.style.right = "0";
@@ -404,6 +421,8 @@ var WUI_Dialog = new (function() {
             header.appendChild(header_minimaxi_btn);
         }
 
+        dialog.classList.add("wui-dialog-transition");
+
         // go!
         dialog.insertBefore(header, content);
         
@@ -419,7 +438,9 @@ var WUI_Dialog = new (function() {
     };
     
     this.open = function (id) {
-        if (_widget_list[id] === undefined) {
+        var widget = _widget_list[id];
+
+        if (widget === undefined) {
             if (typeof console !== "undefined") {
                 console.log("Cannot open WUI dialog \"" + id + "\".");
             }
@@ -427,6 +448,30 @@ var WUI_Dialog = new (function() {
             return;   
         }
         
-        _widget_list[id].dialog.classList.add(_class_name.open);
+        widget.dialog.classList.add(_class_name.open);
+    };
+
+    this.close = function (id, propagate) {
+        var widget = _widget_list[id];
+
+        if (widget === undefined) {
+            if (typeof console !== "undefined") {
+                console.log("Cannot close WUI dialog \"" + id + "\".");
+            }
+
+            return;
+        }
+
+        if (!widget.dialog.classList.contains(_class_name.open)) {
+            return;
+        }
+
+        widget.dialog.classList.remove(_class_name.open);
+
+        if (propagate) {
+            if (widget.opts.on_close !== null) {
+                widget.opts.on_close();
+            }
+        }
     };
 })();
