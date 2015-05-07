@@ -6,9 +6,7 @@
     visibility: hidden;
 
     opacity: 0;
-    
-    pointer-events: none;
-    
+
     position: fixed;
     
     margin: auto;
@@ -114,7 +112,6 @@
     outline: 1px solid #404040;
     
     z-index: 1;
-    pointer-events: all;
     
     background-size: 18px 18px;
     background-repeat: no-repeat;
@@ -130,6 +127,60 @@
     cursor: pointer;
 }
 
+.wui-dialog-resize-border-left {
+    position: absolute;
+
+    width: 4px;
+    height: 100%;
+
+    top: 0;
+    left: 0;
+}
+
+.wui-dialog-resize-border-left:hover {
+    cursor: w-resize;
+}
+
+.wui-dialog-resize-border-right {
+    position: absolute;
+
+    width: 4px;
+    height: 100%;
+
+    top: 0;
+    right: 0;
+}
+
+.wui-dialog-resize-border-right:hover {
+    cursor: e-resize;
+}
+
+.wui-dialog-resize-border-top {
+    position: absolute;
+
+    width: 100%;
+    height: 4px;
+
+    top: 0;
+}
+
+.wui-dialog-resize-border-top:hover {
+    cursor: n-resize;
+}
+
+.wui-dialog-resize-border-bottom {
+    position: absolute;
+
+    width: 100%;
+    height: 4px;
+
+    bottom: 0;
+}
+
+.wui-dialog-resize-border-bottom:hover {
+    cursor: s-resize;
+}
+
 .wui-dialog-title {
     font-size: 8pt;
 
@@ -142,12 +193,12 @@
     display: inline-block;
     
     text-shadow: 1px 1px 1px #000000;
-    
-    pointer-events: none;
-    
+
     line-height: 18px;
     
     width: 100%;
     position: absolute;
     text-align: center;
+
+    pointer-events: none;
 }

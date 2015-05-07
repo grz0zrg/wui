@@ -88,7 +88,7 @@ WUI_Tabs.create("my_tabs", {
 <a name="dialog"></a>
 ### Dialog/Panel ###
 
->The dialogs can be draggable, closable, minimizable or resizable (CSS3 feature) and act as panels, they also go in front of others when you move them.
+>The dialogs can be draggable, closable, minimizable and act as panels, they also go in front of others when you move them.
 
 <br/>*Methods*:
 
@@ -123,7 +123,6 @@ var my_dialog = WUI_Dialog.create("my_dialog", {
     closable: false,
     draggable: true,
     minimizable: true,
-    resizable: true,
     
     // can be used to position the dialog
     top: "0px",
