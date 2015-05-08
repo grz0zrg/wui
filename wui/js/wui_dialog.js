@@ -91,7 +91,7 @@ var WUI_Dialog = new (function() {
 
         var dialog = ev.target.parentElement.parentElement;
 
-        _close(dialog);
+        _close(dialog, true);
     };
     
     var _onMinimaxiBtnClick = function (ev) {
