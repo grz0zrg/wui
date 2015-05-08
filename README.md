@@ -118,8 +118,11 @@ var my_dialog = WUI_Dialog.create("my_dialog", {
     // 'top', 'center', 'bottom' or 'none'
     valign: "center",
     
-    // wether the dialog is opened or closed after creation
+    // wether the dialog is opened or not after creation
     open: true,
+    
+    // wether the dialog is minimized or not after creation
+    minimized: false,
     
     // function called when the dialog has been closed
     on_close: null,

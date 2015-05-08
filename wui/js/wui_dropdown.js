@@ -16,7 +16,7 @@ var WUI_DropDown = new (function() {
             item:       "wui-dropdown-item",
             content:    "wui-dropdown-content",
             selected:   "wui-dropdown-selected",
-            open: "wui-dropdown-open"
+            open:       "wui-dropdown-open"
         },
         
         _known_options = {

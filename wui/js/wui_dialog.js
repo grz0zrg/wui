@@ -48,6 +48,8 @@ var WUI_Dialog = new (function() {
             left: "0px",
             right: "0px",
             
+            minimized: false,
+
             on_close: null,
 
             use_event_listener: true
@@ -59,14 +61,8 @@ var WUI_Dialog = new (function() {
         Functions.
     ************************************************************/
     
-    var _onCloseBtnClick = function (ev) {
-        if(ev.preventDefault) {
-            ev.preventDefault();
-        }
-
-        var dialog = ev.target.parentElement.parentElement,
-
-            widget = _widget_list[dialog.id];
+    var _close = function (dialog, propagate) {
+        var widget = _widget_list[dialog.id];
 
         if (!widget.dialog.classList.contains(_class_name.open)) {
             return;
@@ -74,9 +70,28 @@ var WUI_Dialog = new (function() {
         
         dialog.classList.remove(_class_name.open);
 
-        if (widget.opts.on_close !== null) {
-            widget.opts.on_close();
+        if (propagate) {
+            if (widget.opts.on_close !== null) {
+                widget.opts.on_close();
+            }
         }
+    };
+
+    var _minimize = function (minimize_btn, dialog) {
+        minimize_btn.classList.toggle(_class_name.minimize);
+        minimize_btn.classList.toggle(_class_name.maximize);
+
+        dialog.classList.toggle("wui-dialog-minimized");
+    }
+
+    var _onCloseBtnClick = function (ev) {
+        if(ev.preventDefault) {
+            ev.preventDefault();
+        }
+
+        var dialog = ev.target.parentElement.parentElement;
+
+        _close(dialog);
     };
     
     var _onMinimaxiBtnClick = function (ev) {
@@ -88,10 +103,7 @@ var WUI_Dialog = new (function() {
             
             dialog = ev.target.parentElement.parentElement;
 
-        btn.classList.toggle(_class_name.minimize);
-        btn.classList.toggle(_class_name.maximize);
-
-        dialog.classList.toggle("wui-dialog-minimized");
+        _minimize(btn, dialog);
     };
     
     var _windowMouseMove = function (ev) {
@@ -418,6 +430,10 @@ var WUI_Dialog = new (function() {
                 header_minimaxi_btn.addEventListener("touchstart", _onMinimaxiBtnClick, false);
             }
             
+            if (opts.minimized) {
+                _minimize(header_minimaxi_btn, dialog);
+            }
+
             header.appendChild(header_minimaxi_btn);
         }
 
@@ -462,16 +478,6 @@ var WUI_Dialog = new (function() {
             return;
         }
 
-        if (!widget.dialog.classList.contains(_class_name.open)) {
-            return;
-        }
-
-        widget.dialog.classList.remove(_class_name.open);
-
-        if (propagate) {
-            if (widget.opts.on_close !== null) {
-                widget.opts.on_close();
-            }
-        }
+        _close(widget.dialog, propagate);
     };
 })();
