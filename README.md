@@ -34,7 +34,7 @@ If you need a single (or more) widget but not all, you can find minified files o
 ======
 
 ####Building with [Node](https://nodejs.org/) and [Grunt](http://gruntjs.com/)
-<br/>
+
 ```
 npm install
 grunt dist
