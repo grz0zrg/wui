@@ -1,11 +1,11 @@
 WUI
 =====
 
-Collection of **easy to use** and **lightweight** (*~3.4kb css*, *~6kb js* gzipped) vanilla GUI widgets for the web.
+Collection of **easy to use** and **lightweight** (*~3.4kb css*, *~6.5kb js* gzipped) vanilla GUI widgets for the web.
 
 *Require no dependencies, all widgets can be used on their own.*
 
-This was made for an audio app and the map editor of a wargame engine.
+It was not built to target mobile devices but it support touch events and the demo work ok with Safari on the Ipad.
 
 ####Demo
 - [Demo](http://grz0zrg.github.io/wui-demo/)
@@ -28,7 +28,7 @@ This was made for an audio app and the map editor of a wargame engine.
 *   [WUI_ToolBar](#toolbar)
 *   [WUI_RangeSlider](#rangeslider)
 
-The API is simple, all widgets have a method *_"create"_*, a DOM element id as first argument (which is used as a bind target) and an options object as second or third argument (toolbar case) to customize it, widgets cannot (for now) be destroyed.
+The API is simple, all widgets have a method *_"create"_*, a DOM element id as first argument (which is used as a bind target) and an option object as second or third argument (toolbar case) to customize it, widgets cannot (for now) be destroyed.
 
 All "create" functions return a reference of the widget which can be used later to do stuff with the widget.
 
@@ -36,7 +36,7 @@ HTML elements with a specific layout are required to use some widgets (like tabs
 
 A bit of style hacking may be necessary if you want widgets to suit your need or your taste, the demo page can be helpful.
 
-Also, altough not documented below, all widgets have a method *_"triggerEvent"_* which take an Event object and event type string as argument, you can use it if you want to handle all events by yourself, preventing the library to add event listeners.
+Also, altough not documented below, all widgets have a method *_"triggerEvent"_* which take an Event object and event type string as argument, you can use it if you want to handle all events by yourself, preventing the library to add event listeners (there is some exceptions like "resize").
 
 You can also use *"_WUI.dispatchEvent_"*, this will call triggerEvent for each widgets.
 
@@ -199,7 +199,7 @@ WUI_DropDown.create("my_dropdown", {
 <a name="toolbar"></a>
 ### ToolBar ###
 
->The toolbar can be horizontal or vertical, have groups and minimizable groups, dispose of two type of buttons, simple and toggle, a set of toggle buttons can be linked (grouped), buttons can be an icon, a text or both.
+>The toolbar can be horizontal or vertical, have groups and minimizable groups, have three type of buttons, simple, toggle and dropdown (usefull to make menu bar), a set of toggle buttons can be linked (grouped), buttons can be an icon, a text or both.
 
 <br/>*Method*:
 
@@ -223,7 +223,7 @@ var my_toolbar = WUI_ToolBar.create("my_toolbar", {
         // button text
         text: "",
         
-        // "toggle" or nothing for a non-toggle button
+        // can be "toggle", "dropdown" or nothing for a simple button
         type: "toggle",
         
         // a toggling group id, another button with the same toggling group id will be linked to this one and will be off when this one will be switched on
@@ -233,15 +233,43 @@ var my_toolbar = WUI_ToolBar.create("my_toolbar", {
         toggle_state: true,
         
         // function called when a button is clicked, if the item is of type "toggle", an object containing a field "type" and "state" will be passed as argument
-        onClick: toolbar_item_toggle,
+        on_click: toolbar_item_toggle,
         
         // tooltip
         tooltip: "Toggle me!"
       }
     ],
+    
     my_second_group_of_tools:    [
-      { icon: "undo-icon", onClick: toolbar_item_click, tooltip: "Click me!" },
-      { icon: "redo-icon", onClick: toolbar_item_click, tooltip: "Click me!" }
+      { icon: "undo-icon", on_click: toolbar_item_click, tooltip: "Click me!" },
+      { icon: "redo-icon", on_click: toolbar_item_click, tooltip: "Click me!" }
+    ],
+    
+    // a typical menu with a list of clickable items
+    my_menu: [
+      {
+        text: "File",
+        on_click: toolbar_item_click,
+        tooltip: "Click me!",
+        type: "dropdown",
+        
+        // items of the dropdown are defined here
+        items: [
+          {
+            title: "New",
+            
+            // function called when the item is clicked
+            on_click: my_new_file
+          },
+          
+          {
+            title: "Open",
+            
+            // function called when the item is clicked
+            on_click: my_open_file
+          }
+        ]
+      }
     ]
   }, {
     // display the minimize icon for each groups
@@ -322,8 +350,6 @@ WUI_RangeSlider.create("my_range_slider", {
 
 Not well tested but should work in all modern browsers supporting **_ECMAScript 5_** and **_CSS3_**.
 
-This library was not built to target mobile devices, but it support touch events and the demo work ok with Safari on the Ipad.
-
 Tested and work ok with IE 11, Opera 12, Chrome (30, 35, 40), Firefox (31, 37) and Safari (6, 7, 8).
 
 >
@@ -337,3 +363,7 @@ IE < 10 - Not compatible
 ### License ###
 
 [Revised BSD](https://github.com/grz0zrg/wui/blob/master/LICENSE)
+
+======
+
+This was made for an audio app and the map editor of a wargame engine.
