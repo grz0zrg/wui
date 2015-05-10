@@ -18,6 +18,8 @@ var WUI_Dialog = new (function() {
         _drag_y = 0,
         
         _class_name = {
+            dialog:        "wui-dialog",
+            content:       "wui-dialog-content",
             btn:           "wui-dialog-btn",
             btn_close:     "wui-dialog-close",
             minimize:      "wui-dialog-minimize",
@@ -79,12 +81,54 @@ var WUI_Dialog = new (function() {
         }
     };
 
+    var _focus = function (dialog) {
+        var z_index = 100,
+
+            cz_index = 0,
+
+            tmp_dialog = null;
+
+        for (var i in _widget_list) {
+            if (_widget_list.hasOwnProperty(i)) {
+                tmp_dialog = _widget_list[i].dialog;
+
+                if (!isNaN(tmp_dialog.style.zIndex)) {
+                    cz_index = parseInt(tmp_dialog.style.zIndex, 10);
+
+                    if (cz_index > z_index) {
+                        z_index = cz_index;
+                    }
+
+                    if (cz_index > 100000) { // guess 100000 dialogs is safe
+                        cz_index -= 100000;
+                    }
+                }
+            }
+        }
+
+        dialog.style.zIndex = z_index + 1;
+    };
+
     var _minimize = function (minimize_btn, dialog) {
         minimize_btn.classList.toggle(_class_name.minimize);
         minimize_btn.classList.toggle(_class_name.maximize);
 
         dialog.classList.toggle("wui-dialog-minimized");
-    }
+    };
+
+    var _onWindowResize = function () {
+        var dialog_contents = document.getElementsByClassName(_class_name.content),
+
+            i;
+
+        for (i = 0; i < dialog_contents.length; i += 1) {
+            var content = dialog_contents[i],
+
+                dialog = content.parentElement;
+
+            content.style.height = dialog.offsetHeight - 32 + "px";
+        }
+    };
 
     var _onCloseBtnClick = function (ev) {
         if(ev.preventDefault) {
@@ -189,13 +233,7 @@ var WUI_Dialog = new (function() {
     };
     
     var _onMouseDown = function (ev) {
-        var z_index = 100,
-            
-            cz_index = 0,
-            
-            dialog = null,
-            
-            x = ev.clientX,
+        var x = ev.clientX,
             y = ev.clientY,
             
             touches = ev.changedTouches;
@@ -222,25 +260,7 @@ var WUI_Dialog = new (function() {
             return;
         }
         
-        for (var i in _widget_list) {
-            if (_widget_list.hasOwnProperty(i)) {
-                dialog = _widget_list[i].dialog;
-                
-                if (!isNaN(dialog.style.zIndex)) {
-                    cz_index = parseInt(dialog.style.zIndex, 10);
-
-                    if (cz_index > z_index) {
-                        z_index = cz_index; 
-                    }
-                    
-                    if (cz_index > 100000) { // guess 100000 dialogs is safe
-                        cz_index -= 100000;
-                    }
-                }
-            }
-        }
-        
-        _dragged_dialog.style.zIndex = z_index + 1;
+        _focus(_dragged_dialog);
         
         document.body.style.cursor = "move";
         
@@ -376,9 +396,9 @@ var WUI_Dialog = new (function() {
             dialog.style.bottom = opts.bottom;
         }
         
-        dialog.classList.add("wui-dialog");
+        dialog.classList.add(_class_name.dialog);
         
-        content.classList.add("wui-dialog-content");
+        content.classList.add(_class_name.content);
         
         // build the dialog header (btns and the title)
         header.className = _class_name.header;
@@ -441,6 +461,8 @@ var WUI_Dialog = new (function() {
             header.appendChild(header_minimaxi_btn);
         }
 
+        window.addEventListener("resize", _onWindowResize, false);
+
         dialog.classList.add("wui-dialog-transition");
 
         // go!
@@ -470,6 +492,8 @@ var WUI_Dialog = new (function() {
         
         widget.dialog.classList.remove(_class_name.closed);
         widget.dialog.classList.add(_class_name.open);
+
+        _focus(widget.dialog);
     };
 
     this.close = function (id, propagate) {
