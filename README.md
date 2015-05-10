@@ -22,22 +22,23 @@ It was not built to target mobile devices but it support touch events and the de
 
 ####Usage
 
-There is minified and gzipped, up to date ready-to-use files in the *_dist_* folder, to use the entire library, just include it in your HTML file
+There is minified and gzipped, up to date ready-to-use css/js files in the **_dist_** folder, to use the entire library, just include it in your HTML file
 
 ```html
 <link rel="stylesheet" type="text/css" href="wui.min.css"/>
 <script type="text/javascript" src="wui.min.js"></script>
 ```
 
-If you need a single (or more) widget but not all, you can find minified files of each widget in the *_dist/widgets_* folder
-
-###Building with [node](https://nodejs.org/)/[Grunt](http://gruntjs.com/)
+If you need a single (or more) widget but not all, you can find minified files of each widget in the **_dist/widgets_** folder
+<br/>
+####Building with [Node](https://nodejs.org/) and [Grunt](http://gruntjs.com/)
 
 ```
 npm install
 grunt dist
 ```
-
+<br/>
+======
 ####Widgets
 
 *   [WUI_Tabs](#tabs)
