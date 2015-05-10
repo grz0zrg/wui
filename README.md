@@ -30,15 +30,18 @@ There is minified and gzipped, up to date ready-to-use css/js files in the **_di
 ```
 
 If you need a single (or more) widget but not all, you can find minified files of each widget in the **_dist/widgets_** folder
-<br/>
+
+======
+
 ####Building with [Node](https://nodejs.org/) and [Grunt](http://gruntjs.com/)
 
 ```
 npm install
 grunt dist
 ```
-<br/>
+
 ======
+
 ####Widgets
 
 *   [WUI_Tabs](#tabs)
