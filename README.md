@@ -28,13 +28,13 @@ There is minified and gzipped, up to date ready-to-use css/js files in the **_di
 <link rel="stylesheet" type="text/css" href="wui.min.css"/>
 <script type="text/javascript" src="wui.min.js"></script>
 ```
-
+<br/>
 If you need a single (or more) widget but not all, you can find minified files of each widget in the **_dist/widgets_** folder
 
 ======
 
 ####Building with [Node](https://nodejs.org/) and [Grunt](http://gruntjs.com/)
-
+<br/>
 ```
 npm install
 grunt dist
