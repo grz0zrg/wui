@@ -24,6 +24,7 @@ var WUI_Dialog = new (function() {
             maximize:      "wui-dialog-maximize",
             header:        "wui-dialog-header",
             open:          "wui-dialog-open",
+            closed:        "wui-dialog-closed",
             draggable:     "wui-dialog-draggable"
         },
         
@@ -68,6 +69,7 @@ var WUI_Dialog = new (function() {
             return;
         }
         
+        dialog.classList.add(_class_name.closed);
         dialog.classList.remove(_class_name.open);
 
         if (propagate) {
@@ -394,6 +396,8 @@ var WUI_Dialog = new (function() {
         
         if (opts.open) {
             dialog.classList.add(_class_name.open);
+        } else {
+            dialog.classList.add(_class_name.closed);
         }
 
         if (opts.draggable) {
@@ -464,6 +468,7 @@ var WUI_Dialog = new (function() {
             return;   
         }
         
+        widget.dialog.classList.remove(_class_name.closed);
         widget.dialog.classList.add(_class_name.open);
     };
 
