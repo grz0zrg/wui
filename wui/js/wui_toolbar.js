@@ -16,7 +16,13 @@ var WUI_ToolBar = new (function() {
             button:         "wui-toolbar-button",
             minimize_group: "wui-toolbar-minimize-group",
             toggle:         "wui-toolbar-toggle",
-            toggle_on:      "wui-toolbar-toggle-on"
+            toggle_on:      "wui-toolbar-toggle-on",
+            item:           "wui-toolbar-item",
+
+            // dropdown
+            dd_content:     "wui-toolbar-dropdown-content",
+            dd_item:        "wui-toolbar-dropdown-item",
+            dd_open:        "wui-toolbar-dropdown-open"
         },
         
         _known_options = {
@@ -38,6 +44,23 @@ var WUI_ToolBar = new (function() {
         Functions.
     ************************************************************/
     
+    var _getElementOffset = function (elem) {
+        var box = elem.getBoundingClientRect(),
+            body = document.body,
+            docEl = document.documentElement,
+
+            scrollTop = window.pageYOffset || docEl.scrollTop || body.scrollTop,
+            scrollLeft = window.pageXOffset || docEl.scrollLeft || body.scrollLeft,
+
+            clientTop = docEl.clientTop || body.clientTop || 0,
+            clientLeft = docEl.clientLeft || body.clientLeft || 0,
+
+            top  = box.top +  scrollTop - clientTop,
+            left = box.left + scrollLeft - clientLeft;
+
+        return { top: Math.round(top), left: Math.round(left) };
+    };
+
     var _getWidgetFromElement = function (element, toolbar_id) {
         if (toolbar_id !== undefined) {
             return _widget_list[toolbar_id];
@@ -50,15 +73,15 @@ var WUI_ToolBar = new (function() {
     };
     
     var _propagate = function (tool, type, state) {
-        if (tool.onClick !== undefined &&
-            tool.onClick !== null) {
+        if (tool.on_click !== undefined &&
+            tool.on_click !== null) {
             var o = {type: type};
             
             if (state !== undefined) {
                 o.state = state;
             }
             
-            tool.onClick(o);
+            tool.on_click(o);
         }
     };
     
@@ -142,6 +165,48 @@ var WUI_ToolBar = new (function() {
         }
     };
     
+    var _onDdItemClick = function (ev) {
+        if(ev.preventDefault) {
+            ev.preventDefault();
+        }
+
+        var item_element = ev.target,
+
+            dropdown_content = item_element.parentElement,
+
+            widget = _widget_list[dropdown_content.dataset.linkedto_tb],
+
+            my_tool = widget.tools[parseInt(dropdown_content.dataset.linkedto_tool_index, 10)],
+
+            item_index = parseInt(item_element.dataset.index, 10),
+
+            item = my_tool.items[item_index];
+
+        if (item.on_click !== undefined) {
+            item.on_click();
+
+            my_tool.element.classList.remove(_class_name.toggle_on);
+
+            dropdown_content.classList.remove(_class_name.dd_open);
+        }
+    };
+
+    var _hideDdFloatingContent = function (my_tool, dropdown_floating_content) {
+        dropdown_floating_content.classList.remove(_class_name.dd_open);
+
+        my_tool.element.classList.remove(_class_name.toggle_on);
+    };
+
+    var _hideDdFloatingContentHandler = function (my_tool, dropdown_floating_content) {
+        var handler = function () {
+            _hideDdFloatingContent(my_tool, dropdown_floating_content);
+
+            window.removeEventListener('click', handler);
+        };
+
+        return handler;
+    };
+
     var _onClick = function (ev, toolbar_id) {
         if(ev.preventDefault) {
             ev.preventDefault();
@@ -149,13 +214,46 @@ var WUI_ToolBar = new (function() {
 
         var element = ev.target,
 
+            my_tool = null,
+
+            dropdown_floating_content = null,
+
+            offset = null,
+
             widget = null;
         
         widget = _getWidgetFromElement(element, toolbar_id);
         
-        var my_tool = widget.tools[element.dataset.tool_id];
+        my_tool = widget.tools[element.dataset.tool_id];
+
+        if (my_tool.type === "dropdown") {
+            dropdown_floating_content = my_tool.floating_content;
+
+            if (element.classList.contains(_class_name.toggle_on)) {
+                _hideDdFloatingContent(my_tool, dropdown_floating_content);
+
+                return;
+            }
+
+            var tool_element = my_tool.element;
+
+            tool_element.classList.add(_class_name.toggle_on);
+
+            offset = _getElementOffset(element);
+
+            dropdown_floating_content.style.top  = (offset.top - dropdown_floating_content.offsetHeight) + "px";
+            dropdown_floating_content.style.left = offset.left + "px";
+
+            dropdown_floating_content.classList.add(_class_name.dd_open);
+
+            if(ev.stopPropagation) {
+                ev.stopPropagation();
+            }
         
-        _propagate(my_tool, "click");
+            window.addEventListener("click", _hideDdFloatingContentHandler(my_tool, dropdown_floating_content), false);
+        } else {
+            _propagate(my_tool, "click");
+        }
     };
     
     var _onMinimizeGroup = function (ev) {
@@ -229,8 +327,12 @@ var WUI_ToolBar = new (function() {
         }
 
         if (e_type === "click") {
-            if (element.classList.contains(_class_name.toggle)) {
-                _onToggle({target: element}, undefined, true);
+            if (element.classList.contains(_class_name.dd_item)) {
+                _onDdItemClick({ target: element});
+
+                return true;
+            } else if (element.classList.contains(_class_name.toggle)) {
+                _onToggle( {target: element}, undefined, true);
                 
                 return true;
             } else if (element.classList.contains(_class_name.minimize_group) ||
@@ -302,7 +404,7 @@ var WUI_ToolBar = new (function() {
         toolbar.classList.add("wui-toolbar");
         
         var group_class = "wui-toolbar-group",
-            item_class = "wui-toolbar-item",
+            item_class = _class_name.item,
             spacer_class = "wui-toolbar-spacer",
             group_minimize_class = _class_name.minimize_group;
         
@@ -358,9 +460,18 @@ var WUI_ToolBar = new (function() {
                     var tool = group[i],
                         tool_element = document.createElement("div"),
                         
-                        widget = { element: tool_element, onClick: tool.onClick, icon: tool.icon },
+                        widget = {
+                            element: tool_element,
+                            on_click: tool.on_click,
+                            icon: tool.icon,
+                            items: [],
+                            tooltip: "",
+                            type: tool.type
+                        },
                         
-                        tool_id = _widget_list[id].tools.length;
+                        tool_id = _widget_list[id].tools.length,
+
+                        j;
 
                     tool_element.className = item_class;
                     
@@ -388,8 +499,18 @@ var WUI_ToolBar = new (function() {
                         tool_element.style.lineHeight = opts.icon_height + "px";
                         
                         tool_element.classList.add("wui-toolbar-text");
-                    } 
+
+                        if (tool.icon !== undefined) {
+                            tool_element.style.paddingLeft = (opts.icon_width + 2) + "px";
+                            tool_element.style.backgroundPosition = "left center";
+                        }
+                    }
+
+                    if (tool.icon !== undefined) {
+                        tool_element.classList.add(tool.icon);
+                    }
                     
+                    // handle button type
                     if (tool.type === "toggle") {
                         tool_element.classList.add(_class_name.toggle);
                         
@@ -410,16 +531,53 @@ var WUI_ToolBar = new (function() {
                         if (opts.use_event_listener) {
                             tool_element.addEventListener("click", _onToggle, false);
                         }
+                    } else if (tool.type === "dropdown") {
+                        var dropdown_floating_content = document.createElement("div");
+
+                        if (tool.items !== undefined) {
+                            for (j = 0; j < tool.items.length; j += 1) {
+                                var item = tool.items[j];
+
+                                var div_item = document.createElement("div");
+
+                                if (!tool.vertical) {
+                                    div_item.classList.add("wui-toolbar-dropdown-horizontal");
+                                }
+
+                                div_item.classList.add(_class_name.dd_item);
+
+                                div_item.innerHTML = item.title;
+
+                                div_item.dataset.index = j;
+
+                                dropdown_floating_content.appendChild(div_item);
+
+                                widget.items.push({ element: div_item, on_click: item.on_click});
+
+                                if (opts.use_event_listener) {
+                                    div_item.addEventListener("click", _onDdItemClick, false);
+                                }
+                            }
+                        }
+
+                        widget.floating_content = dropdown_floating_content;
+
+                        dropdown_floating_content.classList.add(_class_name.dd_content);
+
+                        dropdown_floating_content.dataset.linkedto_tb = id;
+                        dropdown_floating_content.dataset.linkedto_tool_index = tool_id;
+
+                        document.body.appendChild(dropdown_floating_content);
+
+                        if (opts.use_event_listener) {
+                            tool_element.addEventListener("click", _onClick, false);
+                        }
                     } else { // default to standard button
                         tool_element.classList.add(_class_name.button);
                         
                         if (opts.use_event_listener) {
                             tool_element.addEventListener("click", _onClick, false);
                         }
-                    }
-                    
-                    if (tool.icon !== undefined) {
-                        tool_element.classList.add(tool.icon);
                     }
                 }
                 
