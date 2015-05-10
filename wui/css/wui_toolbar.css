@@ -219,7 +219,7 @@
 
 .wui-toolbar-dropdown-item {
     border-radius: 4px;
-    border: groove 1px #404040;
+    border: solid 1px #404040;
 
     background-color: rgba(16, 16, 16, 0.95);
 
