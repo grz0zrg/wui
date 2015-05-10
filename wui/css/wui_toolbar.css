@@ -121,7 +121,7 @@
     margin-bottom: 3px;
 }
 
-.wui-toolbar-item:hover {
+.wui-toolbar-item:hover, .wui-toolbar-minimize-group:hover, .wui-toolbar-minimize-group-vertical:hover {
     box-shadow: 0px 0px 1px 0px #aaaaaa;
 
     background-color: #505050;
