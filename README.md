@@ -253,6 +253,14 @@ var my_toolbar = WUI_ToolBar.create("my_toolbar", {
         tooltip: "Click me!",
         type: "dropdown",
         
+        // define where the list of items will appear around the item when it will be opened
+        // can be "s", "sw", "se", "nw", "ne", anything else will default to "n" (north = top)
+        orientation: "top",
+        
+        // define the width of the list items
+        // can be a CSS width (auto, 64px etc) or "tb_item" so the list items have the same width as the toolbar item button
+        dropdown_items_width: "tb_item",
+        
         // items of the dropdown are defined here
         items: [
           {

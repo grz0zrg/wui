@@ -127,9 +127,7 @@
     background-color: #505050;
 
     cursor: pointer;
-}
 
-.wui-toolbar-toggle {
     -webkit-transition: background-color 0.25s linear;
     transition: background-color 0.25s linear;
 }
@@ -140,11 +138,6 @@
 
 .wui-toolbar-toggle-on:hover {
     background-color: #504030 !important;
-}
-
-.wui-toolbar-button {
-    -webkit-transition: background-color 0.25s linear;
-    transition: background-color 0.25s linear;
 }
 
 .wui-toolbar-minimize-icon {

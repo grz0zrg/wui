@@ -15,6 +15,7 @@ var WUI_ToolBar = new (function() {
             maximize_icon:  "wui-toolbar-maximize-icon",
             button:         "wui-toolbar-button",
             minimize_group: "wui-toolbar-minimize-group",
+            minimize_gr_v:  "wui-toolbar-minimize-group-vertical",
             toggle:         "wui-toolbar-toggle",
             toggle_on:      "wui-toolbar-toggle-on",
             item:           "wui-toolbar-item",
@@ -241,8 +242,29 @@ var WUI_ToolBar = new (function() {
 
             offset = _getElementOffset(element);
 
-            dropdown_floating_content.style.top  = (offset.top - dropdown_floating_content.offsetHeight) + "px";
-            dropdown_floating_content.style.left = offset.left + "px";
+            if (my_tool.dd_items_width === "tb_item") {
+                dropdown_floating_content.style.width = element.offsetWidth + "px";
+            }
+
+            if (my_tool.orientation === "s") {
+                dropdown_floating_content.style.top  = (offset.top + element.offsetHeight) + "px";
+                dropdown_floating_content.style.left = offset.left + "px";
+            } else if (my_tool.orientation === "sw") {
+                dropdown_floating_content.style.top  = (offset.top + element.offsetHeight) + "px";
+                dropdown_floating_content.style.left = (offset.left - dropdown_floating_content.offsetWidth) + "px";
+            } else if (my_tool.orientation === "nw") {
+                dropdown_floating_content.style.top  = (offset.top - dropdown_floating_content.offsetHeight + element.offsetHeight) + "px";
+                dropdown_floating_content.style.left = (offset.left - dropdown_floating_content.offsetWidth) + "px";
+            } else if (my_tool.orientation === "se") {
+                dropdown_floating_content.style.top  = (offset.top + element.offsetHeight) + "px";
+                dropdown_floating_content.style.left = (offset.left + element.offsetWidth) + "px";
+            } else if (my_tool.orientation === "ne") {
+                dropdown_floating_content.style.top  = (offset.top - dropdown_floating_content.offsetHeight + element.offsetHeight) + "px";
+                dropdown_floating_content.style.left = (offset.left + element.offsetWidth) + "px";
+            } else { // n
+                dropdown_floating_content.style.top  = (offset.top - dropdown_floating_content.offsetHeight) + "px";
+                dropdown_floating_content.style.left = offset.left + "px";
+            }
 
             dropdown_floating_content.classList.add(_class_name.dd_open);
 
@@ -336,12 +358,12 @@ var WUI_ToolBar = new (function() {
                 
                 return true;
             } else if (element.classList.contains(_class_name.minimize_group) ||
-                       element.classList.contains("wui-toolbar-minimize-group-vertical")) {
+                       element.classList.contains(_class_name.minimize_gr_v)) {
                 _onMinimizeGroup( {target: element});
                 
                 return true;
             } else if (element.classList.contains(_class_name.button)) {
-                _onClick( {target: element});
+                _onClick(event);
                 
                 return true;
             }
@@ -414,7 +436,7 @@ var WUI_ToolBar = new (function() {
             group_class = "wui-toolbar-group-vertical";
             item_class += " wui-toolbar-item-vertical";
             spacer_class = "wui-toolbar-spacer-vertical";
-            group_minimize_class = "wui-toolbar-minimize-group-vertical";
+            group_minimize_class = _class_name.minimize_gr_v;
 
             toolbar.style.maxWidth = (opts.icon_width + 4) + "px";
         } else {
@@ -466,7 +488,9 @@ var WUI_ToolBar = new (function() {
                             icon: tool.icon,
                             items: [],
                             tooltip: "",
-                            type: tool.type
+                            type: tool.type,
+                            dd_items_width: tool.dropdown_items_width,
+                            orientation: tool.orientation
                         },
                         
                         tool_id = _widget_list[id].tools.length,
@@ -532,6 +556,8 @@ var WUI_ToolBar = new (function() {
                             tool_element.addEventListener("click", _onToggle, false);
                         }
                     } else if (tool.type === "dropdown") {
+                        tool_element.classList.add(_class_name.button);
+
                         var dropdown_floating_content = document.createElement("div");
 
                         if (tool.items !== undefined) {
@@ -561,6 +587,8 @@ var WUI_ToolBar = new (function() {
                         }
 
                         widget.floating_content = dropdown_floating_content;
+
+                        dropdown_floating_content.style.width = widget.dd_items_width + "px";
 
                         dropdown_floating_content.classList.add(_class_name.dd_content);
 
