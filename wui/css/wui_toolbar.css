@@ -216,6 +216,8 @@
     height: 26px;
 
     z-index: 99999;
+
+    white-space: nowrap;
 }
 
 .wui-toolbar-dropdown-horizontal {
