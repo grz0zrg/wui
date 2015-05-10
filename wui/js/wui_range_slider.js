@@ -19,9 +19,11 @@ var WUI_RangeSlider = new (function() {
         _touch_identifier = null,
         
         _class_name = {
-            hook:   "wui-rangeslider-hook",
-            bar:    "wui-rangeslider-bar",
-            filler: "wui-rangeslider-filler"
+            hook:       "wui-rangeslider-hook",
+            bar:        "wui-rangeslider-bar",
+            filler:     "wui-rangeslider-filler",
+
+            hook_focus: "wui-rangeslider-hook-focus"
         },
         
         _known_options = {
@@ -257,7 +259,7 @@ var WUI_RangeSlider = new (function() {
         }
         
         if (stop_drag) {
-            _grabbed_hook_element.classList.remove("wui-rangeslider-hook-focus");
+            _grabbed_hook_element.classList.remove(_class_name.hook_focus);
 
             _grabbed_hook_element = null;
             _grabbed_widget = null;
@@ -292,7 +294,7 @@ var WUI_RangeSlider = new (function() {
         if (drag_slider) {
             _grabbed_hook_element = _getHookElementFromTarget(ev.target);
             
-            _grabbed_hook_element.classList.add("wui-rangeslider-hook-focus");
+            _grabbed_hook_element.classList.add(_class_name.hook_focus);
             
             rs_element = _grabbed_hook_element.parentElement.parentElement.parentElement;
             
