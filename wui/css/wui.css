@@ -1,0 +1,23 @@
+.wui-hide-fi-500 {
+    visibility: hidden;
+
+    opacity: 0;
+
+    -webkit-transition: visibility 0s ease-in-out 500ms, opacity 500ms ease-in-out;
+
+    transition: visibility 0s ease-in-out 500ms, opacity 500ms ease-in-out;
+}
+
+.wui-show-fi-500 {
+    visibility: visible;
+
+    opacity: 1;
+
+    -webkit-transition: visibility 0s ease-in-out 0s, opacity 500ms ease-in-out;
+
+    transition: visibility 0s ease-in-out 0s, opacity 500ms ease-in-out;
+}
+
+.wui-display-none {
+    display: none;
+}

@@ -1,7 +1,7 @@
 WUI
 =====
 
-Collection of **easy to use** and **lightweight** (*~3.4kb css*, *~6.5kb js* gzipped) vanilla GUI widgets for the web.
+Collection of **easy to use** and **lightweight** (*~3.6kb css*, *~6.9kb js* gzipped) vanilla GUI widgets for the web.
 
 *Require no dependencies, all widgets can be used on their own.*
 
@@ -39,6 +39,32 @@ If you need a single (or more) widget but not all, you can find minified files o
 npm install
 grunt dist
 ```
+
+======
+
+## WUI ##
+
+>This is not a widget but the place of helpfull tools for GUI, there is a collection of methods to apply things such as fade in/fade out etc.
+
+Note: All effects have a fixed transition time value (set in the CSS), for simplicity.
+
+*Methods*:
+
+>* 500ms
+*   fadeIn(element)
+*   fadeOut(element, fade_finish_cb, hide_when_fade_finish)
+
+<br/>*Example*:
+
+```javascript
+// apply a fade in effect to an element
+WUI.fadeIn(my_element);
+
+// apply a fade out effect to an element, when finished output "finished" to the browser console and hide the element (display: none)
+WUI.fadeOut(my_element, function () { console.log("finished!"); }, true);
+```
+
+<br/>
 
 ======
 
@@ -227,6 +253,7 @@ WUI_DropDown.create("my_dropdown", {
 
 >*   create(id, tools, options)
 *   toggle(wui_toolbar, tool_id, propagate)
+*   getItemElement(wui_toolbar, tool_id)
 
 <br/>*Example*:
 

@@ -82,9 +82,7 @@ var WUI_Dialog = new (function() {
     };
 
     var _focus = function (dialog) {
-        var z_index = 100,
-
-            cz_index = 0,
+        var cz_index = 0,
 
             tmp_dialog = null;
 
@@ -95,18 +93,14 @@ var WUI_Dialog = new (function() {
                 if (!isNaN(tmp_dialog.style.zIndex)) {
                     cz_index = parseInt(tmp_dialog.style.zIndex, 10);
 
-                    if (cz_index > z_index) {
-                        z_index = cz_index;
-                    }
-
-                    if (cz_index > 100000) { // guess 100000 dialogs is safe
-                        cz_index -= 100000;
+                    if (cz_index > 100) {
+                        tmp_dialog.style.zIndex = 100;
                     }
                 }
             }
         }
 
-        dialog.style.zIndex = z_index + 1;
+        dialog.style.zIndex = 101;
     };
 
     var _minimize = function (minimize_btn, dialog) {

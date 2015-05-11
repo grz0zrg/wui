@@ -631,4 +631,18 @@ var WUI_ToolBar = new (function() {
 
         _onToggle({target: widget.tools[tool_index].element}, toolbar_id, propagate);
     };
+
+    this.getItemElement = function (toolbar_id, tool_index) {
+        var widget = _widget_list[toolbar_id];
+
+        if (widget === undefined) {
+            if (typeof console !== "undefined") {
+                console.log("getItemElement problem, WUI toolbar \"" + toolbar_id + "\" was not created.");
+            }
+
+            return;
+        }
+
+        return widget.tools[tool_index].element;
+    };
 })();
