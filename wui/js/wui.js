@@ -248,7 +248,7 @@ var WUI = new (function() {
             for (i = 0; i < _draggables.length; i += 1) {
                 var draggable = _draggables[i];
 
-                draggable.element.dataset.id = i;
+                draggable.element.dataset.wui_draggable_id = i;
             }
         }
     };
