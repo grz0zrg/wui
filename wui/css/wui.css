@@ -21,3 +21,7 @@
 .wui-display-none {
     display: none;
 }
+
+.wui-draggable {
+    cursor: move;
+}

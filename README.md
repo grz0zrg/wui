@@ -1,11 +1,11 @@
 WUI
 =====
 
-Collection of **easy to use** and **lightweight** (*~3.6kb css*, *~6.9kb js* gzipped) vanilla GUI widgets for the web.
+Collection of **easy to use** and **lightweight** (*~3.6kb css*, *~7.1kb js* gzipped) vanilla GUI widgets for the web.
 
 *Require no dependencies, all widgets can be used on their own.*
 
-It was not built to target mobile devices but it support touch events and the demo work ok with Safari on the Ipad.
+It was not built to target mobile devices but it support touch events and the demo work ok with Safari on the IPad.
 
 ####Demo
 - [Demo](http://grz0zrg.github.io/wui-demo/)
@@ -42,25 +42,54 @@ grunt dist
 
 ======
 
-## WUI ##
+####Introduction
 
->This is not a widget but the place of helpfull tools for GUI, there is a collection of methods to apply things such as fade in/fade out etc.
+*   [WUI](#wui)
+*   [WUI_Tabs](#tabs)
+*   [WUI_Dialog](#dialog)
+*   [WUI_DropDown](#dropdown)
+*   [WUI_ToolBar](#toolbar)
+*   [WUI_RangeSlider](#rangeslider)
+
+The WUI API is simple, all widgets have a method *_"create"_* which take a DOM element identifier as first argument (which is used as a bind target) and an option object as second or third argument (toolbar case) to customize it.
+
+All *_"create"_* methods return a reference of the widget which can be used later to do stuff with the widget.
+
+Widgets cannot (for now) be destroyed.
+
+HTML elements with a specific layout are required to use some widgets (like tabs, see the documentation)
+
+A bit of style hacking may be necessary if you want widgets to suit your need or your taste, the demo page can be helpful.
+
+Also, altough not documented below, all widgets have a method *_"triggerEvent"_* which take an Event object and event type string as argument, you can use it if you want to handle all events by yourself, preventing the library to add event listeners (there is some exceptions like "resize" event).
+
+There is also *"_WUI.dispatchEvent_"*, this will call triggerEvent for each widgets.
+
+======
+
+<a name="wui"></a>
+### WUI ###
+
+>Not really a widget but a collection of tools, can be helpfull if you want to add draggable functionality to a div or do simple fade in/out.
 
 Note: All effects have a fixed transition time value (set in the CSS), for simplicity.
 
 *Methods*:
 
->* 500ms
+>*   draggable(element, draggable_state)
 *   fadeIn(element)
 *   fadeOut(element, fade_finish_cb, hide_when_fade_finish)
 
 <br/>*Example*:
 
 ```javascript
-// apply a fade in effect to an element
+// make the element draggable
+WUI.draggable(my_element, true);
+
+// apply a 500ms fade in effect to an element
 WUI.fadeIn(my_element);
 
-// apply a fade out effect to an element, when finished output "finished" to the browser console and hide the element (display: none)
+// apply a 500ms fade out effect to an element, when finished output "finished" to the browser console and hide the element (display: none)
 WUI.fadeOut(my_element, function () { console.log("finished!"); }, true);
 ```
 
@@ -68,30 +97,8 @@ WUI.fadeOut(my_element, function () { console.log("finished!"); }, true);
 
 ======
 
-####Widgets
-
-*   [WUI_Tabs](#tabs)
-*   [WUI_Dialog](#dialog)
-*   [WUI_DropDown](#dropdown)
-*   [WUI_ToolBar](#toolbar)
-*   [WUI_RangeSlider](#rangeslider)
-
-The API is simple, all widgets have a method *_"create"_*, a DOM element id as first argument (which is used as a bind target) and an option object as second or third argument (toolbar case) to customize it, widgets cannot (for now) be destroyed.
-
-All "create" functions return a reference of the widget which can be used later to do stuff with the widget.
-
-HTML elements with a specific layout are required to use some widgets (like tabs, see the documentation)
-
-A bit of style hacking may be necessary if you want widgets to suit your need or your taste, the demo page can be helpful.
-
-Also, altough not documented below, all widgets have a method *_"triggerEvent"_* which take an Event object and event type string as argument, you can use it if you want to handle all events by yourself, preventing the library to add event listeners (there is some exceptions like "resize").
-
-You can also use *"_WUI.dispatchEvent_"*, this will call triggerEvent for each widgets.
-
-======
-
 <a name="tabs"></a>
-## Tabs ##
+### Tabs ###
 
 *Methods*:
 
