@@ -580,7 +580,8 @@ var WUI_ToolBar = new (function() {
 
             minimize_group = group.previousElementSibling;
 
-            if (minimize_group.classList.contains(_class_name.minimize_group)) {
+            if (minimize_group.classList.contains(_class_name.minimize_group) ||
+                minimize_group.classList.contains(_class_name.minimize_gr_v)) {
                 minimize_group.style.display = "none";
             }
 
@@ -608,7 +609,8 @@ var WUI_ToolBar = new (function() {
 
             minimize_group = group.previousElementSibling;
 
-            if (minimize_group.classList.contains(_class_name.minimize_group)) {
+            if (minimize_group.classList.contains(_class_name.minimize_group) ||
+                minimize_group.classList.contains(_class_name.minimize_gr_v)) {
                 minimize_group.style.display = "";
             }
 
