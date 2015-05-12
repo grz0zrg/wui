@@ -17,6 +17,8 @@ var WUI_Dialog = new (function() {
         _drag_x = 0,
         _drag_y = 0,
         
+        _resize_timeout = null,
+
         _class_name = {
             dialog:        "wui-dialog",
             content:       "wui-dialog-content",
@@ -53,9 +55,7 @@ var WUI_Dialog = new (function() {
             
             minimized: false,
 
-            on_close: null,
-
-            use_event_listener: true
+            on_close: null
         };
     
     /***********************************************************
@@ -111,45 +111,47 @@ var WUI_Dialog = new (function() {
     };
 
     var _onWindowResize = function () {
-        var dialog_contents = document.getElementsByClassName(_class_name.content),
+        if (_resize_timeout === null) {
+            _resize_timeout = setTimeout(function() {
+                _resize_timeout = null;
 
-            i;
+                var dialog_contents = document.getElementsByClassName(_class_name.content),
 
-        for (i = 0; i < dialog_contents.length; i += 1) {
-            var content = dialog_contents[i],
+                    i;
 
-                dialog = content.parentElement;
+                for (i = 0; i < dialog_contents.length; i += 1) {
+                    var content = dialog_contents[i],
 
-            content.style.height = dialog.offsetHeight - 32 + "px";
+                        dialog = content.parentElement;
+
+                    content.style.height = dialog.offsetHeight - 32 + "px";
+                }
+            }, 1000 / 8);
         }
     };
 
-    var _onCloseBtnClick = function (ev) {
-        if(ev.preventDefault) {
-            ev.preventDefault();
+    var _onClick = function (ev) {
+        ev.preventDefault();
+        ev.stopPropagation();
+
+        var element = ev.target,
+
+            dialog = null;
+
+        if (element.classList.contains(_class_name.btn_close)) {
+            dialog = element.parentElement.parentElement;
+
+            _close(dialog, true);
+        } else if (element.classList.contains(_class_name.maximize) ||
+                   element.classList.contains(_class_name.minimize)) {
+            dialog = element.parentElement.parentElement;
+
+            _minimize(element, dialog);
         }
-
-        var dialog = ev.target.parentElement.parentElement;
-
-        _close(dialog, true);
-    };
-    
-    var _onMinimaxiBtnClick = function (ev) {
-        if(ev.preventDefault) {
-            ev.preventDefault();
-        }
-
-        var btn = ev.target,
-            
-            dialog = ev.target.parentElement.parentElement;
-
-        _minimize(btn, dialog);
     };
     
     var _windowMouseMove = function (ev) {
-        if(ev.preventDefault) {
-            ev.preventDefault();
-        }
+        ev.preventDefault();
         
         var x = ev.clientX,
             y = ev.clientY,
@@ -275,41 +277,7 @@ var WUI_Dialog = new (function() {
         
         Functions.
     ************************************************************/
-    
-    /**
-     * Trigger an event manually.
-     */
-    this.triggerEvent = function (event, type) {
-        var element = event.target,
-            
-            e_type = event.type;
-        
-        if (type !== undefined) {
-            e_type = type;
-        }
 
-        if (e_type === "click") {
-            if (element.classList.contains(_class_name.btn_close)) {
-                _onCloseBtnClick(event);
-                
-                return true;
-            } else if (element.classList.contains(_class_name.minimize) ||
-                element.classList.contains(_class_name.maximize)) {
-                _onMinimaxiBtnClick(event);
-                
-                return true;
-            }
-        } else if (e_type === "mousedown") {
-            if (element.classList.contains(_class_name.header)) {
-                _onMouseDown(event);
-                
-                return true;
-            }
-        }
-        
-        return false;
-    };
-    
     this.create = function (id, options) { 
         var opts = {},
             
@@ -422,39 +390,30 @@ var WUI_Dialog = new (function() {
         if (opts.draggable) {
             dialog.classList.toggle(_class_name.draggable);
 
-            if (opts.use_event_listener) {
-                header.addEventListener("mousedown", _onMouseDown, false);
-                header.addEventListener("touchstart", _onMouseDown, false);
-            }
+            header.addEventListener("mousedown", _onMouseDown, false);
+            header.addEventListener("touchstart", _onMouseDown, false);
         }
 
         if (opts.closable) {
             header_close_btn = document.createElement("div"); 
             header_close_btn.className = _class_name.btn + " " + _class_name.btn_close;
-            
-            if (opts.use_event_listener) {
-                header_close_btn.addEventListener("click", _onCloseBtnClick, false);
-                header_close_btn.addEventListener("touchstart", _onCloseBtnClick, false);
-            }
-            
+
             header.appendChild(header_close_btn);
         }
         
         if (opts.minimizable) {
             header_minimaxi_btn = document.createElement("div");
             header_minimaxi_btn.className = _class_name.btn + " " + _class_name.minimize;
-            
-            if (opts.use_event_listener) {
-                header_minimaxi_btn.addEventListener("click", _onMinimaxiBtnClick, false);
-                header_minimaxi_btn.addEventListener("touchstart", _onMinimaxiBtnClick, false);
-            }
-            
+
             if (opts.minimized) {
                 _minimize(header_minimaxi_btn, dialog);
             }
 
             header.appendChild(header_minimaxi_btn);
         }
+
+        dialog.addEventListener("click", _onClick, false);
+        dialog.addEventListener("touchstart", _onClick, false);
 
         window.addEventListener("resize", _onWindowResize, false);
 

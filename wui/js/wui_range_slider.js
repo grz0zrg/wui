@@ -47,9 +47,7 @@ var WUI_RangeSlider = new (function() {
             
             on_change: null,
             
-            default_value: 0.5,
-            
-            use_event_listener: true
+            default_value: 0.5
         };
     
     /***********************************************************
@@ -152,9 +150,7 @@ var WUI_RangeSlider = new (function() {
     };
     
     var _mouseMove = function (ev) {
-        if(ev.preventDefault) {
-            ev.preventDefault();
-        }
+        ev.preventDefault();
         
         if (_grabbed_hook_element !== null) {
             var value_input = _grabbed_widget.element.lastElementChild,
@@ -230,6 +226,8 @@ var WUI_RangeSlider = new (function() {
     };
     
     var _rsMouseUp = function (ev) {
+        ev.preventDefault();
+
         var touches = ev.changedTouches,
             
             touch = null,
@@ -269,9 +267,8 @@ var WUI_RangeSlider = new (function() {
     };
     
     var _rsMouseDown = function (ev) {
-        if(ev.preventDefault) {
-            ev.preventDefault();
-        }
+        ev.preventDefault();
+        ev.stopPropagation();
         
         var rs_element = null,
             
@@ -312,9 +309,8 @@ var WUI_RangeSlider = new (function() {
     };
     
     var _rsDblClick = function (ev) {
-        if(ev.preventDefault) {
-            ev.preventDefault();
-        }
+        ev.preventDefault();
+        ev.stopPropagation();
         
         var hook_element = ev.target,
             
@@ -330,9 +326,8 @@ var WUI_RangeSlider = new (function() {
     };
     
     var _rsMouseWheel = function (ev) {   
-        if(ev.preventDefault) {
-            ev.preventDefault();
-        }
+        ev.preventDefault();
+        ev.stopPropagation();
         
         var hook_element = _getHookElementFromTarget(ev.target),
             
@@ -388,51 +383,7 @@ var WUI_RangeSlider = new (function() {
         
         Functions.
     ************************************************************/
-    
-    /**
-     * Trigger an event manually.
-     */
-    this.triggerEvent = function (event, type) {
-        var element = event.target,
-            
-            e_type = event.type;
-        
-        if (type !== undefined) {
-            e_type = type;
-        }
-        
-        if (e_type === "mousedown") {
-            if (element.classList.contains(_class_name.hook) ||
-                element.classList.contains(_class_name.bar)  ||
-                element.classList.contains(_class_name.filler)) {
-                _rsMouseDown(event);
-                
-                return true;
-            }
-        } else if (e_type === "dblclick") {
-            if (element.classList.contains(_class_name.hook)) {
-                _rsDblClick(event);
-                
-                return true;
-            }
-        } else if (e_type === "mousewheel" ||
-                   e_type === "DOMMouseScroll") {
-            if (element.classList.contains(_class_name.hook) ||
-                element.classList.contains(_class_name.bar)  ||
-                element.classList.contains(_class_name.filler)) {
-                _rsMouseWheel(event);
-                
-                return true;
-            }
-        } else if (e_type === "input") {
-            _inputChange(event);
-            
-            return true;
-        }
-        
-        return false;
-    };
-    
+
     this.create = function (id, options) {
         var range_slider = document.getElementById(id),
             
@@ -552,17 +503,15 @@ var WUI_RangeSlider = new (function() {
         
         _update(rs, opts.default_value);
         
-        if (opts.use_event_listener) {
-            bar.addEventListener("mousedown", _rsMouseDown, false);
-            bar.addEventListener("touchstart", _rsMouseDown, false);
+        bar.addEventListener("mousedown", _rsMouseDown, false);
+        bar.addEventListener("touchstart", _rsMouseDown, false);
             
-            hook.addEventListener("dblclick", _rsDblClick, false);
+        hook.addEventListener("dblclick", _rsDblClick, false);
             
-            value_input.addEventListener("input", _inputChange, false);
+        value_input.addEventListener("input", _inputChange, false);
             
-            bar.addEventListener("mousewheel", _rsMouseWheel, false);
-            bar.addEventListener("DOMMouseScroll", _rsMouseWheel, false);
-        }
+        bar.addEventListener("mousewheel", _rsMouseWheel, false);
+        bar.addEventListener("DOMMouseScroll", _rsMouseWheel, false);
         
         _widget_list[id] = rs;
     };

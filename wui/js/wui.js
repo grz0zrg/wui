@@ -59,6 +59,7 @@ var WUI = new (function() {
 
     var _dragStart = function (ev) {
         ev.preventDefault();
+        ev.stopPropagation();
 
         var x = ev.clientX,
             y = ev.clientY,
@@ -96,6 +97,7 @@ var WUI = new (function() {
 
     var _drag = function (ev) {
         ev.preventDefault();
+        ev.stopPropagation();
 
         var x = ev.clientX,
             y = ev.clientY,
@@ -136,6 +138,7 @@ var WUI = new (function() {
 
     var _dragStop = function (ev) {
         ev.preventDefault();
+        ev.stopPropagation();
 
         var touches = ev.changedTouches,
 

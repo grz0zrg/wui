@@ -34,9 +34,7 @@ var WUI_ToolBar = new (function() {
             
             allow_groups_minimize: false,
             
-            vertical: false,
-            
-            use_event_listener: true
+            vertical: false
         };
 
     /***********************************************************
@@ -86,10 +84,8 @@ var WUI_ToolBar = new (function() {
         }
     };
     
-    var _onToggle = function (ev, toolbar_id, propagate) {
-        var element = ev.target,
-
-            widget = null,
+    var _toggle = function (element, toolbar_id, propagate) {
+        var widget = null,
             
             state = false,
             
@@ -154,22 +150,21 @@ var WUI_ToolBar = new (function() {
                         tool.element.classList.add(tool.icon);
                     }
 
-                    if (propagate) {
+                    if (propagate || propagate === undefined) {
                         _propagate(tool, "toggle", false);
                     }
                 }
             }
         }
 
-        if (propagate) {
+        if (propagate === true || propagate === undefined) {
             _propagate(my_tool, "toggle", state);
         }
     };
     
-    var _onDdItemClick = function (ev) {
-        if(ev.preventDefault) {
-            ev.preventDefault();
-        }
+    var _ddItemClick = function (ev) {
+        ev.preventDefault();
+        ev.stopPropagation();
 
         var item_element = ev.target,
 
@@ -208,14 +203,27 @@ var WUI_ToolBar = new (function() {
         return handler;
     };
 
-    var _onClick = function (ev, toolbar_id) {
-        if(ev.preventDefault) {
-            ev.preventDefault();
+    var _onClick = function (ev) {
+        ev.preventDefault();
+        ev.stopPropagation();
+
+        var element = ev.target;
+
+        // delegation
+        if (element.classList.contains(_class_name.minimize_group) ||
+            element.classList.contains(_class_name.minimize_gr_v)) {
+            _minimizeGroup(element);
+
+            return;
+        } else if (element.classList.contains(_class_name.toggle)) {
+            _toggle(element);
+
+            return;
         }
 
-        var element = ev.target,
+        // else, regular button
 
-            my_tool = null,
+        var my_tool = null,
 
             dropdown_floating_content = null,
 
@@ -223,7 +231,7 @@ var WUI_ToolBar = new (function() {
 
             widget = null;
         
-        widget = _getWidgetFromElement(element, toolbar_id);
+        widget = _getWidgetFromElement(element);
         
         my_tool = widget.tools[element.dataset.tool_id];
 
@@ -278,30 +286,22 @@ var WUI_ToolBar = new (function() {
         }
     };
     
-    var _onMinimizeGroup = function (ev) {
-        if(ev.preventDefault) {
-            ev.preventDefault();
-        }
-
-        var element = ev.target,
-
-            group = element.nextSibling,
+    var _minimizeGroup = function (minimize_element) {
+        var group = minimize_element.nextSibling,
             
             group_childs = group.getElementsByTagName('div'),
-            
-            widget = null,
-            
+
             group_item = null,
             
+            widget = _getWidgetFromElement(minimize_element),
+
             i;
         
-        widget = _getWidgetFromElement(element);
-        
-        if (element.classList.contains(_class_name.minimize_icon)) {
-            element.classList.add(_class_name.maximize_icon);
-            element.classList.remove(_class_name.minimize_icon);
+        if (minimize_element.classList.contains(_class_name.minimize_icon)) {
+            minimize_element.classList.add(_class_name.maximize_icon);
+            minimize_element.classList.remove(_class_name.minimize_icon);
             
-            element.title = "Maximize group";
+            minimize_element.title = "Maximize group";
             
             group.style.width = "0";
             group.style.height = "0";
@@ -313,10 +313,10 @@ var WUI_ToolBar = new (function() {
                 group_item.style.minHeight = "0";
             }
         } else {
-            element.classList.add(_class_name.minimize_icon);
-            element.classList.remove(_class_name.maximize_icon);
+            minimize_element.classList.add(_class_name.minimize_icon);
+            minimize_element.classList.remove(_class_name.maximize_icon);
             
-            element.title = "Minimize group";
+            minimize_element.title = "Minimize group";
             
             group.style.width = "auto";
             group.style.height = "auto";
@@ -335,42 +335,6 @@ var WUI_ToolBar = new (function() {
         
         Functions.
     ************************************************************/
-    
-    /**
-     * Trigger an event manually.
-     */
-    this.triggerEvent = function (event, type) {
-        var element = event.target,
-            
-            e_type = event.type;
-        
-        if (type !== undefined) {
-            e_type = type;
-        }
-
-        if (e_type === "click") {
-            if (element.classList.contains(_class_name.dd_item)) {
-                _onDdItemClick({ target: element});
-
-                return true;
-            } else if (element.classList.contains(_class_name.toggle)) {
-                _onToggle( {target: element}, undefined, true);
-                
-                return true;
-            } else if (element.classList.contains(_class_name.minimize_group) ||
-                       element.classList.contains(_class_name.minimize_gr_v)) {
-                _onMinimizeGroup( {target: element});
-                
-                return true;
-            } else if (element.classList.contains(_class_name.button)) {
-                _onClick(event);
-                
-                return true;
-            }
-        }
-        
-        return false;
-    };
     
     /**
      * Create a toolbar widget from an element.
@@ -445,6 +409,8 @@ var WUI_ToolBar = new (function() {
         
         group_minimize_class = _class_name.button + " " + _class_name.minimize_icon + " " + group_minimize_class;
         
+        toolbar.addEventListener("click", _onClick, false);
+
         for(index in tools) { 
             if (tools.hasOwnProperty(index)) {
                 if (previous_group !== null) {
@@ -461,10 +427,6 @@ var WUI_ToolBar = new (function() {
                     elem.title = "Minimize group";
                     
                     toolbar.appendChild(elem);
-                    
-                    if (opts.use_event_listener) {
-                        elem.addEventListener("click", _onMinimizeGroup, false);
-                    }
                 }
                
                 group = tools[index];
@@ -549,11 +511,7 @@ var WUI_ToolBar = new (function() {
                         if (tool.toggle_state) {
                             tool_element.dataset.on = "0";
                             
-                            _onToggle({target: tool_element}, id, true);
-                        }
-                        
-                        if (opts.use_event_listener) {
-                            tool_element.addEventListener("click", _onToggle, false);
+                            _toggle(tool_element, id, true);
                         }
                     } else if (tool.type === "dropdown") {
                         tool_element.classList.add(_class_name.button);
@@ -579,12 +537,10 @@ var WUI_ToolBar = new (function() {
                                 dropdown_floating_content.appendChild(div_item);
 
                                 widget.items.push({ element: div_item, on_click: item.on_click});
-
-                                if (opts.use_event_listener) {
-                                    div_item.addEventListener("click", _onDdItemClick, false);
-                                }
                             }
                         }
+
+                        dropdown_floating_content.addEventListener("click", _ddItemClick, false);
 
                         widget.floating_content = dropdown_floating_content;
 
@@ -596,16 +552,8 @@ var WUI_ToolBar = new (function() {
                         dropdown_floating_content.dataset.linkedto_tool_index = tool_id;
 
                         document.body.appendChild(dropdown_floating_content);
-
-                        if (opts.use_event_listener) {
-                            tool_element.addEventListener("click", _onClick, false);
-                        }
                     } else { // default to standard button
                         tool_element.classList.add(_class_name.button);
-                        
-                        if (opts.use_event_listener) {
-                            tool_element.addEventListener("click", _onClick, false);
-                        }
                     }
                 }
                 
@@ -629,7 +577,7 @@ var WUI_ToolBar = new (function() {
             return;
         }
 
-        _onToggle({target: widget.tools[tool_index].element}, toolbar_id, propagate);
+        _toggle(widget.tools[tool_index].element, toolbar_id, propagate);
     };
 
     this.getItemElement = function (toolbar_id, tool_index) {

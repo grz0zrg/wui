@@ -19,8 +19,7 @@ var WUI_Tabs = new (function() {
         },
         
         _known_options = {
-            on_tab_click: null,
-            use_event_listener: true
+            on_tab_click: null
         };
 
     /***********************************************************
@@ -30,9 +29,8 @@ var WUI_Tabs = new (function() {
     ************************************************************/
     
     var _onTabClick = function (ev) {
-        if(ev.preventDefault) {
-            ev.preventDefault();
-        }
+        ev.preventDefault();
+        ev.stopPropagation();
 
         var tab_elem = ev.target,
             
@@ -80,29 +78,6 @@ var WUI_Tabs = new (function() {
         
         Functions.
     ************************************************************/
-    
-    /**
-     * Trigger an event manually.
-     */
-    this.triggerEvent = function (event, type) {
-        var element = event.target,
-            
-            e_type = event.type;
-        
-        if (type !== undefined) {
-            e_type = type;
-        }
-
-        if (e_type === "click") {
-            if (element.classList.contains(_class_name.tab)) {
-                _onTabClick(event);
-
-                return true;
-            }
-        }
-        
-        return false;
-    };
 
     /**
      * Create a tabs widget from an element.
@@ -164,9 +139,7 @@ var WUI_Tabs = new (function() {
                 tab.classList.add(_class_name.disabled);
             }
             
-            if (opts.use_event_listener) {
-                tab.addEventListener("click", _onTabClick, false);
-            }
+            tab.addEventListener("click", _onTabClick, false);
         }
         
         first_tab.classList.add(_class_name.enabled);

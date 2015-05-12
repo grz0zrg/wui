@@ -1,7 +1,7 @@
 WUI
 =====
 
-Collection of **easy to use** and **lightweight** (*~3.6kb css*, *~7.2kb js* gzipped) vanilla GUI widgets for the web.
+Collection of **easy to use** and **lightweight** (*~3.6kb css*, *~6.9kb js* gzipped) vanilla GUI widgets for the web.
 
 *Require no dependencies, all widgets can be used on their own.*
 
@@ -60,10 +60,6 @@ Widgets cannot (for now) be destroyed.
 HTML elements with a specific layout are required to use some widgets (like tabs, see the documentation)
 
 A bit of style hacking may be necessary if you want widgets to suit your need or your taste, the demo page can be helpful.
-
-Also, altough not documented below, all widgets have a method *_"triggerEvent"_* which take an Event object and event type string as argument, you can use it if you want to handle all events by yourself, preventing the library to add event listeners (there is some exceptions like "resize" event).
-
-There is also *"_WUI.dispatchEvent_"*, this will call triggerEvent for each widgets.
 
 ======
 

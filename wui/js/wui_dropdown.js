@@ -31,9 +31,7 @@ var WUI_DropDown = new (function() {
             
             selected_id: 0, // default item selected
             
-            on_item_selected: null,
-            
-            use_event_listener: true
+            on_item_selected: null
         };
     
     /***********************************************************
@@ -68,9 +66,8 @@ var WUI_DropDown = new (function() {
     };
     
     var _dd_click = function (ev) {
-        if(ev.preventDefault) {
-            ev.preventDefault();
-        }
+        ev.preventDefault();
+        ev.stopPropagation();
 
         var current_element = ev.target,
 
@@ -92,9 +89,8 @@ var WUI_DropDown = new (function() {
     };
 
     var _item_click = function (ev) {
-        if(ev.preventDefault) {
-            ev.preventDefault();
-        }
+        ev.preventDefault();
+        ev.stopPropagation();
 
         var current_element = ev.target,
             
@@ -130,9 +126,8 @@ var WUI_DropDown = new (function() {
     };
     
     var _mouseOver = function (ev) {
-        if(ev.preventDefault) {
-            ev.preventDefault();
-        }
+        ev.preventDefault();
+        ev.stopPropagation();
 
         var current_element = ev.target,
             
@@ -169,9 +164,7 @@ var WUI_DropDown = new (function() {
     };
     
     var _mouseLeave = function (ev) {
-        if(ev.preventDefault) {
-            ev.preventDefault();
-        }
+        ev.preventDefault();
 
         var current_element = ev.target,
             
@@ -195,26 +188,7 @@ var WUI_DropDown = new (function() {
         
         Functions.
     ************************************************************/
-    
-    /**
-     * Trigger an event manually.
-     */
-    this.triggerEvent = function (event, type) {
-        var e_type = event.type;
-        
-        if (type !== undefined) {
-            e_type = type;
-        }
 
-        if (e_type === "mouseover") {
-            _mouseOver(event);
-        } else if (e_type === "click") {
-            _item_click(event);
-        }
-                
-        return false;
-    };
-    
     this.create = function (id, options, content_array) {
         var dropdown = document.getElementById(id),
             
@@ -273,11 +247,7 @@ var WUI_DropDown = new (function() {
         
         var floating_content = document.createElement("div");
         
-        if (opts.use_event_listener) {
-            dropdown.addEventListener("mouseover", _mouseOver, false);
-            dropdown.addEventListener("click", _dd_click, false);
-            floating_content.addEventListener("mouseover", _mouseOver, false);
-        }
+        dropdown.addEventListener("click", _dd_click, false);
         
         for (i = 0; i < content_array.length; i += 1) {
             item = content_array[i];
@@ -298,16 +268,16 @@ var WUI_DropDown = new (function() {
                 
             items.push(div_item);
                 
-            if (opts.use_event_listener) {
-                div_item.addEventListener("click", _item_click, false);
-                div_item.addEventListener("mouseover", _mouseOver, false);
-            }
+            div_item.addEventListener("click", _item_click, false);
             
             if (item === content_array[opts.selected_id]) {
                 div_item.classList.add(_class_name.selected);
             }
         }
         
+        dropdown.addEventListener("mouseover", _mouseOver, false);
+        floating_content.addEventListener("mouseover", _mouseOver, false);
+
         floating_content.classList.add(_class_name.content);
         
         floating_content.dataset.linkedto = id;
