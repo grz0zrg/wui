@@ -26,6 +26,8 @@ var WUI = new (function() {
 
 
         // Draggable
+        _draggables = [],
+
         _dragged_element = null,
 
         _touch_identifier = null,
@@ -101,6 +103,8 @@ var WUI = new (function() {
 
             i,
 
+            draggable = _draggables[parseInt(_dragged_element.dataset.wui_draggable_id, 10)],
+
             new_x, new_y;
 
         if (touches) {
@@ -121,6 +125,10 @@ var WUI = new (function() {
 
         _dragged_element.style.left = new_x + 'px';
         _dragged_element.style.top  = new_y + 'px';
+
+        if (draggable) {
+            draggable.cb(_dragged_element, new_x, new_y);
+        }
     };
 
     var _dragStop = function (ev) {
@@ -177,8 +185,8 @@ var WUI = new (function() {
      * Apply a fade out effect to the element.
      *
      * @param {Object}   element                 DOM Element
-     * @param {[Callback]} fade_finish_cb        Function called when the fade out effect finish
-     * @param {[Boolean]} hide_when_fade_finish  If true, add a "display: none;" style class automatically when the fade out effect finish
+     * @param {Callback} fade_finish_cb        Function called when the fade out effect finish
+     * @param {Boolean} hide_when_fade_finish  If true, add a "display: none;" style class automatically when the fade out effect finish
      */
     this.fadeOut = function (element, fade_finish_cb, hide_when_fade_finish) {
         element.addEventListener('transitionend', _hideHandler(element, fade_finish_cb, hide_when_fade_finish), false);
@@ -203,9 +211,10 @@ var WUI = new (function() {
      * Make an element draggable
      *
      * @param {Object} element DOM Element
-     * @param {[Boolean]} state false value mean the element will be no more draggable
+     * @param {Callback} function called when the element is being dragged, it has two argument which is the new x/y
+     * @param {Boolean} state false value mean the element will be no more draggable
      */
-    this.draggable = function (element, draggable_state) {
+    this.draggable = function (element, draggable_state, on_drag_cb) {
         if (draggable_state) {
             element.classList.add(_class_name.draggable);
 
@@ -214,6 +223,13 @@ var WUI = new (function() {
 
             window.addEventListener('mouseup', _dragStop, false);
             window.addEventListener('touchend', _dragStop, false);
+
+            element.dataset.wui_draggable_id = _draggables.length;
+
+            _draggables.push({
+                cb: on_drag_cb,
+                element: element
+            });
         } else {
             element.classList.remove(_class_name.draggable);
 
@@ -222,6 +238,18 @@ var WUI = new (function() {
 
             window.removeEventListener('mouseup', _dragStop, false);
             window.removeEventListener('touchend', _dragStop, false);
+
+            var id = parseInt(element.dataset.wui_draggable_id, 10),
+
+                i;
+
+            _draggables.splice(id, 1);
+
+            for (i = 0; i < _draggables.length; i += 1) {
+                var draggable = _draggables[i];
+
+                draggable.element.dataset.id = i;
+            }
         }
     };
 })();

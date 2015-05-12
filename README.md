@@ -1,7 +1,7 @@
 WUI
 =====
 
-Collection of **easy to use** and **lightweight** (*~3.6kb css*, *~7.1kb js* gzipped) vanilla GUI widgets for the web.
+Collection of **easy to use** and **lightweight** (*~3.6kb css*, *~7.2kb js* gzipped) vanilla GUI widgets for the web.
 
 *Require no dependencies, all widgets can be used on their own.*
 
@@ -70,13 +70,13 @@ There is also *"_WUI.dispatchEvent_"*, this will call triggerEvent for each widg
 <a name="wui"></a>
 ### WUI ###
 
->Not really a widget but a collection of tools, can be helpfull if you want to add draggable functionality to a div or do simple fade in/out.
+Not really a widget but a collection of tools, can be helpfull if you want to add draggable functionality to a div or do simple fade in/out.
 
 Note: All effects have a fixed transition time value (set in the CSS), for simplicity.
 
 *Methods*:
 
->*   draggable(element, draggable_state)
+>*   draggable(element, draggable_state, on_drag_cb)
 *   fadeIn(element)
 *   fadeOut(element, fade_finish_cb, hide_when_fade_finish)
 
@@ -84,6 +84,7 @@ Note: All effects have a fixed transition time value (set in the CSS), for simpl
 
 ```javascript
 // make the element draggable
+// Note: If you want to remove the element while it is draggable, make it undraggable first by passing false as second argument of this function, this is because WUI keep a reference of the element and it may cause memory leaks, passing false will make the reference go away
 WUI.draggable(my_element, true);
 
 // apply a 500ms fade in effect to an element
