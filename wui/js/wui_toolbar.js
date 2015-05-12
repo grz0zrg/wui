@@ -20,6 +20,7 @@ var WUI_ToolBar = new (function() {
             toggle_on:      "wui-toolbar-toggle-on",
             item:           "wui-toolbar-item",
             group:          "wui-toolbar-group",
+            vertical_group: "wui-toolbar-group-vertical",
 
             // dropdown
             dd_content:     "wui-toolbar-dropdown-content",
@@ -390,7 +391,7 @@ var WUI_ToolBar = new (function() {
         if (opts.vertical) {
             toolbar.classList.add("wui-toolbar-vertical");
             
-            group_class = "wui-toolbar-group-vertical";
+            group_class = _class_name.vertical_group;
             item_class += " wui-toolbar-item-vertical";
             spacer_class = "wui-toolbar-spacer-vertical";
             group_minimize_class = _class_name.minimize_gr_v;
@@ -565,7 +566,15 @@ var WUI_ToolBar = new (function() {
             groups, group, minimize_group;
 
         if (widget) {
-            groups = widget.element.getElementsByClassName(_class_name.group);
+            if (widget.opts.vertical) {
+                groups = widget.element.getElementsByClassName(_class_name.vertical_group);
+            } else {
+                groups = widget.element.getElementsByClassName(_class_name.group);
+            }
+
+            if (groups.length === 0) {
+                return;
+            }
 
             group = groups[group_index];
 
@@ -585,7 +594,15 @@ var WUI_ToolBar = new (function() {
             groups, group, minimize_group;
 
         if (widget) {
-            groups = widget.element.getElementsByClassName(_class_name.group);
+            if (widget.opts.vertical) {
+                groups = widget.element.getElementsByClassName(_class_name.vertical_group);
+            } else {
+                groups = widget.element.getElementsByClassName(_class_name.group);
+            }
+
+            if (groups.length === 0) {
+                return;
+            }
 
             group = groups[group_index];
 
