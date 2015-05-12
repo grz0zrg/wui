@@ -58,13 +58,15 @@ var WUI = new (function() {
     };
 
     var _dragStart = function (ev) {
+        ev.preventDefault();
+
         var x = ev.clientX,
             y = ev.clientY,
 
             touches = ev.changedTouches;
 
-        if(ev.preventDefault) {
-            ev.preventDefault();
+        if (!ev.target.classList.contains(_class_name.draggable)) {
+            return;
         }
 
         if (_dragged_element === null) {
@@ -87,12 +89,13 @@ var WUI = new (function() {
 
         window.addEventListener('mousemove', _drag, false);
         window.addEventListener('touchmove', _drag, false);
+
+        window.addEventListener('mouseup', _dragStop, false);
+        window.addEventListener('touchend', _dragStop, false);
     };
 
     var _drag = function (ev) {
-        if(ev.preventDefault) {
-            ev.preventDefault();
-        }
+        ev.preventDefault();
 
         var x = ev.clientX,
             y = ev.clientY,
@@ -132,11 +135,17 @@ var WUI = new (function() {
     };
 
     var _dragStop = function (ev) {
+        ev.preventDefault();
+
         var touches = ev.changedTouches,
 
             touch = null,
 
             i;
+
+        if (_draggables.length === 0) {
+            return;
+        }
 
         if (touches) {
             for (i = 0; i < touches.length; i += 1) {
@@ -148,6 +157,7 @@ var WUI = new (function() {
                     document.body.style.cursor = "default";
 
                     window.removeEventListener('touchmove', _drag, false);
+                    window.removeEventListener('touchend', _dragStop, false);
 
                     break;
                 }
@@ -158,6 +168,7 @@ var WUI = new (function() {
             document.body.style.cursor = "default";
 
             window.removeEventListener('mousemove', _drag, false);
+            window.removeEventListener('mouseup', _dragStop, false);
         }
     };
 
@@ -221,9 +232,6 @@ var WUI = new (function() {
             element.addEventListener("mousedown",  _dragStart, false);
             element.addEventListener("touchstart", _dragStart, false);
 
-            window.addEventListener('mouseup', _dragStop, false);
-            window.addEventListener('touchend', _dragStop, false);
-
             element.dataset.wui_draggable_id = _draggables.length;
 
             _draggables.push({
@@ -235,9 +243,6 @@ var WUI = new (function() {
 
             element.removeEventListener("mousedown",  _dragStart, false);
             element.removeEventListener("touchstart", _dragStart, false);
-
-            window.removeEventListener('mouseup', _dragStop, false);
-            window.removeEventListener('touchend', _dragStop, false);
 
             var id = parseInt(element.dataset.wui_draggable_id, 10),
 

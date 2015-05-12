@@ -213,6 +213,7 @@ var WUI_Dialog = new (function() {
                     document.body.style.cursor = "default";
                     
                     window.removeEventListener('touchmove', _windowMouseMove, false);
+                    window.removeEventListener('touchmove', _windowMouseUp, false);
                     
                     break;
                 }
@@ -223,6 +224,7 @@ var WUI_Dialog = new (function() {
             document.body.style.cursor = "default";
             
             window.removeEventListener('mousemove', _windowMouseMove, false);
+            window.removeEventListener('mousemove', _windowMouseUp, false);
         }
     };
     
@@ -263,6 +265,9 @@ var WUI_Dialog = new (function() {
 
         window.addEventListener('mousemove', _windowMouseMove, false);
         window.addEventListener('touchmove', _windowMouseMove, false);
+
+        window.addEventListener('mouseup', _windowMouseUp, false);
+        window.addEventListener('touchend', _windowMouseUp, false);
     };
     
     /***********************************************************
@@ -421,10 +426,6 @@ var WUI_Dialog = new (function() {
                 header.addEventListener("mousedown", _onMouseDown, false);
                 header.addEventListener("touchstart", _onMouseDown, false);
             }
-
-            // exception for this one
-            window.addEventListener('mouseup', _windowMouseUp, false);
-            window.addEventListener('touchend', _windowMouseUp, false);
         }
 
         if (opts.closable) {
