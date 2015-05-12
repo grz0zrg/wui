@@ -59,7 +59,6 @@ var WUI = new (function() {
 
     var _dragStart = function (ev) {
         ev.preventDefault();
-        ev.stopPropagation();
 
         var x = ev.clientX,
             y = ev.clientY,
@@ -97,7 +96,6 @@ var WUI = new (function() {
 
     var _drag = function (ev) {
         ev.preventDefault();
-        ev.stopPropagation();
 
         var x = ev.clientX,
             y = ev.clientY,
@@ -138,7 +136,6 @@ var WUI = new (function() {
 
     var _dragStop = function (ev) {
         ev.preventDefault();
-        ev.stopPropagation();
 
         var touches = ev.changedTouches,
 
@@ -215,10 +212,10 @@ var WUI = new (function() {
      * @param {Object} element DOM Element
      */
     this.fadeIn = function (element) {
-        element.classList.remove(_class_name.display_none);
-
         element.classList.remove(_class_name.hide_fi_500);
         element.classList.add(_class_name.hide_show_500);
+
+        element.classList.remove(_class_name.display_none);
     };
 
     /**

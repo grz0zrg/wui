@@ -22,7 +22,7 @@ It was not built to target mobile devices but it support touch events and the de
 
 ####Usage
 
-There is minified and gzipped, up to date ready-to-use css/js files in the **_dist_** folder, to use the entire library, just include it in your HTML file
+There is minified and gzipped, up to date ready-to-use css/js files in the **_dist_** folder, to use the entire library, just include them in your HTML file
 
 ```html
 <link rel="stylesheet" type="text/css" href="wui.min.css"/>
@@ -59,14 +59,14 @@ Widgets cannot (for now) be destroyed.
 
 HTML elements with a specific layout are required to use some widgets (like tabs, see the documentation)
 
-A bit of style hacking may be necessary if you want widgets to suit your need or your taste, the demo page can be helpful.
+A bit of style hacking may be necessary if you want widgets to suit your need or your taste, the demo page can be helpful for that.
 
 ======
 
 <a name="wui"></a>
 ### WUI ###
 
-Not really a widget but a collection of tools, can be helpfull if you want to add draggable functionality to a div or do simple fade in/out.
+Not really a widget but a collection of tools, can be helpfull if you want to add draggable functionality to an element or apply fade in/out.
 
 Note: All effects have a fixed transition time value (set in the CSS), for simplicity.
 
@@ -256,6 +256,8 @@ WUI_DropDown.create("my_dropdown", {
 <br/>*Method*:
 
 >*   create(id, tools, options)
+*   hideGroup(wui_toolbar, group_index)
+*   showGroup(wui_toolbar, group_index)
 *   toggle(wui_toolbar, tool_id, propagate)
 *   getItemElement(wui_toolbar, tool_id)
 

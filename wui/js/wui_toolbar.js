@@ -19,6 +19,7 @@ var WUI_ToolBar = new (function() {
             toggle:         "wui-toolbar-toggle",
             toggle_on:      "wui-toolbar-toggle-on",
             item:           "wui-toolbar-item",
+            group:          "wui-toolbar-group",
 
             // dropdown
             dd_content:     "wui-toolbar-dropdown-content",
@@ -43,6 +44,20 @@ var WUI_ToolBar = new (function() {
         Functions.
     ************************************************************/
     
+    var _getWidget = function (toolbar_id) {
+        var widget = _widget_list[toolbar_id];
+
+        if (widget === undefined) {
+            if (typeof console !== "undefined") {
+                console.log("_getWidget failed, the element id \"" + toolbar_id + "\" is not a WUI_ToolBar.");
+            }
+
+            return null;
+        }
+
+        return widget;
+    };
+
     var _getElementOffset = function (elem) {
         var box = elem.getBoundingClientRect(),
             body = document.body,
@@ -287,15 +302,7 @@ var WUI_ToolBar = new (function() {
     };
     
     var _minimizeGroup = function (minimize_element) {
-        var group = minimize_element.nextSibling,
-            
-            group_childs = group.getElementsByTagName('div'),
-
-            group_item = null,
-            
-            widget = _getWidgetFromElement(minimize_element),
-
-            i;
+        var group = minimize_element.nextSibling;
         
         if (minimize_element.classList.contains(_class_name.minimize_icon)) {
             minimize_element.classList.add(_class_name.maximize_icon);
@@ -303,30 +310,14 @@ var WUI_ToolBar = new (function() {
             
             minimize_element.title = "Maximize group";
             
-            group.style.width = "0";
-            group.style.height = "0";
-            
-            for (i = 0; i < group_childs.length; i += 1) {
-                group_item = group_childs[i];
-                
-                group_item.style.minWidth  = "0";
-                group_item.style.minHeight = "0";
-            }
+            group.style.display = "none";
         } else {
             minimize_element.classList.add(_class_name.minimize_icon);
             minimize_element.classList.remove(_class_name.maximize_icon);
             
             minimize_element.title = "Minimize group";
             
-            group.style.width = "auto";
-            group.style.height = "auto";
-            
-            for (i = 0; i < group_childs.length; i += 1) {
-                group_item = group_childs[i];
-                
-                group_item.style.minWidth  = widget.opts.icon_width  + "px";
-                group_item.style.minHeight = widget.opts.icon_height + "px";
-            }
+            group.style.display = "";
         }
     };
     
@@ -382,6 +373,8 @@ var WUI_ToolBar = new (function() {
         
         // build up the toolbar widget internal data structure
         _widget_list[id] = {
+            element: toolbar,
+
             tools: [],
             opts: opts
         };
@@ -389,7 +382,7 @@ var WUI_ToolBar = new (function() {
         // build the toolbar and its items
         toolbar.classList.add("wui-toolbar");
         
-        var group_class = "wui-toolbar-group",
+        var group_class = _class_name.group,
             item_class = _class_name.item,
             spacer_class = "wui-toolbar-spacer",
             group_minimize_class = _class_name.minimize_group;
@@ -428,7 +421,7 @@ var WUI_ToolBar = new (function() {
                     
                     toolbar.appendChild(elem);
                 }
-               
+
                 group = tools[index];
                
                 var group_element = document.createElement("div");
@@ -566,31 +559,59 @@ var WUI_ToolBar = new (function() {
         return id;
     };
 
-    this.toggle = function (toolbar_id, tool_index, propagate) {
-        var widget = _widget_list[toolbar_id];
+    this.hideGroup = function (toolbar_id, group_index) {
+        var widget = _getWidget(toolbar_id),
 
-        if (widget === undefined) {
-            if (typeof console !== "undefined") {
-                console.log("Cannot toggle, WUI toolbar \"" + toolbar_id + "\" was not created.");
+            groups, group, minimize_group;
+
+        if (widget) {
+            groups = widget.element.getElementsByClassName(_class_name.group);
+
+            group = groups[group_index];
+
+            minimize_group = group.previousElementSibling;
+
+            if (minimize_group.classList.contains(_class_name.minimize_group)) {
+                minimize_group.style.display = "none";
             }
 
-            return;
+            group.style.display = "none";
         }
+    };
 
-        _toggle(widget.tools[tool_index].element, toolbar_id, propagate);
+    this.showGroup = function (toolbar_id, group_index) {
+        var widget = _getWidget(toolbar_id),
+
+            groups, group, minimize_group;
+
+        if (widget) {
+            groups = widget.element.getElementsByClassName(_class_name.group);
+
+            group = groups[group_index];
+
+            minimize_group = group.previousElementSibling;
+
+            if (minimize_group.classList.contains(_class_name.minimize_group)) {
+                minimize_group.style.display = "";
+            }
+
+            groups[group_index].style.display = "";
+        }
+    };
+
+    this.toggle = function (toolbar_id, tool_index, propagate) {
+        var widget = _getWidget(toolbar_id);
+
+        if (widget) {
+            _toggle(widget.tools[tool_index].element, toolbar_id, propagate);
+        }
     };
 
     this.getItemElement = function (toolbar_id, tool_index) {
-        var widget = _widget_list[toolbar_id];
+        var widget = _getWidget(toolbar_id);
 
-        if (widget === undefined) {
-            if (typeof console !== "undefined") {
-                console.log("getItemElement problem, WUI toolbar \"" + toolbar_id + "\" was not created.");
-            }
-
-            return;
+        if (widget) {
+            return widget.tools[tool_index].element;
         }
-
-        return widget.tools[tool_index].element;
     };
 })();
