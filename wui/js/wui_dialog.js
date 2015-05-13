@@ -463,4 +463,22 @@ var WUI_Dialog = new (function() {
 
         _close(widget.dialog, propagate);
     };
+
+    this.destroy = function (id) {
+        var widget = _widget_list[id],
+
+            element;
+
+        if (widget === undefined) {
+            console.log("Element id '" + id + "' is not a WUI_Dialog, destroying aborted.");
+
+            return;
+        }
+
+        element = widget.dialog;
+
+        element.parentElement.removeChild(element);
+
+        delete _widget_list[id];
+    };
 })();

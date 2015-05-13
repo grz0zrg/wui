@@ -14,8 +14,11 @@ var WUI_Tabs = new (function() {
             enabled:      "wui-tab-enabled",
             disabled:     "wui-tab-disabled",
             display_none: "wui-tab-display-none",
+            tabs:         "wui-tabs",
             tab:          "wui-tab",
-            tab_content:  "wui-tab-content"
+            tabs_content: "wui-tabs-content",
+            tab_content:  "wui-tab-content",
+            underline:    "wui-tabs-underline"
         },
         
         _known_options = {
@@ -126,7 +129,7 @@ var WUI_Tabs = new (function() {
         element.insertBefore(underline, content);
         
         // style tabs
-        tabs.classList.add("wui-tabs");
+        tabs.classList.add(_class_name.tabs);
         
         var tab_count = tabs.childElementCount;
         
@@ -161,7 +164,7 @@ var WUI_Tabs = new (function() {
             tab_content.classList.add(_class_name.display_none);   
         }
         
-        _widget_list[id] = { opts : opts };
+        _widget_list[id] = { element: element, opts : opts };
         
         return id;
     };
@@ -190,5 +193,40 @@ var WUI_Tabs = new (function() {
         var content = this.getContentElement(id, tab_id);
         
         return content.getAttribute("data-group-name");
+    };
+
+    this.destroy = function (id) {
+        var widget = _widget_list[id],
+
+            element,
+
+            tabs, tabs_underline, tabs_content,
+
+            i;
+
+        if (widget === undefined) {
+            console.log("Element id '" + id + "' is not a WUI_Tabs, destroying aborted.");
+
+            return;
+        }
+
+        element = widget.element;
+
+        // make it compatible with WUI_Dialog, it shouldn't remove the WUI_Dialog content div...
+        if (!element.classList.contains("wui-dialog-content")) {
+            element.parentElement.removeChild(element);
+        } else {
+            tabs = element.getElementsByClassName(_class_name.tabs);
+            tabs_underline = element.getElementsByClassName(_class_name.underline);
+            tabs_content = element.getElementsByClassName(_class_name.tabs_content);
+
+            for (i = 0; i < tabs.length; i += 1) {
+                element.removeChild(tabs[i]);
+                element.removeChild(tabs_underline[i]);
+                element.removeChild(tabs_content[i]);
+            }
+        }
+
+        delete _widget_list[id];
     };
 })();

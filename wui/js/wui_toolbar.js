@@ -633,4 +633,45 @@ var WUI_ToolBar = new (function() {
             return widget.tools[tool_index].element;
         }
     };
+
+    this.destroy = function (id) {
+        var widget = _widget_list[id],
+
+            element,
+
+            tools, tool, tool_items, first_item, first_item_element,
+
+            i;
+
+        if (widget === undefined) {
+            console.log("Element id '" + id + "' is not a WUI_ToolBar, destroying aborted.");
+
+            return;
+        }
+
+        element = widget.toolbar;
+
+        tools = widget.tools;
+
+        element.parentElement.removeChild(element);
+
+        // destroy any related content as well (like the floating element created by a dropdown tool)
+        for (i = 0; i < tools.length; i += 1) {
+            tool = tools[i];
+
+            if (tool.type === "dropdown") {
+                tool_items = tool.items;
+
+                if (tool_items.length > 0) {
+                    first_item = tool_items[0];
+
+                    first_item_element = first_item.element;
+
+                    first_item_element.parentElement.removeChild(first_item_element);
+                }
+            }
+        }
+
+        delete _widget_list[id];
+    };
 })();

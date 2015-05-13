@@ -302,4 +302,24 @@ var WUI_DropDown = new (function() {
         _widget_list[id] = dd;
     };
     
+    this.destroy = function (id) {
+        var widget = _widget_list[id],
+
+            element,
+            floating_element;
+
+        if (widget === undefined) {
+            console.log("Element id '" + id + "' is not a WUI_DropDown, destroying aborted.");
+
+            return;
+        }
+
+        element = widget.element;
+        floating_element = widget.floating_content;
+
+        element.parentElement.removeChild(element);
+        floating_element.parentElement.removeChild(floating_element);
+
+        delete _widget_list[id];
+    };
 })();

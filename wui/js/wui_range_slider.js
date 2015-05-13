@@ -515,4 +515,22 @@ var WUI_RangeSlider = new (function() {
         
         _widget_list[id] = rs;
     };
+
+    this.destroy = function (id) {
+        var widget = _widget_list[id],
+
+            element;
+
+        if (widget === undefined) {
+            console.log("Element id '" + id + "' is not a WUI_RangeSlider, destroying aborted.");
+
+            return;
+        }
+
+        element = widget.element;
+
+        element.parentElement.removeChild(element);
+
+        delete _widget_list[id];
+    };
 })();

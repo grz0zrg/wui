@@ -1,7 +1,7 @@
 WUI
 =====
 
-Collection of **easy to use** and **lightweight** (*~3.6kb css*, *~6.9kb js* gzipped) vanilla GUI widgets for the web.
+Collection of **easy to use** and **lightweight** (*~3.6kb css*, *~7.3kb js* gzipped) vanilla GUI widgets for the web.
 
 *Require no dependencies, all widgets can be used on their own.*
 
@@ -51,11 +51,11 @@ grunt dist
 *   [WUI_ToolBar](#toolbar)
 *   [WUI_RangeSlider](#rangeslider)
 
-The WUI API is simple, all widgets have a method *_"create"_* which take a DOM element identifier as first argument (which is used as a bind target) and an option object as second or third argument (toolbar case) to customize it.
+The WUI API is simple, all widgets have a method **_"create"_** which take a DOM element identifier as first argument (which is used as a bind target) and an option object as second or third argument (toolbar case) to customize it.
 
-All *_"create"_* methods return a reference of the widget which can be used later to do stuff with the widget.
+All **_"create"_** methods return a reference of the widget which can be used later to do stuff with the widget like destroying them.
 
-Widgets cannot (for now) be destroyed.
+All widgets also have a method **_"destroy"_**.
 
 HTML elements with a specific layout are required to use some widgets (like tabs, see the documentation)
 
@@ -100,7 +100,8 @@ WUI.fadeOut(my_element, function () { console.log("finished!"); }, true);
 *Methods*:
 
 >*   create(id, options)
-*   getContentElement(wui_tabs_id, tab_index)
+*   destroy(wui_tabs)
+*   getContentElement(wui_tabs, tab_index)
 *   getTabName(wui_tabs, tab_index)
 
 <br/>*Example*:
@@ -145,6 +146,7 @@ WUI_Tabs.create("my_tabs", {
 <br/>*Methods*:
 
 >*   create(id, options)
+*   destroy(wui_dialog)
 *   open(wui_dialog)
 *   close(wui_dialog, propagate)
   
@@ -214,6 +216,7 @@ WUI_Dialog.close(my_dialog, true); // last argument (optional) mean the on_close
 <br/>*Method*:
 
 >*   create(id, options, entry_name_array)
+*   destroy(wui_dropdown)
 
 <br/>*Example*:
 
@@ -256,6 +259,7 @@ WUI_DropDown.create("my_dropdown", {
 <br/>*Method*:
 
 >*   create(id, tools, options)
+*   destroy(wui_toolbar)
 *   hideGroup(wui_toolbar, group_index)
 *   showGroup(wui_toolbar, group_index)
 *   toggle(wui_toolbar, tool_id, propagate)
@@ -364,6 +368,7 @@ WUI_ToolBar.toggle(my_toolbar, 0, true); // the last argument is optional and me
 <br/>*Method*:
 
 >*   create(id, options)
+*   destroy(wui_rangeslider)
   
 <br/>*Example*:
 
