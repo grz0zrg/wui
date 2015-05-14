@@ -94,7 +94,10 @@ var WUI_ToolBar = new (function() {
     var _propagate = function (tool, type, state) {
         if (tool.on_click !== undefined &&
             tool.on_click !== null) {
-            var o = {type: type};
+            var o = {
+                id: tool.id,
+                type: type
+            };
             
             if (state !== undefined) {
                 o.state = state;
@@ -458,6 +461,8 @@ var WUI_ToolBar = new (function() {
                     var tool = group[i],
                         tool_element = document.createElement("div"),
                         
+                        tool_id = _widget_list[id].tools.length,
+
                         widget = {
                             element: tool_element,
                             on_click: tool.on_click,
@@ -466,10 +471,9 @@ var WUI_ToolBar = new (function() {
                             tooltip: "",
                             type: tool.type,
                             dd_items_width: tool.dropdown_items_width,
-                            orientation: tool.orientation
+                            orientation: tool.orientation,
+                            id: tool_id
                         },
-                        
-                        tool_id = _widget_list[id].tools.length,
 
                         j;
 
