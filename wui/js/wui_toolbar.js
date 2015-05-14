@@ -29,7 +29,11 @@ var WUI_ToolBar = new (function() {
         },
         
         _known_options = {
-            item_hmargin: 3,
+            item_hmargin: null,
+            item_vmargin: null,
+
+            item_width: 32,
+            item_height: 32,
             
             icon_width: 32,
             icon_height: 32,
@@ -396,9 +400,25 @@ var WUI_ToolBar = new (function() {
             spacer_class = "wui-toolbar-spacer-vertical";
             group_minimize_class = _class_name.minimize_gr_v;
 
-            toolbar.style.maxWidth = (opts.icon_width + 4) + "px";
+            toolbar.style.maxWidth = (opts.item_width + 4) + "px";
+
+            if (opts.item_hmargin === null) {
+                opts.item_hmargin = 3;
+            }
+
+            if (opts.item_vmargin === null) {
+                opts.item_vmargin = 8;
+            }
         } else {
-            toolbar.style.maxHeight = (opts.icon_height + 4) + "px";
+            toolbar.style.maxHeight = (opts.item_height + 4) + "px";
+
+            if (opts.item_hmargin === null) {
+                opts.item_hmargin = 3;
+            }
+
+            if (opts.item_vmargin === null) {
+                opts.item_vmargin = 0;
+            }
         }
         
         group_minimize_class = _class_name.button + " " + _class_name.minimize_icon + " " + group_minimize_class;
@@ -429,9 +449,9 @@ var WUI_ToolBar = new (function() {
                 group_element.className = group_class;
 
                 if (opts.vertical) {
-                    group_element.style.maxWidth = opts.icon_width + "px";
+                    group_element.style.maxWidth = opts.item_width + "px";
                 } else {
-                    group_element.style.maxHeight = opts.icon_height + "px";
+                    group_element.style.maxHeight = opts.item_height + "px";
                 }
 
                 for (var i = 0; i < group.length; i += 1) {
@@ -455,10 +475,13 @@ var WUI_ToolBar = new (function() {
 
                     tool_element.className = item_class;
                     
-                    tool_element.style.minWidth = opts.icon_width + "px";
-                    tool_element.style.minHeight = opts.icon_height + "px";
-                    tool_element.style.marginLeft = opts.item_hmargin + "px";
-                    tool_element.style.marginRight = opts.item_hmargin + "px";
+                    tool_element.style.minWidth     = opts.item_width   + "px";
+                    tool_element.style.minHeight    = opts.item_height  + "px";
+                    tool_element.style.marginLeft   = opts.item_hmargin + "px";
+                    tool_element.style.marginRight  = opts.item_hmargin + "px";
+                    tool_element.style.marginTop    = opts.item_vmargin + "px";
+                    tool_element.style.marginBottom = opts.item_vmargin + "px";
+
                     tool_element.style.backgroundSize = (opts.icon_width - 4) + "px " + (opts.icon_height - 4) + "px";
                     
                     group_element.appendChild(tool_element);
@@ -476,7 +499,7 @@ var WUI_ToolBar = new (function() {
                     if (tool.text !== undefined) {
                         tool_element.innerHTML = tool.text;
                         
-                        tool_element.style.lineHeight = opts.icon_height + "px";
+                        tool_element.style.lineHeight = opts.item_height + "px";
                         
                         tool_element.classList.add("wui-toolbar-text");
 

@@ -342,7 +342,14 @@ var my_toolbar = WUI_ToolBar.create("my_toolbar", {
     // display the minimize icon for each groups
     allow_groups_minimize: true,
     
-    // in case of a text button, this will modify the size of the button
+    // this will modify the size of the button
+    item_width: 32,
+    item_height: 32,
+    
+    // this set the spacing between buttons, aka margin to left/right or top/bottom
+    item_hmargin: 0,
+    item_vmargin: 0,
+    
     icon_width: 32,
     icon_height: 32,
   
