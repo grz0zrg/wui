@@ -300,6 +300,8 @@ var WUI_DropDown = new (function() {
         };
         
         _widget_list[id] = dd;
+
+        return id;
     };
     
     this.destroy = function (id) {

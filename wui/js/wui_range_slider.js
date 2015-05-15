@@ -514,6 +514,8 @@ var WUI_RangeSlider = new (function() {
         bar.addEventListener("DOMMouseScroll", _rsMouseWheel, false);
         
         _widget_list[id] = rs;
+
+        return id;
     };
 
     this.destroy = function (id) {
