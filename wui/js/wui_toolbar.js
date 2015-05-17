@@ -21,6 +21,7 @@ var WUI_ToolBar = new (function() {
             item:           "wui-toolbar-item",
             group:          "wui-toolbar-group",
             vertical_group: "wui-toolbar-group-vertical",
+            tb:             "wui-toolbar",
 
             // dropdown
             dd_content:     "wui-toolbar-dropdown-content",
@@ -83,8 +84,12 @@ var WUI_ToolBar = new (function() {
     var _getWidgetFromElement = function (element, toolbar_id) {
         if (toolbar_id !== undefined) {
             return _widget_list[toolbar_id];
+        } else if (element.classList.contains(_class_name.tb)) {
+            return _widget_list[element.id];
         } else if (element.classList.contains(_class_name.minimize_icon) ||
-                   element.classList.contains(_class_name.maximize_icon)) {
+                   element.classList.contains(_class_name.maximize_icon) ||
+                   element.classList.contains(_class_name.vertical_group)||
+                   element.classList.contains(_class_name.group)) {
             return _widget_list[element.parentElement.id];
         } else {
             return _widget_list[element.parentElement.parentElement.id];
@@ -242,6 +247,10 @@ var WUI_ToolBar = new (function() {
             _toggle(element);
 
             return;
+        } else if (element.classList.contains(_class_name.tb) ||
+                   element.classList.contains(_class_name.group) ||
+                   element.classList.contains(_class_name.vertical_group)) {
+            return;
         }
 
         // else, regular button
@@ -253,9 +262,9 @@ var WUI_ToolBar = new (function() {
             offset = null,
 
             widget = null;
-        
+
         widget = _getWidgetFromElement(element);
-        
+
         my_tool = widget.tools[element.dataset.tool_id];
 
         if (my_tool.type === "dropdown") {
@@ -388,7 +397,7 @@ var WUI_ToolBar = new (function() {
         };
         
         // build the toolbar and its items
-        toolbar.classList.add("wui-toolbar");
+        toolbar.classList.add(_class_name.tb);
         
         var group_class = _class_name.group,
             item_class = _class_name.item,

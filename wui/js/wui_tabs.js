@@ -143,6 +143,7 @@ var WUI_Tabs = new (function() {
             }
             
             tab.addEventListener("click", _onTabClick, false);
+            tab.addEventListener("touchstart", _onTabClick, false);
         }
         
         first_tab.classList.add(_class_name.enabled);
