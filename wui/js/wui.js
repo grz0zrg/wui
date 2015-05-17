@@ -199,7 +199,17 @@ var WUI = new (function() {
      * @param {Callback} fade_finish_cb        Function called when the fade out effect finish
      * @param {Boolean} hide_when_fade_finish  If true, add a "display: none;" style class automatically when the fade out effect finish
      */
-    this.fadeOut = function (element, fade_finish_cb, hide_when_fade_finish) {
+    this.fadeOut = function (element, duration_ms, fade_finish_cb, hide_when_fade_finish) {
+        if (duration_ms === undefined || duration_ms === null) {
+            duration_ms = 500;
+        }
+
+        if (element.style['WebkitTransition'] === undefined) {
+            element.style.transition = "visibility 0s ease-in-out " + duration_ms + "ms, opacity " + duration_ms + "ms ease-in-out";
+        } else {
+            element.style.WebkitTransition = "visibility 0s ease-in-out " + duration_ms + "ms, opacity " + duration_ms + "ms ease-in-out";
+        }
+
         element.addEventListener('transitionend', _hideHandler(element, fade_finish_cb, hide_when_fade_finish), false);
 
         element.classList.add(_class_name.hide_fi_500);
@@ -211,7 +221,17 @@ var WUI = new (function() {
      *
      * @param {Object} element DOM Element
      */
-    this.fadeIn = function (element) {
+    this.fadeIn = function (element, duration_ms) {
+        if (duration_ms === undefined || duration_ms === null) {
+            duration_ms = 500;
+        }
+
+        if (element.style['WebkitTransition'] === undefined) {
+            element.style.transition = "visibility 0s ease-in-out 0s, opacity " + duration_ms + "ms ease-in-out";
+        } else {
+            element.style.WebkitTransition = "visibility 0s ease-in-out 0s, opacity " + duration_ms + "ms ease-in-out";
+        }
+
         element.classList.remove(_class_name.hide_fi_500);
         element.classList.add(_class_name.hide_show_500);
 

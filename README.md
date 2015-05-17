@@ -1,7 +1,7 @@
 WUI
 =====
 
-Collection of **easy to use** and **lightweight** (*~3.6kb css*, *~7.4kb js* gzipped) vanilla GUI widgets for the web.
+Collection of **easy to use** and **lightweight** (*~3.6kb css*, *~7.6kb js* gzipped) vanilla GUI widgets for the web.
 
 *Require no dependencies, all widgets can be used on their own.*
 
@@ -68,15 +68,15 @@ A bit of style hacking may be necessary if you want widgets to suit your need or
 <a name="wui"></a>
 ### WUI ###
 
-Not really a widget but a collection of tools, can be helpfull if you want to add draggable functionality to an element or apply fade in/out.
+Not really a widget but a collection of tools, can be helpful if you want to add draggable functionality to an element or apply fade in/out.
 
-Note: All effects have a fixed transition time value (set in the CSS), for simplicity.
+Fade in/Fade out method default to 500ms if no duration is provided
 
 *Methods*:
 
 >*   draggable(element, draggable_state, on_drag_cb)
-*   fadeIn(element)
-*   fadeOut(element, fade_finish_cb, hide_when_fade_finish)
+*   fadeIn(element, duration_ms)
+*   fadeOut(element, duration_ms, fade_finish_cb, hide_when_fade_finish)
 
 <br/>*Example*:
 
@@ -86,10 +86,10 @@ Note: All effects have a fixed transition time value (set in the CSS), for simpl
 WUI.draggable(my_element, true);
 
 // apply a 500ms fade in effect to an element
-WUI.fadeIn(my_element);
+WUI.fadeIn(my_element, 500);
 
 // apply a 500ms fade out effect to an element, when finished output "finished" to the browser console and hide the element (display: none)
-WUI.fadeOut(my_element, function () { console.log("finished!"); }, true);
+WUI.fadeOut(my_element, function () { console.log("finished!"); }, true, 500);
 ```
 
 <br/>
