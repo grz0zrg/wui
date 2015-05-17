@@ -45,13 +45,13 @@ var WUI_Dialog = new (function() {
             draggable: false,
             resizable: false,
             
-            halign: "none", // 'left', 'center', 'right' or 'none'
-            valign: "none", // 'top', 'center', 'bottom' or 'none'
+            halign: "left", // 'left', 'center', 'right'
+            valign: "top", // 'top', 'center', 'bottom'
             
-            top: "0px",
-            bottom: "0px",
-            left: "0px",
-            right: "0px",
+            top: 0,
+            left: 0,
+
+            modal: false,
             
             minimized: false,
 
@@ -71,6 +71,10 @@ var WUI_Dialog = new (function() {
             return;
         }
         
+        if (widget.modal_element) {
+            document.body.removeChild(widget.modal_element);
+        }
+
         dialog.classList.add(_class_name.closed);
         dialog.classList.remove(_class_name.open);
 
@@ -84,7 +88,13 @@ var WUI_Dialog = new (function() {
     var _focus = function (dialog) {
         var cz_index = 0,
 
-            tmp_dialog = null;
+            tmp_dialog = null,
+
+            widget = _widget_list[dialog.id];
+
+        if (widget.opts.modal) {
+            return;
+        }
 
         for (var i in _widget_list) {
             if (_widget_list.hasOwnProperty(i)) {
@@ -103,6 +113,34 @@ var WUI_Dialog = new (function() {
         dialog.style.zIndex = 101;
     };
 
+    var _computeThenSetPosition = function (dialog) {
+        var widget = _widget_list[dialog.id],
+
+            opts = widget.opts,
+
+            parent_width = dialog.parentElement.offsetWidth,
+            parent_height = dialog.parentElement.offsetHeight,
+
+            dialog_width = dialog.offsetWidth,
+            dialog_height = dialog.offsetHeight;
+
+        if (opts.halign === "center") {
+            dialog.style.left = ((parent_width - dialog_width) / 2 + opts.left) + "px";
+        } else if (opts.halign === "right") {
+            dialog.style.left = (parent_width - dialog_width + opts.left) + "px";
+        } else {
+            dialog.style.left = opts.left + "px";
+        }
+
+        if (opts.valign === "center") {
+            dialog.style.top = ((parent_height - dialog_height) / 2 + opts.top) + "px";
+        } else if (opts.valign === "bottom") {
+            dialog.style.top = (parent_height - dialog_height + opts.top) + "px";
+        } else {
+            dialog.style.top = opts.top + "px";
+        }
+    };
+
     var _minimize = function (minimize_btn, dialog) {
         minimize_btn.classList.toggle(_class_name.minimize);
         minimize_btn.classList.toggle(_class_name.maximize);
@@ -119,12 +157,15 @@ var WUI_Dialog = new (function() {
 
                     i;
 
+                // resize content & set position
                 for (i = 0; i < dialog_contents.length; i += 1) {
                     var content = dialog_contents[i],
 
                         dialog = content.parentElement;
 
                     content.style.height = dialog.offsetHeight - 32 + "px";
+
+                    _computeThenSetPosition(dialog);
                 }
             }, 1000 / 8);
         }
@@ -162,9 +203,7 @@ var WUI_Dialog = new (function() {
             
             i,
             
-            new_x, new_y,
-            
-            widget = _widget_list[_dragged_dialog.id];   
+            new_x, new_y;
         
         if (touches) {
             for (i = 0; i < touches.length; i += 1) {
@@ -181,21 +220,9 @@ var WUI_Dialog = new (function() {
         
         new_x = x - _drag_x;
         new_y = y - _drag_y;
-        
+
         _dragged_dialog.style.left = new_x + 'px';
         _dragged_dialog.style.top  = new_y + 'px';
-        
-        if (widget.opts.halign === "right") {
-            _dragged_dialog.style.right = new_x + 'px';
-        } else if (widget.opts.halign === "center") {
-            _dragged_dialog.style.right = -new_x + 'px';
-        }
-        
-        if (widget.opts.valign === "bottom") {
-            _dragged_dialog.style.bottom = new_y  + 'px';
-        } else if (widget.opts.valign === "center") {
-            _dragged_dialog.style.bottom = -new_y  + 'px';
-        }
     };
     
     var _windowMouseUp = function (ev) {
@@ -234,6 +261,9 @@ var WUI_Dialog = new (function() {
         var x = ev.clientX,
             y = ev.clientY,
             
+            left = 0,
+            top = 0,
+
             touches = ev.changedTouches;
         
         if(ev.preventDefault) {
@@ -262,8 +292,11 @@ var WUI_Dialog = new (function() {
         
         document.body.style.cursor = "move";
         
-        _drag_x = x - parseInt(_dragged_dialog.style.left, 10);
-        _drag_y = y - parseInt(_dragged_dialog.style.top,  10);
+        left = parseInt(_dragged_dialog.style.left, 10);
+        top = parseInt(_dragged_dialog.style.top,  10);
+
+        _drag_x = x - left;
+        _drag_y = y - top;
 
         window.addEventListener('mousemove', _windowMouseMove, false);
         window.addEventListener('touchmove', _windowMouseMove, false);
@@ -336,32 +369,6 @@ var WUI_Dialog = new (function() {
         if (opts.resizable) {
             dialog.style.resize = "both";
         }
-
-        if (opts.halign === "center") {
-            dialog.style.left  = "0";
-            dialog.style.right = "0";
-        } else if (opts.halign === "right") {
-            dialog.style.right = "0";
-            dialog.style.left = "auto";
-        } else if (opts.halign === "left") {
-            dialog.style.left = "0";
-        } else {
-            dialog.style.left = opts.left;
-            dialog.style.right = opts.right;
-        }
-        
-        if (opts.valign === "center") {
-            dialog.style.top    = "0";
-            dialog.style.bottom = "0";
-        } else if (opts.valign === "bottom") {
-            dialog.style.top = "auto";
-            dialog.style.bottom = "0";
-        } else if (opts.valign === "top") {
-            dialog.style.top = "0";
-        } else {
-            dialog.style.top = opts.top;
-            dialog.style.bottom = opts.bottom;
-        }
         
         dialog.classList.add(_class_name.dialog);
         
@@ -425,16 +432,21 @@ var WUI_Dialog = new (function() {
         _widget_list[id] =  {
                                 dialog: dialog,
                                 minimized_id: -1,
-                                bottom_pos: dialog.style.bottom,
+
+                                opts: opts,
             
-                                opts: opts
+                                modal_element: null
                             };
         
+        _computeThenSetPosition(dialog);
+
         return id;
     };
     
     this.open = function (id) {
-        var widget = _widget_list[id];
+        var widget = _widget_list[id],
+
+            div;
 
         if (widget === undefined) {
             if (typeof console !== "undefined") {
@@ -444,6 +456,26 @@ var WUI_Dialog = new (function() {
             return;   
         }
         
+        if (widget.opts.modal) {
+            div = document.createElement("div");
+
+            div.className = "wui-dialog-modal";
+
+            div.addEventListener("click", function (ev) {
+                ev.preventDefault();
+
+                _close(widget.dialog, true);
+            });
+
+            div.style.zIndex = 999999;
+
+            widget.dialog.style.zIndex = 1000000;
+
+            widget.modal_element = div;
+
+            document.body.appendChild(div);
+        }
+
         widget.dialog.classList.remove(_class_name.closed);
         widget.dialog.classList.add(_class_name.open);
 
@@ -473,6 +505,10 @@ var WUI_Dialog = new (function() {
             console.log("Element id '" + id + "' is not a WUI_Dialog, destroying aborted.");
 
             return;
+        }
+
+        if (widget.modal_element) {
+            document.body.removeChild(widget.modal_element);
         }
 
         element = widget.dialog;

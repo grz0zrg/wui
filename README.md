@@ -7,6 +7,8 @@ Collection of **easy to use** and **lightweight** (*~3.6kb css*, *~7.4kb js* gzi
 
 It was not built to target mobile devices but it support touch events and the demo work ok with Safari on the IPad.
 
+Good for single page apps, experiments and the like. (caution: for serious usage it is usable but *may* be tricky)
+
 ####Demo
 - [Demo](http://grz0zrg.github.io/wui-demo/)
 <br/>
@@ -59,7 +61,7 @@ All widgets also have a method **_"destroy"_**.
 
 HTML elements with a specific layout are required to use some widgets (like tabs, see the documentation)
 
-A bit of style hacking may be necessary if you want widgets to suit your need or your taste, the demo page can be helpful for that.
+A bit of style hacking may be necessary if you want widgets to suit your need or your taste, the demo page can be helpful.
 
 ======
 
@@ -141,7 +143,7 @@ WUI_Tabs.create("my_tabs", {
 <a name="dialog"></a>
 ### Dialog/Panel ###
 
->The dialogs can be draggable, closable, minimizable, resizable (CSS3 feature) and act as panels, they also go in front of others when you move them.
+>The dialogs can be draggable, closable, minimizable, modal, resizable (CSS3 feature) and act as panels, they also go in front of others when you move them.
 
 <br/>*Methods*:
 
@@ -167,9 +169,9 @@ var my_dialog = WUI_Dialog.create("my_dialog", {
     width: "20%",
     height: "50%",
     
-    // 'left', 'center', 'right' or 'none'
+    // 'left', 'center', 'right', default to 'left'
     halign: "left",
-    // 'top', 'center', 'bottom' or 'none'
+    // 'top', 'center', 'bottom', default to 'top'
     valign: "center",
     
     // wether the dialog is opened or not after creation
@@ -181,15 +183,15 @@ var my_dialog = WUI_Dialog.create("my_dialog", {
     // function called when the dialog has been closed
     on_close: null,
     
+    modal: false,
+    
     closable: false,
     draggable: true,
     minimizable: true,
     
-    // can be used to position the dialog
-    top: "0px",
-    bottom: "0px",
-    left: "0px",
-    right: "0px"
+    // can be used to position the dialog, default to 0
+    top: 0,
+    left: 0
 });
 ```
 <br/>

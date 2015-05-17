@@ -24,6 +24,15 @@
     transition: visibility 0s ease 500ms, width 500ms, height 500ms, opacity 500ms ease;
 }
 
+.wui-dialog-modal {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    background-color: rgba(8,8,8, 0.6);
+}
+
 .wui-dialog-open {
     visibility: visible;
 

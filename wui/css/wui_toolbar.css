@@ -25,6 +25,17 @@
     -ms-user-select: none;
     user-select: none;
     
+    -webkit-box-align: center;
+
+    -webkit-align-items: center;
+
+    -ms-flex-align: center;
+
+    align-items: center;
+    -webkit-align-self: center;
+    -ms-flex-item-align: center;
+    align-self: center;
+
     color: white;
 
     padding-top: 2px;
@@ -51,6 +62,8 @@
     -ms-flex-direction: column;
     
     flex-direction: column;
+
+    margin: 0 auto;
 }
 
 .wui-toolbar-group {
@@ -61,7 +74,7 @@
 }
 
 .wui-toolbar-group-vertical {
-    margin-right: 4px;
+    margin-right: 2px;
     margin-left: 2px;
 }
 
@@ -161,7 +174,7 @@
     height: 12px;
     background-size: 12px 12px;
     pointer-events: all;
-    margin-bottom: 5px;
+    margin-bottom: 4px;
     -webkit-align-self: flex-end;
     -ms-flex-item-align: end;
     align-self: flex-end;
