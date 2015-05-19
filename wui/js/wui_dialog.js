@@ -11,25 +11,30 @@ var WUI_Dialog = new (function() {
     var _widget_list = {},
         
         _dragged_dialog = null,
+        _resized_dialog = null,
         
         _touch_identifier = null,
         
         _drag_x = 0,
         _drag_y = 0,
         
+        _resize_start_x = 0,
+        _resize_start_y = 0,
+
         _resize_timeout = null,
 
         _class_name = {
-            dialog:        "wui-dialog",
-            content:       "wui-dialog-content",
-            btn:           "wui-dialog-btn",
-            btn_close:     "wui-dialog-close",
-            minimize:      "wui-dialog-minimize",
-            maximize:      "wui-dialog-maximize",
-            header:        "wui-dialog-header",
-            open:          "wui-dialog-open",
-            closed:        "wui-dialog-closed",
-            draggable:     "wui-dialog-draggable"
+            dialog:         "wui-dialog",
+            content:        "wui-dialog-content",
+            btn:            "wui-dialog-btn",
+            btn_close:      "wui-dialog-close",
+            minimize:       "wui-dialog-minimize",
+            maximize:       "wui-dialog-maximize",
+            header:         "wui-dialog-header",
+            open:           "wui-dialog-open",
+            closed:         "wui-dialog-closed",
+            draggable:      "wui-dialog-draggable",
+            dim_transition: "wui-dialog-dim-transition"
         },
         
         _known_options = {
@@ -45,6 +50,8 @@ var WUI_Dialog = new (function() {
             draggable: false,
             resizable: false,
             
+            keep_align_when_resized: false,
+
             halign: "left", // 'left', 'center', 'right'
             valign: "top", // 'top', 'center', 'bottom'
             
@@ -305,6 +312,91 @@ var WUI_Dialog = new (function() {
         window.addEventListener('touchend', _windowMouseUp, false);
     };
     
+    var _onStartResize = function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        var dialog = e.target.parentElement,
+
+            left = dialog.offsetLeft,
+            top  = dialog.offsetTop,
+
+            touches = e.changedTouches;
+
+        if (touches) {
+            _touch_identifier = touches[0].identifier;
+        }
+
+        _resize_start_x = left;
+        _resize_start_y = top;
+
+        dialog.classList.remove(_class_name.dim_transition);
+
+        window.addEventListener('mousemove', _onResize, false);
+        window.addEventListener('touchmove', _onResize, false);
+
+        window.addEventListener('mouseup', _onStopResize, false);
+        window.addEventListener('touchend', _onStopResize, false);
+
+        _resized_dialog = dialog;
+    };
+
+    var _onResize = function (e) {
+        e.preventDefault();
+
+        var x = e.clientX, y = e.clientY,
+
+            touches = e.changedTouches,
+
+            touch = null,
+
+            widget = _widget_list[_resized_dialog.id],
+
+            i = 0;
+
+        if (touches) {
+            for (i = 0; i < touches.length; i += 1) {
+                touch = touches[i];
+
+                if (touch.identifier === _touch_identifier) {
+                    x = touches[i].clientX;
+                    y = touches[i].clientY;
+
+                    break;
+                }
+            }
+        }
+
+        _resized_dialog.style.width  = (x - _resize_start_x) + "px";
+        _resized_dialog.style.height = (y - _resize_start_y) + "px";
+
+        var dialog_contents = _resized_dialog.getElementsByClassName(_class_name.content);
+
+        for (i = 0; i < dialog_contents.length; i += 1) {
+            var content = dialog_contents[i];
+
+            content.style.height = _resized_dialog.offsetHeight - 32 + "px";
+
+            if (widget.opts.keep_align_when_resized) {
+                _computeThenSetPosition(_resized_dialog);
+            }
+        }
+    };
+
+    var _onStopResize = function (e) {
+        e.preventDefault();
+
+        _resized_dialog.classList.add(_class_name.dim_transition);
+
+        window.removeEventListener('mousemove', _onResize, false);
+        window.removeEventListener('touchmove', _onResize, false);
+
+        window.removeEventListener('mouseup', _onStopResize, false);
+        window.removeEventListener('touchend', _onStopResize, false);
+
+        _resized_dialog = null;
+    };
+
     /***********************************************************
         Public section.
         
@@ -342,6 +434,8 @@ var WUI_Dialog = new (function() {
             
             header = document.createElement("div"),
             
+            resize_handler,
+
             header_close_btn    = null,
             header_minimaxi_btn = null,
             header_title        = null;
@@ -365,11 +459,7 @@ var WUI_Dialog = new (function() {
         // set dialog style
         dialog.style.width  = opts.width;
         dialog.style.height = opts.height;
-        
-        if (opts.resizable) {
-            dialog.style.resize = "both";
-        }
-        
+
         dialog.classList.add(_class_name.dialog);
         
         content.classList.add(_class_name.content);
@@ -425,10 +515,22 @@ var WUI_Dialog = new (function() {
         window.addEventListener("resize", _onWindowResize, false);
 
         dialog.classList.add("wui-dialog-transition");
+        dialog.classList.add(_class_name.dim_transition);
 
         // go!
         dialog.insertBefore(header, content);
         
+        if (opts.resizable) {
+            resize_handler = document.createElement("div");
+
+            resize_handler.addEventListener("mousedown", _onStartResize, false);
+            resize_handler.addEventListener("touchstart", _onStartResize, false);
+
+            resize_handler.classList.add("wui-dialog-resize");
+
+            dialog.appendChild(resize_handler);
+        }
+
         _widget_list[id] =  {
                                 dialog: dialog,
                                 minimized_id: -1,

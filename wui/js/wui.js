@@ -9,15 +9,7 @@ var WUI = new (function() {
         Fields.
     ************************************************************/
     
-    var widgets = [
-            WUI_DropDown,
-            WUI_Dialog,
-            WUI_RangeSlider,
-            WUI_ToolBar,
-            WUI_Tabs
-        ],
-
-        _class_name = {
+    var _class_name = {
             display_none:  "wui-display-none",
             hide_fi_500:   "wui-hide-fi-500",
             hide_show_500: "wui-show-fi-500",
@@ -177,20 +169,6 @@ var WUI = new (function() {
         
         Functions.
     ************************************************************/
-    
-    /**
-     * Dispatch an event to all created widgets.
-     * 
-     * This can be usefull in case you do not want event listeners to be created by the library.
-     * 
-     * @param {Object} event DOM event
-     * @param {String} type  Type of the event (mousemove and so on)
-     */
-    this.dispatchEvent = function (event, type) {
-        for (var i = 0; i < widgets.length; i += 1) {
-            widgets[i].triggerEvent(event, type);
-        }
-    };
 
     /**
      * Apply a fade out effect to the element.
