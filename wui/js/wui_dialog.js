@@ -50,6 +50,9 @@ var WUI_Dialog = new (function() {
             draggable: false,
             resizable: false,
             
+            min_width: "title",
+            min_height: 64,
+
             keep_align_when_resized: false,
 
             halign: "left", // 'left', 'center', 'right'
@@ -180,7 +183,6 @@ var WUI_Dialog = new (function() {
 
     var _onClick = function (ev) {
         ev.preventDefault();
-        ev.stopPropagation();
 
         var element = ev.target,
 
@@ -352,7 +354,14 @@ var WUI_Dialog = new (function() {
 
             widget = _widget_list[_resized_dialog.id],
 
-            i = 0;
+            dialog_contents = null,
+
+            title_div = null,
+            title_div_width = 0,
+
+            i = 0,
+
+            w, h;
 
         if (touches) {
             for (i = 0; i < touches.length; i += 1) {
@@ -367,10 +376,28 @@ var WUI_Dialog = new (function() {
             }
         }
 
-        _resized_dialog.style.width  = (x - _resize_start_x) + "px";
-        _resized_dialog.style.height = (y - _resize_start_y) + "px";
+        w = x - _resize_start_x;
+        h = y - _resize_start_y;
 
-        var dialog_contents = _resized_dialog.getElementsByClassName(_class_name.content);
+        title_div = _resized_dialog.firstElementChild.firstElementChild.firstElementChild;
+
+        title_div_width = title_div.offsetWidth + 108;
+
+        if (widget.opts.min_width === "title" &&
+            w < title_div_width) {
+            w = title_div_width;
+        } else if (w < widget.opts.min_width) {
+            w = widget.opts.min_width;
+        }
+
+        if (h < widget.opts.min_height) {
+            h = widget.opts.min_height;
+        }
+
+        _resized_dialog.style.width  = w + "px";
+        _resized_dialog.style.height = h + "px";
+
+        dialog_contents = _resized_dialog.getElementsByClassName(_class_name.content);
 
         for (i = 0; i < dialog_contents.length; i += 1) {
             var content = dialog_contents[i];

@@ -167,60 +167,6 @@
     cursor: pointer;
 }
 
-.wui-dialog-resize-border-left {
-    position: absolute;
-
-    width: 4px;
-    height: 100%;
-
-    top: 0;
-    left: 0;
-}
-
-.wui-dialog-resize-border-left:hover {
-    cursor: w-resize;
-}
-
-.wui-dialog-resize-border-right {
-    position: absolute;
-
-    width: 4px;
-    height: 100%;
-
-    top: 0;
-    right: 0;
-}
-
-.wui-dialog-resize-border-right:hover {
-    cursor: e-resize;
-}
-
-.wui-dialog-resize-border-top {
-    position: absolute;
-
-    width: 100%;
-    height: 4px;
-
-    top: 0;
-}
-
-.wui-dialog-resize-border-top:hover {
-    cursor: n-resize;
-}
-
-.wui-dialog-resize-border-bottom {
-    position: absolute;
-
-    width: 100%;
-    height: 4px;
-
-    bottom: 0;
-}
-
-.wui-dialog-resize-border-bottom:hover {
-    cursor: s-resize;
-}
-
 .wui-dialog-title {
     font-size: 8pt;
 

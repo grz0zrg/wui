@@ -1,7 +1,7 @@
 WUI
 =====
 
-Collection of **easy to use** and **lightweight** (*~4.1kb css*, *~7.8kb js* gzipped) vanilla GUI widgets for the web.
+Collection of **easy to use** and **lightweight** (*~4.0kb css*, *~7.9kb js* gzipped) vanilla GUI widgets for the web.
 
 *Require no dependencies, all widgets can be used on their own.*
 
@@ -190,6 +190,10 @@ var my_dialog = WUI_Dialog.create("my_dialog", {
     minimizable: true,
     
     resizable: true,
+    
+    // the minimun width/height the dialog can be when resized (min_width accept a value or "title")
+    min_width: "title",
+    min_height: 64,
     
     // option to keep the align when resized, example: if the dialog is centered in the window, the dialog will always be in center when it is resized
     keep_align_when_resized: true;
