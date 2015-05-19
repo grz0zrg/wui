@@ -2,6 +2,8 @@
 /* jshint globalstrict: false */
 
 var WUI_Tabs = new (function() {
+    "use strict";
+
     /***********************************************************
         Private section.
         
@@ -22,7 +24,9 @@ var WUI_Tabs = new (function() {
         },
         
         _known_options = {
-            on_tab_click: null
+            on_tab_click: null,
+
+            height: "100%"
         };
 
     /***********************************************************
@@ -154,7 +158,7 @@ var WUI_Tabs = new (function() {
         
         var tab_content_count = content.childElementCount;
         
-        content.style.height = content.offsetHeight - 32 + "px";
+        content.style.height = opts.height;
         
         content.children[0].classList.add(_class_name.tab_content);  
         

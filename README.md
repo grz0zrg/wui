@@ -132,7 +132,10 @@ WUI.fadeOut(my_element, function () { console.log("finished!"); }, true, 500);
 ```javascript
 WUI_Tabs.create("my_tabs", {
 	// function called when a tab is clicked (tab index will be passed as argument)
-	on_tab_click: tab_clicked
+	on_tab_click: tab_clicked,
+    
+    // style value for the content height
+    height: "100%"
 });
 ```
 
@@ -438,10 +441,7 @@ Not well tested but should work in all modern browsers supporting **_ECMAScript 
 
 Tested and work ok with IE 11, Opera 12, Chrome (30, 35, 40), Firefox (31, 37) and Safari (6, 7, 8).
 
->
-IE   10 - WUI_ToolBar does not work correctly, due to the use of 'pointer-events' and 'flexbox'
-<br/><br/>
-IE < 10 - Not compatible
+Mostly work (problems with the ToolBar and Dialog) under IE 10 but i do not support it.
 
 ======
 

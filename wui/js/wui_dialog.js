@@ -2,6 +2,8 @@
 /* jshint globalstrict: false */
 
 var WUI_Dialog = new (function() {
+    "use strict";
+
     /***********************************************************
         Private section.
         
@@ -28,6 +30,7 @@ var WUI_Dialog = new (function() {
             content:        "wui-dialog-content",
             btn:            "wui-dialog-btn",
             btn_close:      "wui-dialog-close",
+            minimized:      "wui-dialog-minimized",
             minimize:       "wui-dialog-minimize",
             maximize:       "wui-dialog-maximize",
             header:         "wui-dialog-header",
@@ -51,7 +54,7 @@ var WUI_Dialog = new (function() {
             resizable: false,
             
             min_width: "title",
-            min_height: 64,
+            min_height: 32,
 
             keep_align_when_resized: false,
 
@@ -152,10 +155,20 @@ var WUI_Dialog = new (function() {
     };
 
     var _minimize = function (minimize_btn, dialog) {
+        var widget = _widget_list[dialog.id];
+
         minimize_btn.classList.toggle(_class_name.minimize);
         minimize_btn.classList.toggle(_class_name.maximize);
 
-        dialog.classList.toggle("wui-dialog-minimized");
+        dialog.classList.toggle(_class_name.minimized);
+
+        if (widget.resize_handler) {
+            if (dialog.classList.contains(_class_name.minimized)) {
+                widget.resize_handler.style.display = "none";
+            } else {
+                widget.resize_handler.style.display = "block";
+            }
+        }
     };
 
     var _onWindowResize = function () {
@@ -183,6 +196,7 @@ var WUI_Dialog = new (function() {
 
     var _onClick = function (ev) {
         ev.preventDefault();
+        ev.stopPropagation();
 
         var element = ev.target,
 
@@ -275,9 +289,7 @@ var WUI_Dialog = new (function() {
 
             touches = ev.changedTouches;
         
-        if(ev.preventDefault) {
-            ev.preventDefault();
-        }
+        ev.preventDefault();
 
         if (_dragged_dialog === null) {
             if (touches) {
@@ -395,7 +407,10 @@ var WUI_Dialog = new (function() {
         }
 
         _resized_dialog.style.width  = w + "px";
-        _resized_dialog.style.height = h + "px";
+
+        if (!_resized_dialog.classList.contains(_class_name.minimized)) {
+            _resized_dialog.style.height = h + "px";
+        }
 
         dialog_contents = _resized_dialog.getElementsByClassName(_class_name.content);
 
@@ -461,11 +476,12 @@ var WUI_Dialog = new (function() {
             
             header = document.createElement("div"),
             
-            resize_handler,
+            resize_handler = null,
 
-            header_close_btn    = null,
-            header_minimaxi_btn = null,
-            header_title        = null;
+            header_close_btn     = null,
+            header_minimaxi_btn  = null,
+            header_title         = null,
+            header_title_wrapper = null;
             
         if (dialog === null) {
             if (typeof console !== "undefined") {
@@ -496,14 +512,18 @@ var WUI_Dialog = new (function() {
         
         content.style.height = dialog.offsetHeight - 32 + "px";
         
-        if (opts.title !== "") {
+        //if (opts.title !== "") {
+            header_title_wrapper = document.createElement("div");
             header_title = document.createElement("div");
+
+            header_title_wrapper.style.display = "inline-block";
             
             header_title.className = "wui-dialog-title";
-            header_title.innerHTML = opts.title;
+            header_title_wrapper.innerHTML = opts.title;
             
+            header_title.appendChild(header_title_wrapper);
             header.appendChild(header_title);
-        }
+        //}
         
         if (opts.open) {
             dialog.classList.add(_class_name.open);
@@ -561,6 +581,8 @@ var WUI_Dialog = new (function() {
         _widget_list[id] =  {
                                 dialog: dialog,
                                 minimized_id: -1,
+
+                                resize_handler: resize_handler,
 
                                 opts: opts,
             

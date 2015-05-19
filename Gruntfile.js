@@ -2,6 +2,15 @@ module.exports = function(grunt) {
   	grunt.initConfig({
     	pkg: grunt.file.readJSON('package.json'),
  
+ 		concat: {
+ 			dist: {
+ 				files: {
+					'dist/wui.js':  ['wui/js/wui_dialog.js', 'wui/js/wui_dropdown.js', 'wui/js/wui_range_slider.js', 'wui/js/wui_tabs.js', 'wui/js/wui_toolbar.js', 'wui/js/wui.js'],
+ 					'dist/wui.css': ['wui/css/wui_dialog.css', 'wui/css/wui_dropdown.css', 'wui/css/wui_range_slider.css', 'wui/css/wui_tabs.css', 'wui/css/wui_toolbar.css', 'wui/css/wui.css']
+ 				}
+ 			}
+ 		},
+
     	uglify: {
       		options: {
         		banner: '',
@@ -99,6 +108,7 @@ module.exports = function(grunt) {
  	grunt.loadNpmTasks('grunt-contrib-compress');
     grunt.loadNpmTasks('grunt-contrib-cssmin');
   	grunt.loadNpmTasks('grunt-contrib-uglify');
+  	grunt.loadNpmTasks('grunt-contrib-concat');
   	
-  	grunt.registerTask('dist', ['cssmin', 'uglify', 'compress']);
+  	grunt.registerTask('dist', ['concat', 'cssmin', 'uglify', 'compress']);
 }

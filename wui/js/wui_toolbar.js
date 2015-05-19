@@ -2,6 +2,8 @@
 /* jshint globalstrict: false */
 
 var WUI_ToolBar = new (function() {
+    "use strict";
+
     /***********************************************************
         Private section.
         

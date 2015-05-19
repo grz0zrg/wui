@@ -3,6 +3,8 @@
 /* global */
 
 var WUI_RangeSlider = new (function() {
+    "use strict";
+
     /***********************************************************
         Private section.
         
@@ -486,6 +488,10 @@ var WUI_RangeSlider = new (function() {
         filler.classList.add(_class_name.filler);
         hook.classList.add(_class_name.hook);
         
+        if (opts.vertical) {
+            title_div.style.textAlign = "center";
+        }
+
         title_div.style.minWidth = opts.title_min_width + "px";
         value_div.style.minWidth = opts.value_min_width + "px";
         value_input.style.minWidth = opts.value_min_width + "px";

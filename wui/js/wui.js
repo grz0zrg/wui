@@ -3,6 +3,8 @@
 /* global WUI_ToolBar, WUI_DropDown, WUI_RangeSlider, WUI_Tabs, WUI_Dialog */
 
 var WUI = new (function() {
+    "use strict";
+
     /***********************************************************
         Private section.
         

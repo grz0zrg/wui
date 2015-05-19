@@ -3,6 +3,8 @@
 /* global */
 
 var WUI_DropDown = new (function() {
+    "use strict";
+
     /***********************************************************
         Private section.
         
