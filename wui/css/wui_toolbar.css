@@ -48,6 +48,8 @@
     font-family: monospace;
     
     z-index: 9;
+
+    pointer-events: all;
 }
 
 .wui-toolbar-vertical {
@@ -119,6 +121,8 @@
 
     background-repeat: no-repeat;
     background-position: center;
+
+    pointer-events: all;
 }
 
 .wui-toolbar-item-vertical {
@@ -173,6 +177,8 @@
     -webkit-align-self: flex-end;
     -ms-flex-item-align: end;
     align-self: flex-end;
+
+    pointer-events: all;
 }
 
 .wui-toolbar-minimize-group-vertical {
@@ -185,6 +191,8 @@
     width: 12px;
     height: 12px;
     background-size: 12px 12px;
+
+    pointer-events: all;
 }
 
 .wui-toolbar-dropdown-content {
