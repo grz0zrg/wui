@@ -128,6 +128,8 @@ var WUI_Tabs = new (function() {
             }
         }
         
+        element.style.overflow = "hidden";
+
         underline.className = "wui-tabs-underline";
         
         element.insertBefore(underline, content);
