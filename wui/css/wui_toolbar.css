@@ -45,8 +45,6 @@
     
     text-shadow: 1px 1px 1px #000000;
 
-    pointer-events: all;
-    
     font-family: monospace;
     
     z-index: 9;
@@ -121,8 +119,6 @@
 
     background-repeat: no-repeat;
     background-position: center;
-
-    pointer-events: all;
 }
 
 .wui-toolbar-item-vertical {
@@ -173,7 +169,6 @@
     width: 12px;
     height: 12px;
     background-size: 12px 12px;
-    pointer-events: all;
     margin-bottom: 4px;
     -webkit-align-self: flex-end;
     -ms-flex-item-align: end;
@@ -190,7 +185,6 @@
     width: 12px;
     height: 12px;
     background-size: 12px 12px;
-    pointer-events: all;
 }
 
 .wui-toolbar-dropdown-content {

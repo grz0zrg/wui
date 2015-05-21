@@ -14,8 +14,6 @@
     overflow: hidden;
 
     box-shadow: 0px 0px 4px 1px #080808;
-
-    pointer-events: none;
 }
 
 .wui-dialog-transition {
@@ -47,8 +45,6 @@
     -webkit-transition-delay: 0s;
 
     transition-delay: 0s;
-
-    pointer-events: all;
 }
 
 .wui-dialog-header {
@@ -696,6 +692,7 @@
         margin-left: 6px !important;
     }
 }
+
 .wui-toolbar {
     width: auto;
     height: auto;
@@ -742,8 +739,6 @@
     letter-spacing: 0.1pc;
 
     text-shadow: 1px 1px 1px #000000;
-
-    pointer-events: all;
 
     font-family: monospace;
 
@@ -819,8 +814,6 @@
 
     background-repeat: no-repeat;
     background-position: center;
-
-    pointer-events: all;
 }
 
 .wui-toolbar-item-vertical {
@@ -871,7 +864,6 @@
     width: 12px;
     height: 12px;
     background-size: 12px 12px;
-    pointer-events: all;
     margin-bottom: 4px;
     -webkit-align-self: flex-end;
     -ms-flex-item-align: end;
@@ -888,7 +880,6 @@
     width: 12px;
     height: 12px;
     background-size: 12px 12px;
-    pointer-events: all;
 }
 
 .wui-toolbar-dropdown-content {
