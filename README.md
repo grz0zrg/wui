@@ -1,7 +1,7 @@
 WUI
 =====
 
-Collection of **easy to use** and **lightweight** (*~4.3kb css*, *~9.6kb js* gzipped) vanilla GUI widgets for the web.
+Collection of **easy to use** and **lightweight** (*~4.3kb css*, *~9.9kb js* gzipped) vanilla GUI widgets for the web.
 
 *Require no dependencies, all widgets can be used on their own.*
 
@@ -55,7 +55,7 @@ grunt dist
 
 The WUI API is simple, all widgets have a method **_"create"_** which take a DOM element identifier as first argument (which is used as a bind target) and an option object as second argument to customize it, WUI_ToolBar has a third argument which is used to specify the content of the toolbar.
 
-All **_"create"_** methods return a reference of the widget which can be used later to do stuff with the widget like destroying them.
+All **_"create"_** methods return a reference of the widget which can be used later to do stuff with the widget like destroying them, the reference is a string (in fact, it is the dialog element id).
 
 All widgets also have a method **_"destroy"_**.
 
@@ -135,7 +135,7 @@ WUI_Tabs.create("my_tabs", {
 	on_tab_click: tab_clicked,
     
     // style value for the content height
-    height: "100%"
+    height: "calc(100% - 32px)" // this is the default value
 });
 ```
 
@@ -150,7 +150,9 @@ WUI_Tabs.create("my_tabs", {
 
 >One of the coolest (and maybe 'unique') feature of the dialog widget is the ability to be detached from the window it is on and act as a proper window without breaking the content (including events), this may be very usefull, the user can detach any dialogs and move them on other screens etc.
 
->All WUI widgets work very well with the detachable feature, what you change in the detachable dialog will be changed in the 'original' dialog, this should be the same dialog after all, for example, if you toggle a WUI_ToolBar button in the detached dialog and close it, when you open the dialog again (detached or not) the button will be toggled, the only thing which is not synced is the size of the detached dialog.
+>All WUI widgets work very well with the detachable feature, what you change in the detachable dialog will be changed in the 'original' dialog, this should be the same dialog after all, for example, if you toggle a WUI_ToolBar button in the detached dialog and close it, when you open the dialog again (detached or not) the button will be toggled, the only thing which is not synced is the size of the detached dialog and its position.
+
+>Note: On iPad, the detach feature will not work well because Safari will open the dialog as a new tab.
 
 >Note: The detach feature keep track of events by overriding `addEventListener`, in order to work correctly the WUI_Dialog/WUI library should be loaded before you or other libs add events.
 
@@ -164,6 +166,7 @@ WUI_Tabs.create("my_tabs", {
 *   destroy(wui_dialog)
 *   open(wui_dialog, detach)
 *   close(wui_dialog, propagate)
+*   setStatusBarContent(wui_dialog, html_content)
   
 <br/>*Example*:
   
@@ -204,6 +207,12 @@ var my_dialog = WUI_Dialog.create("my_dialog", {
     
     modal: false,
     
+    // wether the dialog have a status bar
+    status_bar: true,
+    
+    // HTML content of the status bar
+    status_bar_content: "status bar content",
+    
     closable: false,
     draggable: true,
     minimizable: true,
@@ -237,6 +246,13 @@ Open and want to close it programmatically?
 
 ```javascript
 WUI_Dialog.close(my_dialog, true); // last argument is optional (default to false) mean the on_close function will be called
+```
+<br/>
+
+Want to change the status bar content?
+
+```javascript
+WUI_Dialog.setStatusBarContent(my_dialog, "My new status bar content");
 ```
 <br/>
 ======

@@ -18,7 +18,8 @@ var WUI_DropDown = new (function() {
             item:       "wui-dropdown-item",
             content:    "wui-dropdown-content",
             selected:   "wui-dropdown-selected",
-            open:       "wui-dropdown-open"
+            open:       "wui-dropdown-open",
+            on:         "wui-dropdown-on"
         },
         
         _known_options = {
@@ -107,8 +108,7 @@ var WUI_DropDown = new (function() {
 
     var _deleteFloatingContent = function (doc, dd, widget) {
         //widget.floating_content.classList.remove(_class_name.open);
-        
-        dd.classList.remove("wui-dropdown-on");
+        dd.classList.remove(_class_name.on);
 
         if (widget.floating_content) {
             doc.body.removeChild(widget.floating_content);
@@ -134,8 +134,12 @@ var WUI_DropDown = new (function() {
 
             floating_content = widget.floating_content;
 
-            if (widget.floating_content.classList.contains(_class_name.open)) {
-                _deleteFloatingContent(ev.target.ownerDocument, current_element, widget);
+            if (floating_content) {
+                if (floating_content.classList.contains(_class_name.open)) {
+                    _deleteFloatingContent(ev.target.ownerDocument, current_element, widget);
+                }
+            } else {
+                _mouseOver(ev);
             }
         }
 
@@ -179,6 +183,8 @@ var WUI_DropDown = new (function() {
         if (widget.opts.on_item_selected !== undefined) {
             widget.opts.on_item_selected(current_element.dataset.index);  
         }
+
+        _deleteFloatingContent(current_element.ownerDocument, widget.target_element, widget);
     };
     
     var _mouseOver = function (ev) {
@@ -200,7 +206,7 @@ var WUI_DropDown = new (function() {
             widget = _widget_list[current_element.id];
             
             if (widget.floating_content === null) {
-                current_element.classList.add("wui-dropdown-on");
+                current_element.classList.add(_class_name.on);
 
                 _createFloatingContent(owner_doc, widget);
 

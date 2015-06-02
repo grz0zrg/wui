@@ -39,8 +39,10 @@ var WUI_Dialog = new (function() {
             open:           "wui-dialog-open",
             closed:         "wui-dialog-closed",
             draggable:      "wui-dialog-draggable",
+            transition:     "wui-dialog-transition",
             dim_transition: "wui-dialog-dim-transition",
-            modal:          "wui-dialog-modal"
+            modal:          "wui-dialog-modal",
+            status_bar:     "wui-dialog-status-bar"
         },
         
         _known_options = {
@@ -59,6 +61,9 @@ var WUI_Dialog = new (function() {
             
             min_width: "title",
             min_height: 32,
+
+            status_bar: false,
+            status_bar_content: "",
 
             keep_align_when_resized: false,
 
@@ -258,11 +263,11 @@ var WUI_Dialog = new (function() {
         dialog.classList.toggle(_class_name.minimized);
 
         if (resize_handler) {
-            if (dialog.classList.contains(_class_name.minimized)) {
-                resize_handler.style.display = "none";
-            } else {
-                resize_handler.style.display = "block";
-            }
+            resize_handler.classList.toggle(_class_name.open);
+        }
+
+        if (widget.status_bar) {
+            widget.status_bar.classList.toggle(_class_name.open);
         }
     };
 
@@ -277,6 +282,8 @@ var WUI_Dialog = new (function() {
                     content,
                     dialog,
 
+                    status_bar,
+
                     i;
 
                 if (detached) {
@@ -289,7 +296,13 @@ var WUI_Dialog = new (function() {
 
                         dialog = content.parentElement;
 
-                        content.style.height = detached.innerHeight + "px";
+                        status_bar = dialog.getElementsByClassName(_class_name.status_bar);
+
+                        if (status_bar.length > 0) {
+                            content.style.height = (detached.innerHeight - 32) + "px";
+                        } else {
+                            content.style.height = detached.innerHeight + "px";
+                        }
                     }
 
                     return;
@@ -303,7 +316,13 @@ var WUI_Dialog = new (function() {
 
                     dialog = content.parentElement;
 
-                    content.style.height = dialog.offsetHeight - 32 + "px";
+                    status_bar = dialog.getElementsByClassName(_class_name.status_bar);
+
+                    if (status_bar.length > 0) {
+                        content.style.height = dialog.offsetHeight - 64 + "px";
+                    } else {
+                        content.style.height = dialog.offsetHeight - 32 + "px";
+                    }
 
                     _computeThenSetPosition(dialog);
                 }
@@ -351,8 +370,13 @@ var WUI_Dialog = new (function() {
 
             css, css_html, i, dbc = dialog.getBoundingClientRect();
 
-        w = parseInt(dbc.width,  10);
-        h = parseInt(dbc.height, 10) - 32;
+        if (dialog.classList.contains(_class_name.minimized)) {
+            w = parseInt(dialog.style.width,  10);
+            h = parseInt(dialog.style.height, 10) - 32;
+        } else {
+            w = dbc.width;
+            h = dbc.height - 32;
+        }
 
         screen_left = typeof window.screenLeft !== "undefined" ? window.screenLeft : screen.left;
         screen_top = typeof window.screenTop !== "undefined" ? window.screenTop : screen.top;
@@ -407,6 +431,16 @@ var WUI_Dialog = new (function() {
 
         child_window.document.body.appendChild(dialog.children[1].cloneNode(true));
 
+        var status_bar = dialog.getElementsByClassName(_class_name.status_bar);
+
+        if (status_bar.length > 0) {
+            var new_status_bar = status_bar[0].cloneNode(true);
+
+            new_status_bar.classList.add(_class_name.open);
+
+            child_window.document.body.appendChild(new_status_bar);
+        }
+
         child_window.addEventListener("resize", function () { _onWindowResize(child_window); }, false);
 
         child_window.addEventListener("load", function () {
@@ -433,7 +467,7 @@ var WUI_Dialog = new (function() {
 
     var _onClick = function (ev) {
         ev.preventDefault();
-        //ev.stopPropagation();
+        ev.stopPropagation();
 
         var element = ev.target,
 
@@ -490,6 +524,10 @@ var WUI_Dialog = new (function() {
     };
     
     var _windowMouseUp = function (ev) {
+        if (!_dragged_dialog) {
+            return;
+        }
+
         var touches = ev.changedTouches,
             
             touch = null,
@@ -626,7 +664,7 @@ var WUI_Dialog = new (function() {
 
             i = 0,
 
-            w, h;
+            w, h, off_h = 0;
 
         if (touches) {
             for (i = 0; i < touches.length; i += 1) {
@@ -663,8 +701,12 @@ var WUI_Dialog = new (function() {
             w = widget.opts.min_width;
         }
 
-        if (h < widget.opts.min_height) {
-            h = widget.opts.min_height;
+        if (widget.opts.status_bar) {
+            off_h = 32;
+        }
+
+        if (h < (widget.opts.min_height + off_h)) {
+            h = widget.opts.min_height + off_h;
         }
 
         _resized_dialog.style.width  = w + "px";
@@ -678,7 +720,7 @@ var WUI_Dialog = new (function() {
         for (i = 0; i < dialog_contents.length; i += 1) {
             var content = dialog_contents[i];
 
-            content.style.height = _resized_dialog.offsetHeight - 32 + "px";
+            content.style.height = (_resized_dialog.offsetHeight - 32 - off_h) + "px";
 
             if (widget.opts.keep_align_when_resized) {
                 _computeThenSetPosition(_resized_dialog);
@@ -754,7 +796,9 @@ var WUI_Dialog = new (function() {
             header_close_btn     = null,
             header_minimaxi_btn  = null,
             header_title         = null,
-            header_title_wrapper = null;
+            header_title_wrapper = null,
+
+            status_bar = null;
             
         if (dialog === null) {
             if (typeof console !== "undefined") {
@@ -783,7 +827,11 @@ var WUI_Dialog = new (function() {
         // build the dialog header (btns and the title)
         header.className = _class_name.header;
         
-        content.style.height = dialog.offsetHeight - 32 + "px";
+        if (opts.status_bar) {
+            content.style.height = dialog.offsetHeight - 64 + "px";
+        } else {
+            content.style.height = dialog.offsetHeight - 32 + "px";
+        }
         
         //if (opts.title !== "") {
             header_title_wrapper = document.createElement("div");
@@ -840,13 +888,25 @@ var WUI_Dialog = new (function() {
             header.appendChild(header_detach_btn);
         }
 
+        if (opts.status_bar) {
+            status_bar = document.createElement("div");
+
+            status_bar.classList.add(_class_name.status_bar);
+            status_bar.classList.add(_class_name.transition);
+            status_bar.classList.add(_class_name.open);
+
+            status_bar.innerHTML = opts.status_bar_content;
+
+            dialog.appendChild(status_bar);
+        }
+
         dialog.addEventListener("click", _onClick, false);
-        dialog.addEventListener("touchstart", _onClick, false);
+        //dialog.addEventListener("touchstart", _onClick, false);
 
         window.addEventListener("resize", function () { _onWindowResize(false); }, false);
         window.addEventListener("beforeunload", _onBeforeUnload, false);
 
-        dialog.classList.add("wui-dialog-transition");
+        dialog.classList.add(_class_name.transition);
         dialog.classList.add(_class_name.dim_transition);
 
         // go!
@@ -859,6 +919,10 @@ var WUI_Dialog = new (function() {
             resize_handler.addEventListener("touchstart", _onStartResize, false);
 
             resize_handler.classList.add("wui-dialog-resize");
+
+            resize_handler.classList.add(_class_name.transition);
+
+            resize_handler.classList.add(_class_name.open);
 
             dialog.appendChild(resize_handler);
         }
@@ -873,7 +937,9 @@ var WUI_Dialog = new (function() {
             
                                 detachable_ref: null,
 
-                                modal_element: null
+                                modal_element: null,
+
+                                status_bar: status_bar
                             };
         
         _computeThenSetPosition(dialog);
@@ -881,6 +947,39 @@ var WUI_Dialog = new (function() {
         return id;
     };
     
+    this.setStatusBarContent = function (id, content) {
+        var widget = _widget_list[id],
+
+            detached_dialog_elem,
+
+            status_bar,
+
+            detach_ref;
+
+        if (widget === undefined) {
+            if (typeof console !== "undefined") {
+                console.log("Cannot setStatusBarContent of WUI dialog \"" + id + "\".");
+            }
+
+            return;
+        }
+
+        if (widget.status_bar) {
+            widget.status_bar.innerHTML = content;
+
+            detach_ref = widget.detachable_ref;
+            if (detach_ref) {
+                if (!detach_ref.closed) {
+                    status_bar = detach_ref.document.body.getElementsByClassName(_class_name.status_bar);
+
+                    if (status_bar.length > 0) {
+                        status_bar[0].innerHTML = content;
+                    }
+                }
+            }
+        }
+    };
+
     this.open = function (id, detach) {
         var widget = _widget_list[id],
 

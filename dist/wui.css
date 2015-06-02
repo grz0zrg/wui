@@ -45,9 +45,9 @@
 }
 
 .wui-dialog-open {
-    visibility: visible;
+    visibility: visible !important;
 
-    opacity: 1;
+    opacity: 1 !important;
 
     -webkit-transition-delay: 0s;
 
@@ -74,7 +74,7 @@
     user-select: none;
 }
 
-.wui-dialog-footer {
+.wui-dialog-status-bar {
     height: 32px;
 
     background: rgba(0, 0, 0, 0.95);
@@ -87,6 +87,19 @@
     -webkit-user-select: none;
     -ms-user-select: none;
     user-select: none;
+
+    bottom: 0;
+    width: 100%;
+    position: absolute;
+    z-index: 1000;
+
+    line-height: 32px;
+    text-align: center;
+
+    visibility: hidden;
+    opacity: 0;
+
+    cursor: default;
 }
 
 .wui-dialog-draggable > .wui-dialog-header {
@@ -148,6 +161,9 @@
 
     background-repeat: no-repeat;
 	background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAAAmJLR0QA/4ePzL8AAAAJcEhZcwAA5q8AAOavAeavKoYAAAAHdElNRQffBRMCEQdryRGGAAAAmUlEQVQ4y83QzQkCMRRF4ROFWIUlTPrSNoSpQWxBbGNW7izAOnRzXPjDSEzIbNS3ujy+BN6FiRNakE8pzBt5YsOSY9PvYuegbg1O4IOd+Fc8GCqPMp7cuS4enfF6SwVeuuOHPG+pyvOWqjxvqYGP7/gCT2/nfc7RKIIY3Y/WpdzbG2UGBM4cWHGq5Nfci1oAl8emlCNwZfrcAAU/mdvMkZWyAAAAJXRFWHRkYXRlOmNyZWF0ZQAyMDE1LTA1LTEyVDE2OjE3OjAwKzAyOjAwu835DAAAACV0RVh0ZGF0ZTptb2RpZnkAMjAxNS0wNS0xMlQxNjoxNzowMCswMjowMMqQQbAAAAAASUVORK5CYII=);
+
+    visibility: hidden;
+    opacity: 0;
 
     z-index: 1000;
 }
@@ -631,7 +647,6 @@
 
 .wui-tabs-content {
     width: 100%;
-    height: 100%;
 
     background-color: #000000;
 

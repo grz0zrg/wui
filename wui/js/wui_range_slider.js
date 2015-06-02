@@ -272,6 +272,10 @@ var WUI_RangeSlider = new (function() {
     };
     
     var _rsMouseUp = function (ev) {
+        if (!_grabbed_hook_element) {
+            return;
+        }
+
         ev.preventDefault();
 
         var touches = ev.changedTouches,
