@@ -59,12 +59,15 @@ var WUI_RangeSlider = new (function() {
     ************************************************************/
     
     var _getElementOffset = function (element) {    
-        var box = element.getBoundingClientRect(),
-            body = document.body,
-            docEl = document.documentElement,
+        var owner_doc = element.ownerDocument,
+            box = element.getBoundingClientRect(),
+            body = owner_doc.body,
+            docEl = owner_doc.documentElement,
+
+            owner_win = owner_doc.defaultView || owner_doc.parentWindow,
         
-            scrollTop = window.pageYOffset || docEl.scrollTop || body.scrollTop,
-            scrollLeft = window.pageXOffset || docEl.scrollLeft || body.scrollLeft,
+            scrollTop = owner_win.pageYOffset || docEl.scrollTop || body.scrollTop,
+            scrollLeft = owner_win.pageXOffset || docEl.scrollLeft || body.scrollLeft,
 
             clientTop = docEl.clientTop || body.clientTop || 0,
             clientLeft = docEl.clientLeft || body.clientLeft || 0,
@@ -102,10 +105,12 @@ var WUI_RangeSlider = new (function() {
         return ev_target.firstElementChild.firstElementChild;
     };
     
-    var _update = function (rs, value) {
-        var element = rs.element,
+    var _update = function (rs_element, rs, value) {
+        var element = rs_element,
             
             value_input = element.childNodes[2],
+
+            widget = _widget_list[element.id],
         
             bar    = element.childNodes[1],
             filler = bar.firstElementChild,
@@ -116,6 +121,8 @@ var WUI_RangeSlider = new (function() {
         
             pos = Math.abs((value - rs.opts.min) / rs.opts.range);
         
+        value = _truncateDecimals(value, 4);
+
         if (rs.opts.vertical) {
             pos = Math.round(pos * bar.offsetHeight);
 
@@ -131,6 +138,23 @@ var WUI_RangeSlider = new (function() {
             hook.style.height = width * 2 + "px";
             
             value_input.style.marginTop = "13px";
+
+            // all theses are to support synchronization between a detached dialog and the original dialog
+            // TODO: optimize all this
+            if (widget.element !== element) {
+                widget.filler.style.position = "absolute";
+                widget.filler.style.bottom = "0";
+                widget.filler.style.width = "100%";
+                widget.filler.style.height = pos + "px";
+
+                widget.hook.style.marginTop  = -width + "px";
+                widget.hook.style.marginLeft = -width / 2 - 1 + "px";
+
+                widget.hook.style.width  = width * 2 + "px";
+                widget.hook.style.height = width * 2 + "px";
+
+                widget.value_input.style.marginTop = "13px";
+            }
         } else {
             pos = Math.round(pos * width);
             
@@ -144,10 +168,24 @@ var WUI_RangeSlider = new (function() {
             
             hook.style.width  = height * 2 + "px";
             hook.style.height = height * 2 + "px";
+
+            if (widget.element !== element) {
+                widget.filler.style.width = pos + "px";
+                widget.filler.style.height = "100%";
+
+                widget.hook.style.left = pos + "px";
+
+                widget.hook.style.marginTop  = -height / 2 + "px";
+                widget.hook.style.marginLeft = -height + "px";
+
+                widget.hook.style.width  = height * 2 + "px";
+                widget.hook.style.height = height * 2 + "px";
+            }
         }
 
-        value_input.value = _truncateDecimals(value, 4);
-        
+        widget.value_input.value = value;
+        value_input.value = value;
+
         rs.value = value;
     };
     
@@ -155,11 +193,11 @@ var WUI_RangeSlider = new (function() {
         ev.preventDefault();
         
         if (_grabbed_hook_element !== null) {
-            var value_input = _grabbed_widget.element.lastElementChild,
-            
-                filler = _grabbed_hook_element.parentElement,
+            var filler = _grabbed_hook_element.parentElement,
                 bar = filler.parentElement,
                 
+                value_input = bar.parentElement.lastElementChild,
+
                 bar_offset = _getElementOffset(bar),
                 max_pos = bar.offsetWidth,
                 
@@ -172,7 +210,7 @@ var WUI_RangeSlider = new (function() {
             
                 touch = null,
             
-                i;
+                i, v;
             
             if (touches) {
                 for (i = 0; i < touches.length; i += 1) {
@@ -213,14 +251,20 @@ var WUI_RangeSlider = new (function() {
             
             _grabbed_widget.value = _hook_value;
 
-            value_input.value = _truncateDecimals(_hook_value, 4);
+            v = _truncateDecimals(_hook_value, 4);
+
+            value_input.value = v;
+            _grabbed_widget.value_input.value = v;
 
             if (_grabbed_widget.opts.vertical) {
                 filler.style.height = cursor_relative_pos + "px";
+                _grabbed_widget.filler.style.height = cursor_relative_pos + "px";
             } else {
                 filler.style.width = cursor_relative_pos + "px";
+                _grabbed_widget.filler.style.width = cursor_relative_pos + "px";
 
                 _grabbed_hook_element.style.left = cursor_relative_pos + "px";
+                _grabbed_widget.hook.style.left = cursor_relative_pos + "px";
             }
             
             _onChange(_grabbed_widget.opts.on_change, _hook_value);
@@ -236,7 +280,10 @@ var WUI_RangeSlider = new (function() {
             
             stop_drag = false,
             
-            i;
+            i,
+
+            owner_doc = _grabbed_hook_element.ownerDocument,
+            owner_win = owner_doc.defaultView || owner_doc.parentWindow;
         
         if (touches) {
             for (i = 0; i < touches.length; i += 1) {
@@ -245,8 +292,8 @@ var WUI_RangeSlider = new (function() {
                 if (touch.identifier === _touch_identifier) {
                     stop_drag = true;
                     
-                    window.removeEventListener("touchend", _rsMouseUp, false);
-                    window.removeEventListener("touchmove", _mouseMove, false);
+                    owner_win.removeEventListener("touchend", _rsMouseUp, false);
+                    owner_win.removeEventListener("touchmove", _mouseMove, false);
                     
                     break;
                 }
@@ -254,8 +301,8 @@ var WUI_RangeSlider = new (function() {
         } else {
             stop_drag = true;
             
-            window.removeEventListener("mouseup", _rsMouseUp, false);
-            window.removeEventListener("mousemove", _mouseMove, false);
+            owner_win.removeEventListener("mouseup", _rsMouseUp, false);
+            owner_win.removeEventListener("mousemove", _mouseMove, false);
         }
         
         if (stop_drag) {
@@ -264,7 +311,7 @@ var WUI_RangeSlider = new (function() {
             _grabbed_hook_element = null;
             _grabbed_widget = null;
 
-            document.body.style.cursor = "default";
+            owner_doc.body.style.cursor = "default";
         }
     };
     
@@ -276,7 +323,10 @@ var WUI_RangeSlider = new (function() {
             
             drag_slider = false,
             
-            touches = ev.changedTouches;
+            touches = ev.changedTouches,
+
+            owner_doc,
+            owner_win;
         
         if (_grabbed_widget === null) {
             if (touches) {
@@ -299,14 +349,17 @@ var WUI_RangeSlider = new (function() {
             
             _grabbed_widget = _widget_list[rs_element.id];
 
-            document.body.style.cursor = "pointer";
+            owner_doc = rs_element.ownerDocument;
+            owner_win = owner_doc.defaultView || owner_doc.parentWindow;
+
+            owner_doc.body.style.cursor = "pointer";
             
             _mouseMove(ev);
-            
-            window.addEventListener("mousemove", _mouseMove, false);
-            window.addEventListener("touchmove", _mouseMove, false);
-            window.addEventListener("mouseup", _rsMouseUp, false);
-            window.addEventListener("touchend", _rsMouseUp, false);
+
+            owner_win.addEventListener("mousemove", _mouseMove, false);
+            owner_win.addEventListener("touchmove", _mouseMove, false);
+            owner_win.addEventListener("mouseup",   _rsMouseUp, false);
+            owner_win.addEventListener("touchend",  _rsMouseUp, false);
         }
     };
     
@@ -322,7 +375,7 @@ var WUI_RangeSlider = new (function() {
             
             value = grabbed_widget.opts.default_value;
 
-        _update(grabbed_widget, value);
+        _update(rs_element, grabbed_widget, value);
 
         _onChange(grabbed_widget.opts.on_change, value);
     };
@@ -353,7 +406,7 @@ var WUI_RangeSlider = new (function() {
             value = grabbed_widget.opts.min;  
         }
         
-        _update(grabbed_widget, value);
+        _update(rs_element, grabbed_widget, value);
         
         _onChange(grabbed_widget.opts.on_change, value);
     };
@@ -375,7 +428,7 @@ var WUI_RangeSlider = new (function() {
         
             grabbed_widget = _widget_list[rs_element.id];
 
-        _update(grabbed_widget, ev.target.value);
+        _update(rs_element, grabbed_widget, ev.target.value);
         
         _onChange(grabbed_widget.opts.on_change, ev.target.value);
     };
@@ -468,6 +521,12 @@ var WUI_RangeSlider = new (function() {
                     element: range_slider, 
                 
                     opts: opts,
+
+                    bar: bar,
+                    filler: filler,
+                    hook: hook,
+
+                    value_input: value_input,
                   
                     value: opts.default_value, 
                  };
@@ -507,8 +566,7 @@ var WUI_RangeSlider = new (function() {
 
         range_slider.appendChild(value_input);
         
-        _update(rs, opts.default_value);
-        
+
         bar.addEventListener("mousedown", _rsMouseDown, false);
         bar.addEventListener("touchstart", _rsMouseDown, false);
             
@@ -520,6 +578,8 @@ var WUI_RangeSlider = new (function() {
         bar.addEventListener("DOMMouseScroll", _rsMouseWheel, false);
         
         _widget_list[id] = rs;
+
+        _update(range_slider, rs, opts.default_value);
 
         return id;
     };

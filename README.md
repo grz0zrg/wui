@@ -1,13 +1,13 @@
 WUI
 =====
 
-Collection of **easy to use** and **lightweight** (*~4.0kb css*, *~7.9kb js* gzipped) vanilla GUI widgets for the web.
+Collection of **easy to use** and **lightweight** (*~4.3kb css*, *~9.6kb js* gzipped) vanilla GUI widgets for the web.
 
 *Require no dependencies, all widgets can be used on their own.*
 
-It was not built to target mobile devices but it support touch events and the demo work ok with Safari on the IPad.
+Note: It was not built to target mobile devices but it support touch events and the demo work ok with Safari on the IPad.
 
-Good for single page apps, experiments and the like. (caution: for serious usage it is usable but *may* be tricky)
+Good for single page apps, experiments and the like. (caution: for serious usage it *may* be tricky)
 
 ####Demo
 - [Demo](http://grz0zrg.github.io/wui-demo/)
@@ -24,14 +24,14 @@ Good for single page apps, experiments and the like. (caution: for serious usage
 
 ####Usage
 
-There is minified and gzipped, up to date ready-to-use css/js files in the **_dist_** folder, to use the entire library, just include them in your HTML file
+There is a minified and gzipped up to date ready-to-use css/js files in the **_dist_** folder, to use the entire library, just include them in your HTML file
 
 ```html
 <link rel="stylesheet" type="text/css" href="wui.min.css"/>
 <script type="text/javascript" src="wui.min.js"></script>
 ```
 <br/>
-If you need a single (or more) widget but not all, you can find minified files of each widget in the **_dist/widgets_** folder
+If you need a single (or more) widget, you can find minified files of each widget in the **_dist/widgets_** folder
 
 ======
 
@@ -53,7 +53,7 @@ grunt dist
 *   [WUI_ToolBar](#toolbar)
 *   [WUI_RangeSlider](#rangeslider)
 
-The WUI API is simple, all widgets have a method **_"create"_** which take a DOM element identifier as first argument (which is used as a bind target) and an option object as second or third argument (toolbar case) to customize it.
+The WUI API is simple, all widgets have a method **_"create"_** which take a DOM element identifier as first argument (which is used as a bind target) and an option object as second argument to customize it, WUI_ToolBar has a third argument which is used to specify the content of the toolbar.
 
 All **_"create"_** methods return a reference of the widget which can be used later to do stuff with the widget like destroying them.
 
@@ -89,7 +89,7 @@ WUI.draggable(my_element, true);
 WUI.fadeIn(my_element, 500);
 
 // apply a 500ms fade out effect to an element, when finished output "finished" to the browser console and hide the element (display: none)
-WUI.fadeOut(my_element, function () { console.log("finished!"); }, true, 500);
+WUI.fadeOut(my_element, 500, function () { console.log("finished!"); }, true);
 ```
 
 <br/>
@@ -146,13 +146,23 @@ WUI_Tabs.create("my_tabs", {
 <a name="dialog"></a>
 ### Dialog/Panel ###
 
->The dialogs can be draggable, closable, minimizable, modal, resizable and act as panels, they also go in front of others when you move them.
+>Dialogs can be draggable, closable, minimizable, resizable, detachable, modal and act as panels, they also go in front of others when you move them.
+
+>One of the coolest (and maybe 'unique') feature of the dialog widget is the ability to be detached from the window it is on and act as a proper window without breaking the content (including events), this may be very usefull, the user can detach any dialogs and move them on other screens etc.
+
+>All WUI widgets work very well with the detachable feature, what you change in the detachable dialog will be changed in the 'original' dialog, this should be the same dialog after all, for example, if you toggle a WUI_ToolBar button in the detached dialog and close it, when you open the dialog again (detached or not) the button will be toggled, the only thing which is not synced is the size of the detached dialog.
+
+>Note: The detach feature keep track of events by overriding `addEventListener`, in order to work correctly the WUI_Dialog/WUI library should be loaded before you or other libs add events.
+
+>Note: When a dialog is detached, it will add back event listeners added with `addEventListener` only (and also inline events), if you attach events to elements in the dialog content using `elem.onclick` etc, the event will not be added back, also since the dialog content will be in another window/document, events attached to the initial window or document and acting on the dialog content will not work, because the dialog is now in another window, you will have to take care of attaching to/using `element.ownerDocument` or `element.parentWindow` instead of `document` or `window`.
+
+>Note: Dialogs `zIndex` is between 100 and 101.
 
 <br/>*Methods*:
 
 >*   create(id, options)
 *   destroy(wui_dialog)
-*   open(wui_dialog)
+*   open(wui_dialog, detach)
 *   close(wui_dialog, propagate)
   
 <br/>*Example*:
@@ -186,6 +196,12 @@ var my_dialog = WUI_Dialog.create("my_dialog", {
     // function called when the dialog has been closed
     on_close: null,
     
+    // function called when the dialog is detached, the new `window` object is passed as argument
+    on_detach: function (new_window) {
+        // you can modify the detachable window there, example:
+        new_window.document.title = "My detached window"; // replace the detached dialog title
+    },
+    
     modal: false,
     
     closable: false,
@@ -193,6 +209,8 @@ var my_dialog = WUI_Dialog.create("my_dialog", {
     minimizable: true,
     
     resizable: true,
+    
+    detachable: true,
     
     // the minimun width/height the dialog can be when resized (min_width accept a value or "title")
     min_width: "title",
@@ -210,14 +228,15 @@ var my_dialog = WUI_Dialog.create("my_dialog", {
 Closed and want to open it again?
 
 ```javascript
-WUI_Dialog.open(my_dialog);
+// second argument is optional (default to false) and tell wether the dialog is opened in its own window
+WUI_Dialog.open(my_dialog, false);
 ```
 <br/>
 
 Open and want to close it programmatically?
 
 ```javascript
-WUI_Dialog.close(my_dialog, true); // last argument (optional) mean the on_close function will be called
+WUI_Dialog.close(my_dialog, true); // last argument is optional (default to false) mean the on_close function will be called
 ```
 <br/>
 ======
@@ -435,7 +454,7 @@ WUI_RangeSlider.create("my_range_slider", {
 ======
 
 <a name="compat"></a>
-### Compatibility ###
+# Compatibility #
 
 Not well tested but should work in all modern browsers supporting **_ECMAScript 5_** and **_CSS3_**.
 
@@ -446,7 +465,7 @@ Mostly work (problems with the ToolBar and Dialog) under IE 10 but i do not supp
 ======
 
 <a name="license"></a>
-### License ###
+# License #
 
 [Revised BSD](https://github.com/grz0zrg/wui/blob/master/LICENSE)
 

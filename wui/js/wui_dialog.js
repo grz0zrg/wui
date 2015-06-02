@@ -1,5 +1,4 @@
 /* jslint browser: true */
-/* jshint globalstrict: false */
 
 var WUI_Dialog = new (function() {
     "use strict";
@@ -25,11 +24,14 @@ var WUI_Dialog = new (function() {
 
         _resize_timeout = null,
 
+        _detached_windows = [],
+
         _class_name = {
             dialog:         "wui-dialog",
             content:        "wui-dialog-content",
             btn:            "wui-dialog-btn",
             btn_close:      "wui-dialog-close",
+            detach:         "wui-dialog-detach",
             minimized:      "wui-dialog-minimized",
             minimize:       "wui-dialog-minimize",
             maximize:       "wui-dialog-maximize",
@@ -37,7 +39,8 @@ var WUI_Dialog = new (function() {
             open:           "wui-dialog-open",
             closed:         "wui-dialog-closed",
             draggable:      "wui-dialog-draggable",
-            dim_transition: "wui-dialog-dim-transition"
+            dim_transition: "wui-dialog-dim-transition",
+            modal:          "wui-dialog-modal"
         },
         
         _known_options = {
@@ -52,6 +55,7 @@ var WUI_Dialog = new (function() {
             minimizable: false,
             draggable: false,
             resizable: false,
+            detachable: false,
             
             min_width: "title",
             min_height: 32,
@@ -68,24 +72,98 @@ var WUI_Dialog = new (function() {
             
             minimized: false,
 
-            on_close: null
+            on_close: null,
+            on_detach: null
         };
     
     /***********************************************************
         Private section.
         
+        Initialization.
+    ************************************************************/
+
+    // this keep track of event listeners... globally
+    // a tricky solution but the only one i know of until a standard pop up or someone have a better solution
+    if (!Element.prototype['_addEventListener']) {
+        Element.prototype._addEventListener = Element.prototype.addEventListener;
+        Element.prototype.addEventListener = function(a, b, c) {
+            this._addEventListener(a, b, c);
+            if (!this['eventListenerList']) {
+                this['eventListenerList'] = {};
+            }
+
+            if(!this.eventListenerList[a]) {
+                this.eventListenerList[a] = [];
+            }
+            this.eventListenerList[a].push(b);
+        };
+        Element.prototype._removeEventListener = Element.prototype.removeEventListener;
+        Element.prototype.removeEventListener = function(a, b, c) {
+            if (this['eventListenerList']) {
+                var events = this.eventListenerList[a], i;
+                if(events) {
+                    for (i = 0; i < events.length; i += 1) {
+                        if (events[i] === b) {
+                            events.splice(i, 1);
+                            break;
+                        }
+                    }
+                }
+            }
+            this._removeEventListener(a, b, c);
+        };
+    }
+
+    /***********************************************************
+        Private section.
+
         Functions.
     ************************************************************/
     
-    var _close = function (dialog, propagate) {
-        var widget = _widget_list[dialog.id];
+    var _removeDetachedWindow = function (widget) {
+        for (var i = 0; i < _detached_windows.length; i += 1) {
+            if (_detached_windows[i] === widget.detachable_ref) {
+                _detached_windows.splice(i, 1);
+                break;
+            }
+        }
+    };
+
+    var _close = function (dialog, detach, propagate, remove_modal_element) {
+        var widget = _widget_list[dialog.id], modal_elems, i, j, w;
+
+        if (!widget) {
+            return;
+        }
+
+        if (detach) {
+            if(widget.detachable_ref) {
+                if (!widget.detachable_ref.closed) {
+                    widget.detachable_ref.close();
+                }
+
+                _removeDetachedWindow(widget);
+            }
+        }
+        
+        if (remove_modal_element) {
+            if (widget.modal_element) {
+                document.body.removeChild(widget.modal_element);
+
+                for (i = 0; i < _detached_windows.length; i += 1) {
+                    w = _detached_windows[i];
+
+                    modal_elems = w.document.body.getElementsByClassName(_class_name.modal);
+
+                    for (j = 0; j < modal_elems.length; j += 1) {
+                        w.document.body.removeChild(modal_elems[j]);
+                    }
+                }
+            }
+        }
 
         if (!widget.dialog.classList.contains(_class_name.open)) {
             return;
-        }
-        
-        if (widget.modal_element) {
-            document.body.removeChild(widget.modal_element);
         }
 
         dialog.classList.add(_class_name.closed);
@@ -126,6 +204,22 @@ var WUI_Dialog = new (function() {
         dialog.style.zIndex = 101;
     };
 
+    var _createModalElement = function (dialog) {
+        var div = document.createElement("div");
+
+        div.className = "wui-dialog-modal";
+
+        div.addEventListener("click", function (ev) {
+            ev.preventDefault();
+
+            _close(dialog, true, true, true);
+        });
+
+        div.style.zIndex = 16777270;
+
+        return div;
+    };
+
     var _computeThenSetPosition = function (dialog) {
         var widget = _widget_list[dialog.id],
 
@@ -138,7 +232,7 @@ var WUI_Dialog = new (function() {
             dialog_height = dialog.offsetHeight;
 
         if (opts.halign === "center") {
-            dialog.style.left = ((parent_width - dialog_width) / 2 + opts.left) + "px";
+            dialog.style.left = Math.round((parent_width - dialog_width) / 2 + opts.left) + "px";
         } else if (opts.halign === "right") {
             dialog.style.left = (parent_width - dialog_width + opts.left) + "px";
         } else {
@@ -146,7 +240,7 @@ var WUI_Dialog = new (function() {
         }
 
         if (opts.valign === "center") {
-            dialog.style.top = ((parent_height - dialog_height) / 2 + opts.top) + "px";
+            dialog.style.top = Math.round((parent_height - dialog_height) / 2 + opts.top) + "px";
         } else if (opts.valign === "bottom") {
             dialog.style.top = (parent_height - dialog_height + opts.top) + "px";
         } else {
@@ -155,36 +249,59 @@ var WUI_Dialog = new (function() {
     };
 
     var _minimize = function (minimize_btn, dialog) {
-        var widget = _widget_list[dialog.id];
+        var widget = _widget_list[dialog.id],
+            resize_handler = widget.resize_handler;
 
         minimize_btn.classList.toggle(_class_name.minimize);
         minimize_btn.classList.toggle(_class_name.maximize);
 
         dialog.classList.toggle(_class_name.minimized);
 
-        if (widget.resize_handler) {
+        if (resize_handler) {
             if (dialog.classList.contains(_class_name.minimized)) {
-                widget.resize_handler.style.display = "none";
+                resize_handler.style.display = "none";
             } else {
-                widget.resize_handler.style.display = "block";
+                resize_handler.style.display = "block";
             }
         }
     };
 
-    var _onWindowResize = function () {
+    var _onWindowResize = function (detached) {
         if (_resize_timeout === null) {
             _resize_timeout = setTimeout(function() {
                 _resize_timeout = null;
 
-                var dialog_contents = document.getElementsByClassName(_class_name.content),
+                var doc = document,
+                    dialog_contents,
+
+                    content,
+                    dialog,
 
                     i;
 
-                // resize content & set position
-                for (i = 0; i < dialog_contents.length; i += 1) {
-                    var content = dialog_contents[i],
+                if (detached) {
+                    doc = detached.document;
+
+                    dialog_contents = doc.getElementsByClassName(_class_name.content);
+
+                    for (i = 0; i < dialog_contents.length; i += 1) {
+                        content = dialog_contents[i];
 
                         dialog = content.parentElement;
+
+                        content.style.height = detached.innerHeight + "px";
+                    }
+
+                    return;
+                }
+
+                dialog_contents = doc.getElementsByClassName(_class_name.content);
+
+                // resize content & set position
+                for (i = 0; i < dialog_contents.length; i += 1) {
+                    content = dialog_contents[i];
+
+                    dialog = content.parentElement;
 
                     content.style.height = dialog.offsetHeight - 32 + "px";
 
@@ -194,9 +311,129 @@ var WUI_Dialog = new (function() {
         }
     };
 
+    var _addListenerWalk = function (elem, target) {
+        var key, i;
+
+        do {
+            if(elem.nodeType == 1) {
+                if (elem['eventListenerList']) {
+                    for (key in elem.eventListenerList) {
+                        if (key === 'length' || !elem.eventListenerList.hasOwnProperty(key)) continue;
+                            for (i = 0; i < elem.eventListenerList[key].length; i += 1) {
+                                target.addEventListener(key, elem.eventListenerList[key][i], false);
+                            }
+                        }
+                    }
+                }
+                if(elem.hasChildNodes()) {
+                    _addListenerWalk(elem.firstChild, target.firstChild);
+                }
+
+                elem = elem.nextSibling;
+                target = target.nextSibling;
+            }
+            while (elem && target);
+    };
+
+    var _detach = function (dialog) {
+        var widget = _widget_list[dialog.id],
+
+            //window_w, window_h,
+            w, h,
+
+            screen_left, screen_top,
+
+            dialog_title_element = dialog.firstElementChild.firstElementChild.firstElementChild,
+
+            stripped_title = dialog_title_element.textContent || dialog_title_element.innerText || "",
+
+            child_window = widget.detachable_ref,
+
+            css, css_html, i, dbc = dialog.getBoundingClientRect();
+
+        w = parseInt(dbc.width,  10);
+        h = parseInt(dbc.height, 10) - 32;
+
+        screen_left = typeof window.screenLeft !== "undefined" ? window.screenLeft : screen.left;
+        screen_top = typeof window.screenTop !== "undefined" ? window.screenTop : screen.top;
+
+        /*window_w = window.innerWidth ? window.innerWidth : document.documentElement.clientWidth ? document.documentElement.clientWidth : screen.availWidth;
+        window_h = window.innerHeight ? window.innerHeight : document.documentElement.clientHeight ? document.documentElement.clientHeight : screen.availHeight;*/
+
+        _close(dialog, true, false, false);
+
+        child_window = window.open("", stripped_title, [
+            "toolbar=no",
+            "location=no",
+            "directories=no",
+            "status=no",
+            "menubar=no",
+            "scrollbars=yes",
+            "resizable=yes",
+            "width=" + w,
+            "height=" + h,
+            "top=" + (dbc.top + screen_top + 32),//((window_h-h)/2 + screen_top),
+            "left=" + (dbc.left  + screen_left)].join(','));//((window_w-w) / 2 + screen_left)].join(','));
+
+        css_html = "";
+
+        css = document.head.getElementsByTagName("link");
+
+        for (i = 0; i < css.length; i += 1) {
+            if (css[i].type === "text/css" && css[i].rel === "stylesheet") {
+                css_html += css[i].outerHTML;
+            }
+        }
+
+        css = document.head.getElementsByTagName("style");
+
+        for (i = 0; i < css.length; i += 1) {
+            css_html += css[i].outerHTML;
+        }
+
+        // insert the dialog content in the newly opened window
+        // it insert back all CSS files of the parent as well...
+        child_window.document.open();
+        child_window.document.write(['<html>',
+                                     '<head>',
+                                     '<title>' + stripped_title + '</title>',
+                                     css_html,
+                                     '</head>',
+                                     '<body class="wui-dialog-detach-window-body">',
+                                     //dialog.children[1].outerHTML,
+                                     '</body>',
+                                     '</html>'].join(''));
+        child_window.document.close();
+
+        child_window.document.body.appendChild(dialog.children[1].cloneNode(true));
+
+        child_window.addEventListener("resize", function () { _onWindowResize(child_window); }, false);
+
+        child_window.addEventListener("load", function () {
+            _addListenerWalk(dialog.children[1], child_window.document.body.firstElementChild);
+
+            if (widget.opts.on_detach) {
+                widget.opts.on_detach(child_window);
+            }
+        });
+
+        child_window.addEventListener("beforeunload", function () {
+            //_removeDetachedWindow(widget);
+            _close(dialog, true, true, true);
+
+            /*if (widget.modal_element) {
+                document.body.removeChild(widget.modal_element);
+            }*/
+        }, false);
+
+        widget.detachable_ref = child_window;
+
+        _detached_windows.push(child_window);
+    };
+
     var _onClick = function (ev) {
         ev.preventDefault();
-        ev.stopPropagation();
+        //ev.stopPropagation();
 
         var element = ev.target,
 
@@ -205,12 +442,16 @@ var WUI_Dialog = new (function() {
         if (element.classList.contains(_class_name.btn_close)) {
             dialog = element.parentElement.parentElement;
 
-            _close(dialog, true);
+            _close(dialog, false, true, true);
         } else if (element.classList.contains(_class_name.maximize) ||
                    element.classList.contains(_class_name.minimize)) {
             dialog = element.parentElement.parentElement;
 
             _minimize(element, dialog);
+        } else if (element.classList.contains(_class_name.detach)) {
+            dialog = element.parentElement.parentElement;
+
+            _detach(dialog);
         }
     };
     
@@ -253,7 +494,10 @@ var WUI_Dialog = new (function() {
             
             touch = null,
             
-            i;
+            i,
+
+            owner_doc = _dragged_dialog.ownerDocument,
+            owner_win = owner_doc.defaultView || owner_doc.parentWindow;
         
         if (touches) {
             for (i = 0; i < touches.length; i += 1) {
@@ -262,10 +506,10 @@ var WUI_Dialog = new (function() {
                 if (touch.identifier === _touch_identifier) {
                     _dragged_dialog = null;
                     
-                    document.body.style.cursor = "default";
+                    owner_doc.body.style.cursor = "default";
                     
-                    window.removeEventListener('touchmove', _windowMouseMove, false);
-                    window.removeEventListener('touchmove', _windowMouseUp, false);
+                    owner_win.removeEventListener('touchmove', _windowMouseMove, false);
+                    owner_win.removeEventListener('touchmove', _windowMouseUp, false);
                     
                     break;
                 }
@@ -273,10 +517,10 @@ var WUI_Dialog = new (function() {
         } else {
             _dragged_dialog = null;
             
-            document.body.style.cursor = "default";
+            owner_doc.body.style.cursor = "default";
             
-            window.removeEventListener('mousemove', _windowMouseMove, false);
-            window.removeEventListener('mousemove', _windowMouseUp, false);
+            owner_win.removeEventListener('mousemove', _windowMouseMove, false);
+            owner_win.removeEventListener('mousemove', _windowMouseUp, false);
         }
     };
     
@@ -287,7 +531,10 @@ var WUI_Dialog = new (function() {
             left = 0,
             top = 0,
 
-            touches = ev.changedTouches;
+            touches = ev.changedTouches,
+
+            owner_doc,
+            owner_win;
         
         ev.preventDefault();
 
@@ -304,6 +551,9 @@ var WUI_Dialog = new (function() {
         
         _dragged_dialog = ev.target.parentElement;
         
+        owner_doc = _dragged_dialog.ownerDocument;
+        owner_win = owner_doc.defaultView || owner_doc.parentWindow;
+
         if (_dragged_dialog.classList.contains(_class_name.maximize) ||
            !_dragged_dialog.classList.contains(_class_name.draggable)) {
             return;
@@ -311,7 +561,7 @@ var WUI_Dialog = new (function() {
         
         _focus(_dragged_dialog);
         
-        document.body.style.cursor = "move";
+        owner_doc.body.style.cursor = "move";
         
         left = parseInt(_dragged_dialog.style.left, 10);
         top = parseInt(_dragged_dialog.style.top,  10);
@@ -319,11 +569,11 @@ var WUI_Dialog = new (function() {
         _drag_x = x - left;
         _drag_y = y - top;
 
-        window.addEventListener('mousemove', _windowMouseMove, false);
-        window.addEventListener('touchmove', _windowMouseMove, false);
+        owner_win.addEventListener('mousemove', _windowMouseMove, false);
+        owner_win.addEventListener('touchmove', _windowMouseMove, false);
 
-        window.addEventListener('mouseup', _windowMouseUp, false);
-        window.addEventListener('touchend', _windowMouseUp, false);
+        owner_win.addEventListener('mouseup',  _windowMouseUp, false);
+        owner_win.addEventListener('touchend', _windowMouseUp, false);
     };
     
     var _onStartResize = function (e) {
@@ -335,7 +585,10 @@ var WUI_Dialog = new (function() {
             left = dialog.offsetLeft,
             top  = dialog.offsetTop,
 
-            touches = e.changedTouches;
+            touches = e.changedTouches,
+
+            owner_doc = dialog.ownerDocument,
+            owner_win = owner_doc.defaultView || owner_doc.parentWindow;
 
         if (touches) {
             _touch_identifier = touches[0].identifier;
@@ -346,11 +599,11 @@ var WUI_Dialog = new (function() {
 
         dialog.classList.remove(_class_name.dim_transition);
 
-        window.addEventListener('mousemove', _onResize, false);
-        window.addEventListener('touchmove', _onResize, false);
+        owner_win.addEventListener('mousemove', _onResize, false);
+        owner_win.addEventListener('touchmove', _onResize, false);
 
-        window.addEventListener('mouseup', _onStopResize, false);
-        window.addEventListener('touchend', _onStopResize, false);
+        owner_win.addEventListener('mouseup', _onStopResize, false);
+        owner_win.addEventListener('touchend', _onStopResize, false);
 
         _resized_dialog = dialog;
     };
@@ -391,9 +644,17 @@ var WUI_Dialog = new (function() {
         w = x - _resize_start_x;
         h = y - _resize_start_y;
 
+        if (widget.opts.halign === "center") {
+            w += 2;
+        }
+
+        if (widget.opts.valign === "center") {
+            h += 2;
+        }
+
         title_div = _resized_dialog.firstElementChild.firstElementChild.firstElementChild;
 
-        title_div_width = title_div.offsetWidth + 108;
+        title_div_width = title_div.offsetWidth + 148;
 
         if (widget.opts.min_width === "title" &&
             w < title_div_width) {
@@ -426,17 +687,28 @@ var WUI_Dialog = new (function() {
     };
 
     var _onStopResize = function (e) {
+        var owner_doc = _resized_dialog.ownerDocument,
+            owner_win = owner_doc.defaultView || owner_doc.parentWindow;
+
         e.preventDefault();
 
         _resized_dialog.classList.add(_class_name.dim_transition);
 
-        window.removeEventListener('mousemove', _onResize, false);
-        window.removeEventListener('touchmove', _onResize, false);
+        owner_win.removeEventListener('mousemove', _onResize, false);
+        owner_win.removeEventListener('touchmove', _onResize, false);
 
-        window.removeEventListener('mouseup', _onStopResize, false);
-        window.removeEventListener('touchend', _onStopResize, false);
+        owner_win.removeEventListener('mouseup', _onStopResize, false);
+        owner_win.removeEventListener('touchend', _onStopResize, false);
 
         _resized_dialog = null;
+    };
+
+    var _onBeforeUnload = function () {
+        for (var id in _widget_list) {
+            if (_widget_list.hasOwnProperty(id)) {
+                _close(_widget_list[id].dialog, true, false, true);
+            }
+        }
     };
 
     /***********************************************************
@@ -478,6 +750,7 @@ var WUI_Dialog = new (function() {
             
             resize_handler = null,
 
+            header_detach_btn    = null,
             header_close_btn     = null,
             header_minimaxi_btn  = null,
             header_title         = null,
@@ -542,6 +815,8 @@ var WUI_Dialog = new (function() {
             header_close_btn = document.createElement("div"); 
             header_close_btn.className = _class_name.btn + " " + _class_name.btn_close;
 
+            header_close_btn.title = "Close";
+
             header.appendChild(header_close_btn);
         }
         
@@ -556,10 +831,20 @@ var WUI_Dialog = new (function() {
             header.appendChild(header_minimaxi_btn);
         }
 
+        if (opts.detachable) {
+            header_detach_btn = document.createElement("div");
+            header_detach_btn.className = _class_name.btn + " " + _class_name.detach;
+
+            header_detach_btn.title = "Detach";
+
+            header.appendChild(header_detach_btn);
+        }
+
         dialog.addEventListener("click", _onClick, false);
         dialog.addEventListener("touchstart", _onClick, false);
 
-        window.addEventListener("resize", _onWindowResize, false);
+        window.addEventListener("resize", function () { _onWindowResize(false); }, false);
+        window.addEventListener("beforeunload", _onBeforeUnload, false);
 
         dialog.classList.add("wui-dialog-transition");
         dialog.classList.add(_class_name.dim_transition);
@@ -586,6 +871,8 @@ var WUI_Dialog = new (function() {
 
                                 opts: opts,
             
+                                detachable_ref: null,
+
                                 modal_element: null
                             };
         
@@ -594,10 +881,10 @@ var WUI_Dialog = new (function() {
         return id;
     };
     
-    this.open = function (id) {
+    this.open = function (id, detach) {
         var widget = _widget_list[id],
 
-            div;
+            div, i, dialog;
 
         if (widget === undefined) {
             if (typeof console !== "undefined") {
@@ -607,30 +894,42 @@ var WUI_Dialog = new (function() {
             return;   
         }
         
+        if (widget.detachable_ref) {
+            if (!widget.detachable_ref.closed) {
+                widget.detachable_ref.focus();
+
+                return;
+            }
+        }
+
+        dialog = widget.dialog;
+
         if (widget.opts.modal) {
-            div = document.createElement("div");
+            div = _createModalElement(dialog);
 
-            div.className = "wui-dialog-modal";
-
-            div.addEventListener("click", function (ev) {
-                ev.preventDefault();
-
-                _close(widget.dialog, true);
-            });
-
-            div.style.zIndex = 999999;
-
-            widget.dialog.style.zIndex = 1000000;
+            widget.dialog.style.zIndex = 16777271;
 
             widget.modal_element = div;
 
             document.body.appendChild(div);
+
+            for (i = 0; i < _detached_windows.length; i += 1) {
+                div = _createModalElement(dialog);
+
+                _detached_windows[i].document.body.appendChild(div);
+            }
         }
 
-        widget.dialog.classList.remove(_class_name.closed);
-        widget.dialog.classList.add(_class_name.open);
+        if (detach) {
+            _detach(dialog);
 
-        _focus(widget.dialog);
+            return;
+        }
+
+        dialog.classList.remove(_class_name.closed);
+        dialog.classList.add(_class_name.open);
+
+        _focus(dialog);
     };
 
     this.close = function (id, propagate) {
@@ -644,7 +943,7 @@ var WUI_Dialog = new (function() {
             return;
         }
 
-        _close(widget.dialog, propagate);
+        _close(widget.dialog, true, propagate);
     };
 
     this.destroy = function (id) {
@@ -658,9 +957,7 @@ var WUI_Dialog = new (function() {
             return;
         }
 
-        if (widget.modal_element) {
-            document.body.removeChild(widget.modal_element);
-        }
+        _close(widget.dialog, true, false, true);
 
         element = widget.dialog;
 

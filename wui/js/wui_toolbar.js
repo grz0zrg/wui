@@ -66,13 +66,16 @@ var WUI_ToolBar = new (function() {
         return widget;
     };
 
-    var _getElementOffset = function (elem) {
-        var box = elem.getBoundingClientRect(),
-            body = document.body,
-            docEl = document.documentElement,
+    var _getElementOffset = function (element) {
+        var owner_doc = element.ownerDocument,
+            box = element.getBoundingClientRect(),
+            body = owner_doc.body,
+            docEl = owner_doc.documentElement,
 
-            scrollTop = window.pageYOffset || docEl.scrollTop || body.scrollTop,
-            scrollLeft = window.pageXOffset || docEl.scrollLeft || body.scrollLeft,
+            owner_win = owner_doc.defaultView || owner_doc.parentWindow,
+
+            scrollTop = owner_win.pageYOffset || docEl.scrollTop || body.scrollTop,
+            scrollLeft = owner_win.pageXOffset || docEl.scrollLeft || body.scrollLeft,
 
             clientTop = docEl.clientTop || body.clientTop || 0,
             clientLeft = docEl.clientLeft || body.clientLeft || 0,
@@ -114,6 +117,45 @@ var WUI_ToolBar = new (function() {
         }
     };
     
+    var _createDdFloatingContent = function (doc, tool, widget) {
+        var dropdown_floating_content = doc.createElement("div"), j;
+
+        if (tool.items !== undefined) {
+            for (j = 0; j < tool.items.length; j += 1) {
+                var item = tool.items[j],
+
+                    div_item = doc.createElement("div");
+
+                if (!tool.vertical) {
+                    div_item.classList.add("wui-toolbar-dropdown-horizontal");
+                }
+
+                div_item.classList.add(_class_name.dd_item);
+
+                div_item.innerHTML = item.title;
+
+                div_item.dataset.index = j;
+
+                dropdown_floating_content.appendChild(div_item);
+            }
+        }
+
+        dropdown_floating_content.addEventListener("click", _ddItemClick, false);
+
+        //widget.floating_content = dropdown_floating_content;
+
+        dropdown_floating_content.style.width = widget.dd_items_width + "px";
+
+        dropdown_floating_content.classList.add(_class_name.dd_content);
+
+        dropdown_floating_content.dataset.linkedto_tb = widget.element.id;
+        dropdown_floating_content.dataset.linkedto_tool_index = tool.id;
+
+        doc.body.appendChild(dropdown_floating_content);
+
+        return dropdown_floating_content;
+    };
+
     var _toggle = function (element, toolbar_id, propagate) {
         var widget = null,
             
@@ -121,62 +163,99 @@ var WUI_ToolBar = new (function() {
             
             toggle_group,
             
+            tb,
+
+            tools,
+
             i = 0;
         
         widget = _getWidgetFromElement(element, toolbar_id);
         
-        var my_tool = widget.tools[element.dataset.tool_id];
+        tb = widget.element;
+
+        if (element.parentElement) {
+            if (element.parentElement.parentElement) {
+                tb = element.parentElement.parentElement;
+            }
+        }
+
+        var my_tool = widget.tools[parseInt(element.dataset.tool_id, 10)];
         
         if (my_tool.element.dataset.on === "1") {
             my_tool.element.dataset.on = 0;
+            element.dataset.on = 0;
             
             my_tool.element.title = my_tool.tooltip;
+
+            element.title = my_tool.tooltip;
 
             if (my_tool.icon !== undefined) {
                 my_tool.element.classList.add(my_tool.icon);
                 my_tool.element.classList.remove(my_tool.toggled_icon);
+
+                element.classList.add(my_tool.icon);
+                element.classList.remove(my_tool.toggled_icon);
             }
         } else {
             my_tool.element.dataset.on = 1;
+            element.dataset.on = 1;
             
             if (my_tool.tooltip_toggled !== undefined) {
                 my_tool.element.title = my_tool.tooltip_toggled;
+                element.title = my_tool.tooltip_toggled;
             }
             
             if (my_tool.toggled_icon !== undefined) {
                 my_tool.element.classList.add(my_tool.toggled_icon);
                 my_tool.element.classList.remove(my_tool.icon);
+
+                element.classList.add(my_tool.toggled_icon);
+                element.classList.remove(my_tool.icon);
             }
             
             state = true;
         }
         
         if (my_tool.toggled_style !== "none") {
-            my_tool.element.classList.toggle(_class_name.toggle_on);
+            if (element.classList.contains(_class_name.toggle_on)) {
+                my_tool.element.classList.remove(_class_name.toggle_on);
+                element.classList.remove(_class_name.toggle_on);
+            } else {
+                my_tool.element.classList.add(_class_name.toggle_on);
+                element.classList.add(_class_name.toggle_on);
+            }
         }
         
         toggle_group = element.dataset.toggle_group;
 
         if (toggle_group !== undefined) {
-            for (i = 0; i < widget.tools.length; i += 1) {
-                var tool = widget.tools[i];
+            tools = tb.getElementsByClassName(_class_name.item);
 
-                if (toggle_group === tool.element.dataset.toggle_group &&
-                    tool.element !== element) {
+            for (i = 0; i < tools.length; i += 1) {
+                var tool_element = tools[i],
 
-                    if (tool.element.dataset.on === "0") {
+                    tool = widget.tools[parseInt(tool_element.dataset.tool_id, 10)];
+
+                if (toggle_group === tool_element.dataset.toggle_group &&
+                    tool_element.dataset.tool_id !== element.dataset.tool_id) {
+
+                    if (tool_element.dataset.on === "0") {
                         continue;
                     }
                     
+                    tool_element.dataset.on = "0";
                     tool.element.dataset.on = "0";
 
+                    tool_element.classList.remove(_class_name.toggle_on);
                     tool.element.classList.remove(_class_name.toggle_on);
 
-                    if (tool.toggled_icon !== undefined) {
+                    if (my_tool.toggled_icon !== undefined) {
+                        tool_element.classList.remove(tool.toggled_icon);
                         tool.element.classList.remove(tool.toggled_icon);
                     }
 
-                    if (tool.icon !== undefined) {
+                    if (my_tool.icon !== undefined) {
+                        tool_element.classList.add(tool.icon);
                         tool.element.classList.add(tool.icon);
                     }
 
@@ -198,36 +277,65 @@ var WUI_ToolBar = new (function() {
 
         var item_element = ev.target,
 
+            doc = item_element.ownerDocument,
+
             dropdown_content = item_element.parentElement,
 
             widget = _widget_list[dropdown_content.dataset.linkedto_tb],
 
-            my_tool = widget.tools[parseInt(dropdown_content.dataset.linkedto_tool_index, 10)],
+            tool_index = parseInt(dropdown_content.dataset.linkedto_tool_index, 10),
+
+            my_tool = widget.tools[tool_index],
 
             item_index = parseInt(item_element.dataset.index, 10),
 
-            item = my_tool.items[item_index];
+            item = my_tool.items[item_index],
+
+            tb_elem = doc.getElementById(dropdown_content.dataset.linkedto_tb),
+
+            tool_elems = tb_elem.getElementsByClassName(_class_name.item),
+
+            tool_elem = tool_elems[tool_index];
 
         if (item.on_click !== undefined) {
             item.on_click();
 
+            tool_elem.classList.remove(_class_name.toggle_on);
             my_tool.element.classList.remove(_class_name.toggle_on);
 
-            dropdown_content.classList.remove(_class_name.dd_open);
+            _removeDdFloatingContent(my_tool, tool_elem);
+            //dropdown_content.classList.remove(_class_name.dd_open);
         }
     };
 
-    var _hideDdFloatingContent = function (my_tool, dropdown_floating_content) {
-        dropdown_floating_content.classList.remove(_class_name.dd_open);
+    var _removeDdFloatingContent = function (tool, element) {
+        var owner_doc = element.ownerDocument,
 
-        my_tool.element.classList.remove(_class_name.toggle_on);
+            floating_contents = owner_doc.body.getElementsByClassName(_class_name.dd_content),
+
+            floating_content_element,
+
+            i;
+
+        for (i = 0; i < floating_contents.length; i += 1) {
+            floating_content_element = floating_contents[i];
+
+            floating_content_element.removeEventListener("click", _ddItemClick, false);
+            floating_content_element.parentElement.removeChild(floating_content_element);
+        }
+
+        tool.element.classList.remove(_class_name.toggle_on);
+        element.classList.remove(_class_name.toggle_on);
     };
 
-    var _hideDdFloatingContentHandler = function (my_tool, dropdown_floating_content) {
+    var _removeDdFloatingContentHandler = function (tool, element) {
         var handler = function () {
-            _hideDdFloatingContent(my_tool, dropdown_floating_content);
+            var owner_doc = element.ownerDocument,
+                owner_win = owner_doc.defaultView || owner_doc.parentWindow;
 
-            window.removeEventListener('click', handler);
+            _removeDdFloatingContent(tool, element);
+
+            owner_win.removeEventListener('click', handler);
         };
 
         return handler;
@@ -262,23 +370,27 @@ var WUI_ToolBar = new (function() {
 
             offset = null,
 
-            widget = null;
+            widget = null,
+
+            owner_doc = element.ownerDocument,
+            owner_win = owner_doc.defaultView || owner_doc.parentWindow;
 
         widget = _getWidgetFromElement(element);
 
         my_tool = widget.tools[element.dataset.tool_id];
 
         if (my_tool.type === "dropdown") {
-            dropdown_floating_content = my_tool.floating_content;
-
             if (element.classList.contains(_class_name.toggle_on)) {
-                _hideDdFloatingContent(my_tool, dropdown_floating_content);
+                _removeDdFloatingContent(my_tool, element);
 
                 return;
             }
 
+            dropdown_floating_content = _createDdFloatingContent(owner_doc, my_tool, widget);
+
             var tool_element = my_tool.element;
 
+            element.classList.add(_class_name.toggle_on);
             tool_element.classList.add(_class_name.toggle_on);
 
             offset = _getElementOffset(element);
@@ -313,7 +425,7 @@ var WUI_ToolBar = new (function() {
                 ev.stopPropagation();
             }
         
-            window.addEventListener("click", _hideDdFloatingContentHandler(my_tool, dropdown_floating_content), false);
+            owner_win.addEventListener("click", _removeDdFloatingContentHandler(my_tool, element), false);
         } else {
             _propagate(my_tool, "click");
         }
@@ -353,7 +465,7 @@ var WUI_ToolBar = new (function() {
      * @param   {Object}   options [[Description]]
      * @returns {String} Created widget reference, internally used to recognize the widget
      */
-    this.create = function (id, tools, options) {
+    this.create = function (id, options, tools) {
         var toolbar = document.getElementById(id),
             
             group = null,
@@ -438,6 +550,8 @@ var WUI_ToolBar = new (function() {
         
         toolbar.addEventListener("click", _onClick, false);
 
+        var i;
+
         for(index in tools) { 
             if (tools.hasOwnProperty(index)) {
                 if (previous_group !== null) {
@@ -467,7 +581,7 @@ var WUI_ToolBar = new (function() {
                     group_element.style.maxHeight = opts.item_height + "px";
                 }
 
-                for (var i = 0; i < group.length; i += 1) {
+                for (i = 0; i < group.length; i += 1) {
                     var tool = group[i],
                         tool_element = document.createElement("div"),
                         
@@ -540,49 +654,17 @@ var WUI_ToolBar = new (function() {
                         }
                         
                         if (tool.toggle_state) {
-                            tool_element.dataset.on = "0";
-                            
-                            _toggle(tool_element, id, true);
+                            tool_element.dataset.on = "1";
                         }
                     } else if (tool.type === "dropdown") {
                         tool_element.classList.add(_class_name.button);
 
-                        var dropdown_floating_content = document.createElement("div");
-
                         if (tool.items !== undefined) {
                             for (j = 0; j < tool.items.length; j += 1) {
                                 var item = tool.items[j];
-
-                                var div_item = document.createElement("div");
-
-                                if (!tool.vertical) {
-                                    div_item.classList.add("wui-toolbar-dropdown-horizontal");
-                                }
-
-                                div_item.classList.add(_class_name.dd_item);
-
-                                div_item.innerHTML = item.title;
-
-                                div_item.dataset.index = j;
-
-                                dropdown_floating_content.appendChild(div_item);
-
-                                widget.items.push({ element: div_item, on_click: item.on_click});
+                                widget.items.push({ title: item.title, on_click: item.on_click });
                             }
                         }
-
-                        dropdown_floating_content.addEventListener("click", _ddItemClick, false);
-
-                        widget.floating_content = dropdown_floating_content;
-
-                        dropdown_floating_content.style.width = widget.dd_items_width + "px";
-
-                        dropdown_floating_content.classList.add(_class_name.dd_content);
-
-                        dropdown_floating_content.dataset.linkedto_tb = id;
-                        dropdown_floating_content.dataset.linkedto_tool_index = tool_id;
-
-                        document.body.appendChild(dropdown_floating_content);
                     } else { // default to standard button
                         tool_element.classList.add(_class_name.button);
                     }
@@ -594,6 +676,20 @@ var WUI_ToolBar = new (function() {
            }
         }
         
+        // now setup tools state, this could have been done before,
+        // but to work with the detachable dialog widget we need them added to the toolbar before calling _toggle etc.
+        var tools_elems = toolbar.getElementsByClassName(_class_name.item);
+
+        for (i = 0; i < tools_elems.length; i += 1) {
+            var tool_elem = tools_elems[i];
+
+            if (tool_elem.dataset.on === "1") {
+                tool_elem.dataset.on = "0";
+
+                _toggle(tool_elem, id, true);
+            }
+        }
+
         return id;
     };
 

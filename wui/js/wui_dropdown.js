@@ -42,13 +42,16 @@ var WUI_DropDown = new (function() {
         Functions.
     ************************************************************/
     
-    var _getElementOffset = function (elem) {
-        var box = elem.getBoundingClientRect(),
-            body = document.body,
-            docEl = document.documentElement,
+    var _getElementOffset = function (element) {
+        var owner_doc = element.ownerDocument,
+            box = element.getBoundingClientRect(),
+            body = owner_doc.body,
+            docEl = owner_doc.documentElement,
+
+            owner_win = owner_doc.defaultView || owner_doc.parentWindow,
         
-            scrollTop = window.pageYOffset || docEl.scrollTop || body.scrollTop,
-            scrollLeft = window.pageXOffset || docEl.scrollLeft || body.scrollLeft,
+            scrollTop = owner_win.pageYOffset || docEl.scrollTop || body.scrollTop,
+            scrollLeft = owner_win.pageXOffset || docEl.scrollLeft || body.scrollLeft,
 
             clientTop = docEl.clientTop || body.clientTop || 0,
             clientLeft = docEl.clientLeft || body.clientLeft || 0,
@@ -59,15 +62,64 @@ var WUI_DropDown = new (function() {
         return { top: Math.round(top), left: Math.round(left) };
     };
     
-    var _close = function (widget) {
-        widget.floating_content.classList.remove(_class_name.open);
+    var _createFloatingContent = function (doc, widget) {
+        var floating_content = doc.createElement("div"),
+            div_item = null,
+            item = "",
+            i;
+
+        for (i = 0; i < widget.content_array.length; i += 1) {
+            item = widget.content_array[i];
+
+            div_item = doc.createElement("div");
+
+            if (!widget.opts.vertical) {
+                div_item.classList.add("wui-dropdown-horizontal");
+            }
+
+            div_item.classList.add(_class_name.item);
+
+            div_item.innerHTML = item;
+
+            div_item.dataset.index = i;
+
+            floating_content.appendChild(div_item);
+
+            //widget.items.push(div_item);
+
+            div_item.addEventListener("click", _itemClick, false);
+
+            if (item === widget.content_array[widget.selected_id]) {
+                div_item.classList.add(_class_name.selected);
+            }
+        }
+
+        floating_content.addEventListener("mouseover", _mouseOver, false);
+
+        floating_content.classList.add(_class_name.content);
+
+        floating_content.dataset.linkedto = widget.element.id;
+
+        doc.body.appendChild(floating_content);
+
+        widget.floating_content = floating_content;
+    };
+
+    var _deleteFloatingContent = function (doc, dd, widget) {
+        //widget.floating_content.classList.remove(_class_name.open);
         
-        widget.element.classList.remove("wui-dropdown-on");
+        dd.classList.remove("wui-dropdown-on");
+
+        if (widget.floating_content) {
+            doc.body.removeChild(widget.floating_content);
+        }
+
+        widget.floating_content = null;
         
         widget.close_timeout = null;
     };
     
-    var _dd_click = function (ev) {
+    var _click = function (ev) {
         ev.preventDefault();
         ev.stopPropagation();
 
@@ -83,14 +135,14 @@ var WUI_DropDown = new (function() {
             floating_content = widget.floating_content;
 
             if (widget.floating_content.classList.contains(_class_name.open)) {
-                _close(widget);
+                _deleteFloatingContent(ev.target.ownerDocument, current_element, widget);
             }
-        } else {
-            return;
         }
+
+        return;
     };
 
-    var _item_click = function (ev) {
+    var _itemClick = function (ev) {
         ev.preventDefault();
         ev.stopPropagation();
 
@@ -120,7 +172,9 @@ var WUI_DropDown = new (function() {
         
         current_element.classList.add(_class_name.selected);
         
-        widget.button_item.innerHTML = current_element.textContent;
+        widget.selected_id = parseInt(current_element.dataset.index, 10);
+
+        widget.target_element.lastElementChild.innerHTML = current_element.textContent;
         
         if (widget.opts.on_item_selected !== undefined) {
             widget.opts.on_item_selected(current_element.dataset.index);  
@@ -137,21 +191,30 @@ var WUI_DropDown = new (function() {
             
             offset = null,
             
-            floating_content = null;
+            floating_content = null,
+
+            owner_doc = current_element.ownerDocument,
+            owner_win = owner_doc.defaultView || owner_doc.parentWindow;
 
         if (current_element.classList.contains(_class_name.dropdown)) {
             widget = _widget_list[current_element.id];
             
-            widget.element.classList.add("wui-dropdown-on");
+            if (widget.floating_content === null) {
+                current_element.classList.add("wui-dropdown-on");
 
-            floating_content = widget.floating_content;
+                _createFloatingContent(owner_doc, widget);
 
-            offset = _getElementOffset(current_element);
+                floating_content = widget.floating_content;
 
-            floating_content.style.top = (offset.top - floating_content.offsetHeight - widget.opts.vspacing) + "px";
-            floating_content.style.left = offset.left + "px";
+                offset = _getElementOffset(current_element);
 
-            floating_content.classList.add(_class_name.open);
+                floating_content.style.top = (offset.top - floating_content.offsetHeight - widget.opts.vspacing) + "px";
+                floating_content.style.left = offset.left + "px";
+
+                floating_content.classList.add(_class_name.open);
+
+                widget.target_element = current_element;
+            }
         } else if ( current_element.classList.contains(_class_name.content)) {
             widget = _widget_list[current_element.dataset.linkedto];
         } else if ( current_element.classList.contains(_class_name.item)) {
@@ -160,7 +223,7 @@ var WUI_DropDown = new (function() {
             return;
         }
         
-        window.clearTimeout(widget.close_timeout);
+        owner_win.clearTimeout(widget.close_timeout);
 
         current_element.addEventListener("mouseleave", _mouseLeave, false);
     };
@@ -170,17 +233,20 @@ var WUI_DropDown = new (function() {
 
         var current_element = ev.target,
             
-            widget = null;
+            widget = null,
+
+            owner_doc = current_element.ownerDocument,
+            owner_win = owner_doc.defaultView || owner_doc.parentWindow;
     
-        if ( current_element.classList.contains(_class_name.content)) {
+        if (current_element.classList.contains(_class_name.content)) {
             widget = _widget_list[current_element.dataset.linkedto];
-        } else if ( current_element.classList.contains(_class_name.item)) {
+        } else if (current_element.classList.contains(_class_name.item)) {
             widget = _widget_list[current_element.parentElement.dataset.linkedto];
         } else {
             widget = _widget_list[current_element.id];
         }
             
-        widget.close_timeout = window.setTimeout(_close, widget.opts.ms_before_hiding, widget);
+        widget.close_timeout = owner_win.setTimeout(_deleteFloatingContent, widget.opts.ms_before_hiding, owner_doc, widget.target_element, widget);
 
         current_element.removeEventListener("mouseleave", _mouseLeave, false);
     };
@@ -193,18 +259,10 @@ var WUI_DropDown = new (function() {
 
     this.create = function (id, options, content_array) {
         var dropdown = document.getElementById(id),
-            
-            div_item = null,
-            
-            item = "",
-            
-            items = [],
 
             opts = {},
         
-            key,
-            
-            i = 0;
+            key;
         
         if (_widget_list[id] !== undefined) {
             console.log("WUI_DropDown id '" + id + "' already created, aborting.");
@@ -247,50 +305,18 @@ var WUI_DropDown = new (function() {
         
         dropdown.appendChild(div_button);
         
-        var floating_content = document.createElement("div");
-        
-        dropdown.addEventListener("click", _dd_click, false);
-        
-        for (i = 0; i < content_array.length; i += 1) {
-            item = content_array[i];
-            
-            div_item = document.createElement("div");
-                
-            if (!opts.vertical) {
-                div_item.classList.add("wui-dropdown-horizontal");
-            }
-                
-            div_item.classList.add(_class_name.item);
-
-            div_item.innerHTML = item;
-                
-            div_item.dataset.index = i;
-                    
-            floating_content.appendChild(div_item);
-                
-            items.push(div_item);
-                
-            div_item.addEventListener("click", _item_click, false);
-            
-            if (item === content_array[opts.selected_id]) {
-                div_item.classList.add(_class_name.selected);
-            }
-        }
+        dropdown.addEventListener("click", _click, false);
         
         dropdown.addEventListener("mouseover", _mouseOver, false);
-        floating_content.addEventListener("mouseover", _mouseOver, false);
-
-        floating_content.classList.add(_class_name.content);
-        
-        floating_content.dataset.linkedto = id;
-        
-        document.body.appendChild(floating_content);
         
         var dd = {
             element: dropdown,
 
-            floating_content: floating_content,
-            items: items,
+            floating_content: null,
+            //items: [],
+            selected_id: opts.selected_id,
+
+            content_array: content_array,
             
             opts: opts,
             
@@ -298,6 +324,8 @@ var WUI_DropDown = new (function() {
             
             hover_count: 0,
             
+            target_element: null,
+
             close_timeout: null
         };
         
@@ -309,8 +337,7 @@ var WUI_DropDown = new (function() {
     this.destroy = function (id) {
         var widget = _widget_list[id],
 
-            element,
-            floating_element;
+            element;
 
         if (widget === undefined) {
             console.log("Element id '" + id + "' is not a WUI_DropDown, destroying aborted.");
@@ -319,10 +346,10 @@ var WUI_DropDown = new (function() {
         }
 
         element = widget.element;
-        floating_element = widget.floating_content;
+
+        _deleteFloatingContent(document, element, widget);
 
         element.parentElement.removeChild(element);
-        floating_element.parentElement.removeChild(floating_element);
 
         delete _widget_list[id];
     };

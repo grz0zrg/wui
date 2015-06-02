@@ -147,10 +147,12 @@
 
 .wui-toolbar-toggle-on {
     background-color: #403020 !important;
+    box-shadow: 1px 1px 1px 0px #dddddd;
 }
 
 .wui-toolbar-toggle-on:hover {
     background-color: #504030 !important;
+    box-shadow: 1px 1px 1px 0px #bbbbbb;
 }
 
 .wui-toolbar-minimize-icon {

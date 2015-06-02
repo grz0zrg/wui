@@ -46,6 +46,8 @@ var WUI_Tabs = new (function() {
             
             widget_id = tabs.parentElement.id,
             
+            widget = _widget_list[widget_id],
+
             tab_index = 0,
             elem = null,
             
@@ -57,26 +59,36 @@ var WUI_Tabs = new (function() {
             elem.classList.remove(_class_name.enabled);
             elem.classList.add(_class_name.disabled);
             
+            widget.tabs[i].classList.remove(_class_name.enabled);
+            widget.tabs[i].classList.add(_class_name.disabled);
+
             if (elem === tab_elem) {
                 tab_index = i;
             }
         }
-        
+
         for (i = 0; i < content.childElementCount; i += 1) {
             elem = content.children[i];
             
             elem.classList.remove(_class_name.display_none);
             
+            widget.contents[i].classList.remove(_class_name.display_none);
+
             if (tab_index !== i) {
                 elem.classList.add(_class_name.display_none);
+
+                widget.contents[i].classList.add(_class_name.display_none);
             }
         }
         
-        ev.target.classList.remove(_class_name.disabled);
-        ev.target.classList.toggle(_class_name.enabled);
+        widget.tabs[tab_index].classList.remove(_class_name.disabled);
+        widget.tabs[tab_index].classList.add(_class_name.enabled);
 
-        if (_widget_list[widget_id].opts.on_tab_click) {
-            _widget_list[widget_id].opts.on_tab_click(tab_index);
+        ev.target.classList.remove(_class_name.disabled);
+        ev.target.classList.add(_class_name.enabled);
+
+        if (widget.opts.on_tab_click) {
+            widget.opts.on_tab_click(tab_index);
         }
     };
     
@@ -137,7 +149,8 @@ var WUI_Tabs = new (function() {
         // style tabs
         tabs.classList.add(_class_name.tabs);
         
-        var tab_count = tabs.childElementCount;
+        var tab_count = tabs.childElementCount,
+            tab_elems = [];
         
         for (i = 0; i < tab_count; i += 1) {
             var tab = tabs.children[i];
@@ -150,6 +163,8 @@ var WUI_Tabs = new (function() {
             
             tab.addEventListener("click", _onTabClick, false);
             tab.addEventListener("touchstart", _onTabClick, false);
+
+            tab_elems.push(tab);
         }
         
         first_tab.classList.add(_class_name.enabled);
@@ -158,7 +173,8 @@ var WUI_Tabs = new (function() {
         // style tabs content
         content.classList.add("wui-tabs-content");
         
-        var tab_content_count = content.childElementCount;
+        var tab_content_count = content.childElementCount,
+            content_elems = [content.children[0]];
         
         content.style.height = opts.height;
         
@@ -168,10 +184,12 @@ var WUI_Tabs = new (function() {
             var tab_content = content.children[i];
             
             tab_content.classList.add(_class_name.tab_content);
-            tab_content.classList.add(_class_name.display_none);   
+            tab_content.classList.add(_class_name.display_none);
+
+            content_elems.push(tab_content);
         }
         
-        _widget_list[id] = { element: element, opts : opts };
+        _widget_list[id] = { element: element, tabs: tab_elems, contents: content_elems, opts : opts };
         
         return id;
     };
