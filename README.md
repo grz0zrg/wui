@@ -307,7 +307,7 @@ WUI_DropDown.create("my_dropdown", {
 
 <br/>*Method*:
 
->*   create(id, tools, options)
+>*   create(id, options, tools)
 *   destroy(wui_toolbar)
 *   hideGroup(wui_toolbar, group_index)
 *   showGroup(wui_toolbar, group_index)
@@ -321,7 +321,24 @@ WUI_DropDown.create("my_dropdown", {
 ```
   
 ```javascript
-var my_toolbar = WUI_ToolBar.create("my_toolbar", {  
+var my_toolbar = WUI_ToolBar.create("my_toolbar", {
+    // display the minimize icon for each groups
+    allow_groups_minimize: true,
+    
+    // this will modify the size of the button
+    item_width: 32,
+    item_height: 32,
+    
+    // this set the spacing between buttons, aka margin to left/right or top/bottom
+    item_hmargin: 0,
+    item_vmargin: 0,
+    
+    icon_width: 32,
+    icon_height: 32,
+  
+    vertical: false
+  },
+  {  
 	// properties added to this object are recognized automatically as new groups by the widget
     my_first_group_of_tools: [
       {
@@ -387,22 +404,6 @@ var my_toolbar = WUI_ToolBar.create("my_toolbar", {
         ]
       }
     ]
-  }, {
-    // display the minimize icon for each groups
-    allow_groups_minimize: true,
-    
-    // this will modify the size of the button
-    item_width: 32,
-    item_height: 32,
-    
-    // this set the spacing between buttons, aka margin to left/right or top/bottom
-    item_hmargin: 0,
-    item_vmargin: 0,
-    
-    icon_width: 32,
-    icon_height: 32,
-  
-    vertical: false
   });
 ```
 <br/>
