@@ -7,7 +7,7 @@ Collection of **easy to use** and **lightweight** (*~4.3kb css*, *~9.9kb js* gzi
 
 Good for single page apps, experiments and the like.
 
-----------
+<br/>
 
 ####Demo
 - [Demo](http://grz0zrg.github.io/wui-demo/)
@@ -33,7 +33,7 @@ There is a minified and gzipped up to date ready-to-use css/js files in the **_d
 <br/>
 If you need a single (or more) widget, you can find minified files of each widget in the **_dist/widgets_** folder
 
-----------
+=====
 
 ####Building with [Node](https://nodejs.org/) and [Grunt](http://gruntjs.com/)
 
@@ -42,7 +42,7 @@ npm install
 grunt dist
 ```
 
-----------
+=====
 
 ###Introduction
 
@@ -63,7 +63,7 @@ HTML elements with a specific layout are required to use some widgets (like tabs
 
 A bit of style hacking may be necessary if you want widgets to suit your need or your taste, the demo page can be helpful.
 
-----------
+=====
 
 <a name="wui"></a>
 ### WUI ###
@@ -71,7 +71,7 @@ A bit of style hacking may be necessary if you want widgets to suit your need or
 Not really a widget but a collection of tools, can be helpful if you want to add draggable functionality to an element or apply fade in/out.
 
 Fade in/Fade out method default to 500ms if no duration is provided
-
+<br/>
 *Methods*:
 
 >*   draggable(element, draggable_state, on_drag_cb)
@@ -94,7 +94,7 @@ WUI.fadeOut(my_element, 500, function () { console.log("finished!"); }, true);
 
 <br/>
 
-----------
+=====
 
 <a name="tabs"></a>
 ### Tabs ###
@@ -141,7 +141,7 @@ WUI_Tabs.create("my_tabs", {
 
 <br/>
 
-----------
+=====
 
 <a name="dialog"></a>
 ### Dialog/Panel ###
@@ -155,16 +155,16 @@ All WUI widgets work very well with the detachable feature, what you change in t
 <br/>
 >**Notes**: 
 >
->>On iPad, the detach feature will not work well because Safari will open the dialog as a new tab.
+>On iPad, the detach feature will not work well because Safari will open the dialog as a new tab.
 >
->----------
->> The detach feature keep track of events by overriding `addEventListener`, in order to work correctly the WUI_Dialog/WUI library should be loaded before you or other libs add events.
+>=====
+> The detach feature keep track of events by overriding `addEventListener`, in order to work correctly the WUI_Dialog/WUI library should be loaded before you or other libs add events.
 >
->----------
->>When a dialog is detached, it will add back event listeners added with `addEventListener` only (and also inline events), if you attach events to elements in the dialog content using `elem.onclick` etc, the event will not be added back, also since the dialog content will be in another window/document, events attached to the initial window or document and acting on the dialog content will not work, because the dialog is now in another window, you will have to take care of attaching to/using `element.ownerDocument` or `element.parentWindow` instead of `document` or `window`.
+>=====
+>When a dialog is detached, it will add back event listeners added with `addEventListener` only (and also inline events), if you attach events to elements in the dialog content using `elem.onclick` etc, the event will not be added back, also since the dialog content will be in another window/document, events attached to the initial window or document and acting on the dialog content will not work, because the dialog is now in another window, you will have to take care of attaching to/using `element.ownerDocument` or `element.parentWindow` instead of `document` or `window`.
 >
->----------
->>Dialogs `zIndex` is between 100 and 101.
+>=====
+>Dialogs `zIndex` is between 100 and 101.
 
 <br/>*Methods*:
 
@@ -478,7 +478,7 @@ WUI_RangeSlider.create("my_range_slider", {
 ```
 <br/>
 
-----------
+=====
 
 <a name="compat"></a>
 # Compatibility #
@@ -491,13 +491,13 @@ Tested and work ok with IE 11, Opera 12, Chrome (30, 35, 40), Firefox (31, 37) a
 
 Mostly work (problems with the ToolBar and Dialog) under IE 10 but i do not support it.
 
-----------
+=====
 
 <a name="license"></a>
 # License #
 
 [Revised BSD](https://github.com/grz0zrg/wui/blob/master/LICENSE)
 
-----------
+=====
 
 This was made for an audio app and the map editor of a wargame engine.
