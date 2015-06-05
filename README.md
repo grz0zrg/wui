@@ -3,11 +3,11 @@ WUI
 
 Collection of **easy to use** and **lightweight** (*~4.3kb css*, *~9.9kb js* gzipped) vanilla GUI widgets for the web.
 
-*Require no dependencies, all widgets can be used on their own.*
+**Require no dependencies, all widgets can be used on their own.**
 
-Note: It was not built to target mobile devices but it support touch events and the demo work ok with Safari on the IPad.
+Good for single page apps, experiments and the like.
 
-Good for single page apps, experiments and the like. (caution: for serious usage it *may* be tricky)
+----------
 
 ####Demo
 - [Demo](http://grz0zrg.github.io/wui-demo/)
@@ -22,7 +22,7 @@ Good for single page apps, experiments and the like. (caution: for serious usage
 <a name="doc"></a>
 # Documentation #
 
-####Usage
+#####Usage
 
 There is a minified and gzipped up to date ready-to-use css/js files in the **_dist_** folder, to use the entire library, just include them in your HTML file
 
@@ -33,7 +33,7 @@ There is a minified and gzipped up to date ready-to-use css/js files in the **_d
 <br/>
 If you need a single (or more) widget, you can find minified files of each widget in the **_dist/widgets_** folder
 
-======
+----------
 
 ####Building with [Node](https://nodejs.org/) and [Grunt](http://gruntjs.com/)
 
@@ -42,9 +42,9 @@ npm install
 grunt dist
 ```
 
-======
+----------
 
-####Introduction
+###Introduction
 
 *   [WUI](#wui)
 *   [WUI_Tabs](#tabs)
@@ -63,7 +63,7 @@ HTML elements with a specific layout are required to use some widgets (like tabs
 
 A bit of style hacking may be necessary if you want widgets to suit your need or your taste, the demo page can be helpful.
 
-======
+----------
 
 <a name="wui"></a>
 ### WUI ###
@@ -94,7 +94,7 @@ WUI.fadeOut(my_element, 500, function () { console.log("finished!"); }, true);
 
 <br/>
 
-======
+----------
 
 <a name="tabs"></a>
 ### Tabs ###
@@ -141,24 +141,30 @@ WUI_Tabs.create("my_tabs", {
 
 <br/>
 
-======
+----------
 
 <a name="dialog"></a>
 ### Dialog/Panel ###
 
->Dialogs can be draggable, closable, minimizable, resizable, detachable, modal and act as panels, they also go in front of others when you move them.
+Dialogs can be draggable, closable, minimizable, resizable, detachable, modal and act as panels, they also go in front of others when you move them.
 
->One of the coolest (and maybe 'unique') feature of the dialog widget is the ability to be detached from the window it is on and act as a proper window without breaking the content (including events), this may be very usefull, the user can detach any dialogs and move them on other screens etc.
+One of the coolest (and maybe 'unique') feature of the dialog widget is the ability to be detached from the window it is on and act as a proper window without breaking the content (including events), this may be very usefull, the user can detach any dialogs and move them on other screens etc.
 
->All WUI widgets work very well with the detachable feature, what you change in the detachable dialog will be changed in the 'original' dialog, this should be the same dialog after all, for example, if you toggle a WUI_ToolBar button in the detached dialog and close it, when you open the dialog again (detached or not) the button will be toggled, the only thing which is not synced is the size of the detached dialog and its position.
+All WUI widgets work very well with the detachable feature, what you change in the detachable dialog will be changed in the 'original' dialog, this should be the same dialog after all, for example, if you toggle a WUI_ToolBar button in the detached dialog and close it, when you open the dialog again (detached or not) the button will be toggled, the only thing which is not synced is the size of the detached dialog and its position.
 
->Note: On iPad, the detach feature will not work well because Safari will open the dialog as a new tab.
-
->Note: The detach feature keep track of events by overriding `addEventListener`, in order to work correctly the WUI_Dialog/WUI library should be loaded before you or other libs add events.
-
->Note: When a dialog is detached, it will add back event listeners added with `addEventListener` only (and also inline events), if you attach events to elements in the dialog content using `elem.onclick` etc, the event will not be added back, also since the dialog content will be in another window/document, events attached to the initial window or document and acting on the dialog content will not work, because the dialog is now in another window, you will have to take care of attaching to/using `element.ownerDocument` or `element.parentWindow` instead of `document` or `window`.
-
->Note: Dialogs `zIndex` is between 100 and 101.
+<br/>
+>**Notes**: 
+>
+>>On iPad, the detach feature will not work well because Safari will open the dialog as a new tab.
+>
+>----------
+>> The detach feature keep track of events by overriding `addEventListener`, in order to work correctly the WUI_Dialog/WUI library should be loaded before you or other libs add events.
+>
+>----------
+>>When a dialog is detached, it will add back event listeners added with `addEventListener` only (and also inline events), if you attach events to elements in the dialog content using `elem.onclick` etc, the event will not be added back, also since the dialog content will be in another window/document, events attached to the initial window or document and acting on the dialog content will not work, because the dialog is now in another window, you will have to take care of attaching to/using `element.ownerDocument` or `element.parentWindow` instead of `document` or `window`.
+>
+>----------
+>>Dialogs `zIndex` is between 100 and 101.
 
 <br/>*Methods*:
 
@@ -260,7 +266,6 @@ Want to change the status bar content?
 WUI_Dialog.setStatusBarContent(my_dialog, "My new status bar content");
 ```
 <br/>
-======
 
 <a name="dropdown"></a>
 ### DropDown ###
@@ -308,7 +313,7 @@ WUI_DropDown.create("my_dropdown", {
 <a name="toolbar"></a>
 ### ToolBar ###
 
->The toolbar can be horizontal or vertical, have groups and minimizable groups, have three type of buttons, simple, toggle and dropdown (usefull to make menu bar), a set of toggle buttons can be linked (grouped), buttons can be an icon, a text or both.
+The toolbar can be horizontal or vertical, have groups and minimizable groups, have three type of buttons, simple, toggle and dropdown (usefull to make menu bar), a set of toggle buttons can be linked (grouped), buttons can be an icon, a text or both.
 
 <br/>*Method*:
 
@@ -425,7 +430,7 @@ WUI_ToolBar.toggle(my_toolbar, 0, true); // the last argument is optional and me
 <a name="rangeslider"></a>
 ### RangeSlider ###
 
->Range slider widget can be horizontal or vertical, have a negative/positive range, the value can be changed with the mouse wheel or by moving the hook point by dragging or by clicking on the slider bar, a double click on the slider will reset the value to its default value, the value also appear as an input which perform automatically all sanity check and will indicate if the value is correct or not (red)
+Range slider widget can be horizontal or vertical, have a negative/positive range, the value can be changed with the mouse wheel or by moving the hook point by dragging or by clicking on the slider bar, a double click on the slider will reset the value to its default value, the value also appear as an input which perform automatically all sanity check and will indicate if the value is correct or not (red)
 
 <br/>*Method*:
 
@@ -473,24 +478,26 @@ WUI_RangeSlider.create("my_range_slider", {
 ```
 <br/>
 
-======
+----------
 
 <a name="compat"></a>
 # Compatibility #
 
 Not well tested but should work in all modern browsers supporting **_ECMAScript 5_** and **_CSS3_**.
 
+It was not built to target mobile devices, but it still support touch events and should work well on iPad and the like.
+
 Tested and work ok with IE 11, Opera 12, Chrome (30, 35, 40), Firefox (31, 37) and Safari (6, 7, 8).
 
 Mostly work (problems with the ToolBar and Dialog) under IE 10 but i do not support it.
 
-======
+----------
 
 <a name="license"></a>
 # License #
 
 [Revised BSD](https://github.com/grz0zrg/wui/blob/master/LICENSE)
 
-======
+----------
 
 This was made for an audio app and the map editor of a wargame engine.
