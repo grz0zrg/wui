@@ -205,6 +205,11 @@ var my_dialog = WUI_Dialog.create("my_dialog", {
         new_window.document.title = "My detached window"; // replace the detached dialog title
     },
     
+    // function called when the dialog is resized, `new_width` and `new_height` is the new dimension of the dialog content
+    on_resize: function (new_width, new_height) {
+    
+    },
+    
     modal: false,
     
     // wether the dialog have a status bar

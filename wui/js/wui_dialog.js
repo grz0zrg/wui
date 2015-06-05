@@ -78,7 +78,8 @@ var WUI_Dialog = new (function() {
             minimized: false,
 
             on_close: null,
-            on_detach: null
+            on_detach: null,
+            on_resize: null
         };
     
     /***********************************************************
@@ -279,10 +280,14 @@ var WUI_Dialog = new (function() {
                 var doc = document,
                     dialog_contents,
 
+                    widget,
+
                     content,
                     dialog,
 
                     status_bar,
+
+                    bcr,
 
                     i;
 
@@ -296,12 +301,20 @@ var WUI_Dialog = new (function() {
 
                         dialog = content.parentElement;
 
+                        widget = _widget_list[dialog.id];
+
                         status_bar = dialog.getElementsByClassName(_class_name.status_bar);
 
                         if (status_bar.length > 0) {
                             content.style.height = (detached.innerHeight - 32) + "px";
                         } else {
                             content.style.height = detached.innerHeight + "px";
+                        }
+
+                        bcr = content.getBoundingClientRect();
+
+                        if (widget.opts.on_resize) {
+                            widget.opts.on_resize(bcr.width, bcr.height);
                         }
                     }
 
@@ -325,6 +338,14 @@ var WUI_Dialog = new (function() {
                     }
 
                     _computeThenSetPosition(dialog);
+
+                    bcr = content.getBoundingClientRect();
+
+                    widget = _widget_list[dialog.id];
+
+                    if (widget.opts.on_resize) {
+                        widget.opts.on_resize(bcr.width, bcr.height);
+                    }
                 }
             }, 1000 / 8);
         }
@@ -682,13 +703,13 @@ var WUI_Dialog = new (function() {
         w = x - _resize_start_x;
         h = y - _resize_start_y;
 
-        if (widget.opts.halign === "center") {
+        /*if (widget.opts.halign === "center") {
             w += 2;
         }
 
         if (widget.opts.valign === "center") {
             h += 2;
-        }
+        }*/
 
         title_div = _resized_dialog.firstElementChild.firstElementChild.firstElementChild;
 
@@ -718,9 +739,19 @@ var WUI_Dialog = new (function() {
         dialog_contents = _resized_dialog.getElementsByClassName(_class_name.content);
 
         for (i = 0; i < dialog_contents.length; i += 1) {
-            var content = dialog_contents[i];
+            var content = dialog_contents[i],
+
+                widg = _widget_list[content.parentElement.id],
+
+                bcr;
 
             content.style.height = (_resized_dialog.offsetHeight - 32 - off_h) + "px";
+
+            bcr = content.getBoundingClientRect();
+
+            if (widg.opts.on_resize) {
+                widg.opts.on_resize(bcr.width, bcr.height);
+            }
 
             if (widget.opts.keep_align_when_resized) {
                 _computeThenSetPosition(_resized_dialog);
