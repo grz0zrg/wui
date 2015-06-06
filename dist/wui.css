@@ -9,11 +9,11 @@
 
     border-radius: 6px;
 
-    z-index: 24;
+    z-index: 100;
 
     overflow: hidden;
 
-    box-shadow: 0px 0px 4px 1px #080808;
+    /*box-shadow: 0px 0px 4px 1px #080808;*/
 
     pointer-events: none;
 }
@@ -1014,6 +1014,9 @@
     transition-delay: 0s;
 }
 
+.wui-circular-menu {
+    color: aliceblue;
+}
 .wui-hide-fi-500 {
     visibility: hidden;
 

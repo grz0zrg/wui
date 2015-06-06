@@ -511,6 +511,10 @@ var WUI_Dialog = new (function() {
     };
     
     var _windowMouseMove = function (ev) {
+        if (!_dragged_dialog) {
+            return;
+        }
+
         ev.preventDefault();
         
         var x = ev.clientX,
@@ -568,7 +572,7 @@ var WUI_Dialog = new (function() {
                     owner_doc.body.style.cursor = "default";
                     
                     owner_win.removeEventListener('touchmove', _windowMouseMove, false);
-                    owner_win.removeEventListener('touchmove', _windowMouseUp, false);
+                    owner_win.removeEventListener('touchend', _windowMouseUp, false);
                     
                     break;
                 }
@@ -579,7 +583,7 @@ var WUI_Dialog = new (function() {
             owner_doc.body.style.cursor = "default";
             
             owner_win.removeEventListener('mousemove', _windowMouseMove, false);
-            owner_win.removeEventListener('mousemove', _windowMouseUp, false);
+            owner_win.removeEventListener('mouseup', _windowMouseUp, false);
         }
     };
     
@@ -593,7 +597,9 @@ var WUI_Dialog = new (function() {
             touches = ev.changedTouches,
 
             owner_doc,
-            owner_win;
+            owner_win,
+
+            dragged_dialog;
         
         ev.preventDefault();
 
@@ -608,16 +614,18 @@ var WUI_Dialog = new (function() {
             }
         }
         
-        _dragged_dialog = ev.target.parentElement;
-        
-        owner_doc = _dragged_dialog.ownerDocument;
-        owner_win = owner_doc.defaultView || owner_doc.parentWindow;
+        dragged_dialog = ev.target.parentElement;
 
-        if (_dragged_dialog.classList.contains(_class_name.maximize) ||
-           !_dragged_dialog.classList.contains(_class_name.draggable)) {
+        if (dragged_dialog.classList.contains(_class_name.maximize) ||
+           !dragged_dialog.classList.contains(_class_name.draggable)) {
             return;
         }
         
+        _dragged_dialog = dragged_dialog;
+
+        owner_doc = _dragged_dialog.ownerDocument;
+        owner_win = owner_doc.defaultView || owner_doc.parentWindow;
+
         _focus(_dragged_dialog);
         
         owner_doc.body.style.cursor = "move";
