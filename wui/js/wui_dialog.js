@@ -940,7 +940,7 @@ var WUI_Dialog = new (function() {
         }
 
         dialog.addEventListener("click", _onClick, false);
-        //dialog.addEventListener("touchstart", _onClick, false);
+        dialog.addEventListener("touchstart", _onClick, false);
 
         window.addEventListener("resize", function () { _onWindowResize(false); }, false);
         window.addEventListener("beforeunload", _onBeforeUnload, false);

@@ -152,7 +152,7 @@ var WUI_DropDown = new (function() {
 
         var current_element = ev.target,
             
-            widget = _widget_list[current_element.id],
+            widget,
             
             floating_content = null,
             

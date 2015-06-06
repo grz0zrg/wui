@@ -940,7 +940,7 @@ var WUI_Dialog = new (function() {
         }
 
         dialog.addEventListener("click", _onClick, false);
-        //dialog.addEventListener("touchstart", _onClick, false);
+        dialog.addEventListener("touchstart", _onClick, false);
 
         window.addEventListener("resize", function () { _onWindowResize(false); }, false);
         window.addEventListener("beforeunload", _onBeforeUnload, false);
@@ -1259,7 +1259,7 @@ var WUI_DropDown = new (function() {
 
         var current_element = ev.target,
 
-            widget = _widget_list[current_element.id],
+            widget,
 
             floating_content = null,
 
