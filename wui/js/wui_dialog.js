@@ -444,7 +444,7 @@ var WUI_Dialog = new (function() {
                                      '<title>' + stripped_title + '</title>',
                                      css_html,
                                      '</head>',
-                                     '<body class="wui-dialog-detach-window-body">',
+                                     '<body id="' + dialog.id + '" class="wui-dialog-detach-window-body">',
                                      //dialog.children[1].outerHTML,
                                      '</body>',
                                      '</html>'].join(''));
@@ -488,7 +488,7 @@ var WUI_Dialog = new (function() {
 
     var _onClick = function (ev) {
         ev.preventDefault();
-        ev.stopPropagation();
+        //ev.stopPropagation();
 
         var element = ev.target,
 
@@ -939,8 +939,8 @@ var WUI_Dialog = new (function() {
             dialog.appendChild(status_bar);
         }
 
-        dialog.addEventListener("click", _onClick, false);
-        dialog.addEventListener("touchstart", _onClick, false);
+        header.addEventListener("click", _onClick, false);
+        header.addEventListener("touchstart", _onClick, false);
 
         window.addEventListener("resize", function () { _onWindowResize(false); }, false);
         window.addEventListener("beforeunload", _onBeforeUnload, false);
