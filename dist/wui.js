@@ -3160,6 +3160,8 @@ var WUI_CircularMenu = new (function() {
 
     var _elems = [],
 
+        _last_time = 0,
+
         _class_name = {
             item:       "wui-circularmenu-item",
             show:       "wui-circularmenu-show"
@@ -3216,6 +3218,11 @@ var WUI_CircularMenu = new (function() {
         var handler = function (ev) {
             ev.preventDefault();
 
+            var now = new Date().getTime();
+            if (now - _last_time <= 500) {
+                return;
+            }
+
             if (ev.target.classList.contains(_class_name.item)) {
                 return;
             }
@@ -3260,6 +3267,9 @@ var WUI_CircularMenu = new (function() {
 
             doc.body.appendChild(elem);
 
+            // for the transition to work, force the layout engine
+            win.getComputedStyle(elem).width;
+
             _elems.push(elem);
 
             if (item.on_click) {
@@ -3274,6 +3284,9 @@ var WUI_CircularMenu = new (function() {
         var handler = _onClickOutHandler(win, doc);
 
         win.addEventListener("click", handler);
+
+        _last_time = new Date().getTime();
+
         win.addEventListener("mousedown", handler);
     };
 
