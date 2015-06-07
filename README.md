@@ -1,7 +1,7 @@
 WUI
 =====
 
-Collection of **easy to use** and **lightweight** (*~4.3kb css*, *~9.9kb js* gzipped) vanilla GUI widgets for the web.
+Collection of **easy to use** and **lightweight** (*~4.4kb css*, *~10.4kb js* gzipped) vanilla GUI widgets for the web.
 
 **Require no dependencies, all widgets can be used on their own.**
 
@@ -52,10 +52,11 @@ grunt dist
 *   [WUI_DropDown](#dropdown)
 *   [WUI_ToolBar](#toolbar)
 *   [WUI_RangeSlider](#rangeslider)
+*   [WUI_CircularMenu](#circularmenu)
 
 The WUI API is simple, all widgets have a method **_"create"_** which take a DOM element identifier as first argument (which is used as a bind target) and an option object as second argument to customize it, WUI_ToolBar has a third argument which is used to specify the content of the toolbar.
 
-All **_"create"_** methods return a reference of the widget which can be used later to do stuff with the widget like destroying them, the reference is a string (in fact, it is the dialog element id).
+All **_"create"_** methods return a reference of the widget which can be used later to do stuff with the widget like destroying them, the reference is a string (it is the dialog element id).
 
 All widgets also have a method **_"destroy"_**.
 
@@ -475,6 +476,55 @@ WUI_RangeSlider.create("my_range_slider", {
     // function to call when the slider value change with the value passed as argument
     on_change: slider_change
   });
+```
+<br/>
+
+======
+
+<a name="circularmenu"></a>
+### CircularMenu ###
+
+Show a menu with items arranged in a circle/ellipse.
+
+This widget `create` function does not return anything and the widget do not have a destroy method, it is automatically destroyed by the library, thus you need to call `create` each time you want it to appear somewhere.
+
+The menu can be shown around an element or a position, if an element is specified in the options, `x y` properties will be ignored, `x y` or `element` need to be set in order to use this widget, all other properties are optional.
+
+Items are simple round buttons, an icon class name can be specified, a tooltip and a callback.
+
+<br/>*Method*:
+
+>*   create(options, items)
+  
+<br/>*Example*:
+
+```javascript
+WUI_CircularMenu.create({
+    x: 64,
+    y: 64,
+    
+    element: null, // if an element is specified, the menu will be shown around it
+    
+    // radius
+    rx: 64,
+    ry: 64,
+
+    // dimension of the items
+    item_width:  32,
+    item_height: 32,
+
+    // if you want to display the widget at a position x, y in another window, you may need to specify the target window here
+    window: null,
+    
+    // a list of events which will destroy the widget, listeners are added on the window, by default ->
+    destroy_events: ["click", "contextmenu", "mousedown", "touchstart"]
+  },
+  [
+    { icon: "css-icon-class", tooltip: "first button",  on_click: function () { } },
+    { icon: "css-icon-class", tooltip: "second button", on_click: function () { } },
+    { icon: "css-icon-class", tooltip: "third button",  on_click: function () { } },
+    { icon: "css-icon-class", tooltip: "fourth button", on_click: function () { } },
+  ]);
 ```
 <br/>
 

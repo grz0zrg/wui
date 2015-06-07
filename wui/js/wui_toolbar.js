@@ -461,8 +461,8 @@ var WUI_ToolBar = new (function() {
      * Create a toolbar widget from an element.
      * 
      * @param   {String} id      DOM Element id
-     * @param   {Array}    tools   [[Description]]
      * @param   {Object}   options [[Description]]
+     * @param   {Array}    tools   [[Description]]
      * @returns {String} Created widget reference, internally used to recognize the widget
      */
     this.create = function (id, options, tools) {
