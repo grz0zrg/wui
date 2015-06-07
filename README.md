@@ -514,10 +514,7 @@ WUI_CircularMenu.create({
     item_height: 32,
 
     // if you want to display the widget at a position x, y in another window, you may need to specify the target window here
-    window: null,
-    
-    // a list of events which will destroy the widget, listeners are added on the window, by default ->
-    destroy_events: ["click", "contextmenu", "mousedown", "touchstart"]
+    window: null
   },
   [
     { icon: "css-icon-class", tooltip: "first button",  on_click: function () { } },
