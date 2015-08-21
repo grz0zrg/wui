@@ -262,6 +262,16 @@ var WUI_Dialog = new (function() {
         minimize_btn.classList.toggle(_class_name.maximize);
 
         dialog.classList.toggle(_class_name.minimized);
+        
+        if (dialog.classList.contains(_class_name.minimized)) {
+            dialog.style.borderStyle = "solid";
+            dialog.style.borderColor = "#808080";
+            dialog.style.borderWidth = "1px";
+        } else {
+            dialog.style.borderStyle = "";
+            dialog.style.borderColor = "";
+            dialog.style.borderWidth = "";
+        }
 
         if (resize_handler) {
             resize_handler.classList.toggle(_class_name.open);

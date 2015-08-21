@@ -13,6 +13,8 @@
 
     overflow: hidden;
     
+    border: 1px solid #000000;
+    
     /*box-shadow: 0px 0px 4px 1px #080808;*/
 
     pointer-events: none;

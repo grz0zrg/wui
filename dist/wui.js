@@ -5,20 +5,20 @@ var WUI_Dialog = new (function() {
 
     /***********************************************************
         Private section.
-
+        
         Fields.
     ************************************************************/
-
+    
     var _widget_list = {},
-
+        
         _dragged_dialog = null,
         _resized_dialog = null,
-
+        
         _touch_identifier = null,
-
+        
         _drag_x = 0,
         _drag_y = 0,
-
+        
         _resize_start_x = 0,
         _resize_start_y = 0,
 
@@ -44,13 +44,13 @@ var WUI_Dialog = new (function() {
             modal:          "wui-dialog-modal",
             status_bar:     "wui-dialog-status-bar"
         },
-
+        
         _known_options = {
             title: "",
-
+            
             width: "80%",
             height: "40%",
-
+            
             open: true,
 
             closable: true,
@@ -58,7 +58,7 @@ var WUI_Dialog = new (function() {
             draggable: false,
             resizable: false,
             detachable: false,
-
+            
             min_width: "title",
             min_height: 32,
 
@@ -69,22 +69,22 @@ var WUI_Dialog = new (function() {
 
             halign: "left", // 'left', 'center', 'right'
             valign: "top", // 'top', 'center', 'bottom'
-
+            
             top: 0,
             left: 0,
 
             modal: false,
-
+            
             minimized: false,
 
             on_close: null,
             on_detach: null,
             on_resize: null
         };
-
+    
     /***********************************************************
         Private section.
-
+        
         Initialization.
     ************************************************************/
 
@@ -125,7 +125,7 @@ var WUI_Dialog = new (function() {
 
         Functions.
     ************************************************************/
-
+    
     var _removeDetachedWindow = function (widget) {
         for (var i = 0; i < _detached_windows.length; i += 1) {
             if (_detached_windows[i] === widget.detachable_ref) {
@@ -151,7 +151,7 @@ var WUI_Dialog = new (function() {
                 _removeDetachedWindow(widget);
             }
         }
-
+        
         if (remove_modal_element) {
             if (widget.modal_element) {
                 document.body.removeChild(widget.modal_element);
@@ -262,6 +262,16 @@ var WUI_Dialog = new (function() {
         minimize_btn.classList.toggle(_class_name.maximize);
 
         dialog.classList.toggle(_class_name.minimized);
+        
+        if (dialog.classList.contains(_class_name.minimized)) {
+            dialog.style.borderStyle = "solid";
+            dialog.style.borderColor = "#808080";
+            dialog.style.borderWidth = "1px";
+        } else {
+            dialog.style.borderStyle = "";
+            dialog.style.borderColor = "";
+            dialog.style.borderWidth = "";
+        }
 
         if (resize_handler) {
             resize_handler.classList.toggle(_class_name.open);
@@ -509,88 +519,88 @@ var WUI_Dialog = new (function() {
             _detach(dialog);
         }
     };
-
+    
     var _windowMouseMove = function (ev) {
         if (!_dragged_dialog) {
             return;
         }
 
         ev.preventDefault();
-
+        
         var x = ev.clientX,
             y = ev.clientY,
-
+            
             touches = ev.changedTouches,
-
+            
             touch = null,
-
+            
             i,
-
+            
             new_x, new_y;
-
+        
         if (touches) {
             for (i = 0; i < touches.length; i += 1) {
                 touch = touches[i];
-
+                
                 if (touch.identifier === _touch_identifier) {
                     x = touches[i].clientX;
                     y = touches[i].clientY;
-
+                    
                     break;
                 }
             }
         }
-
+        
         new_x = x - _drag_x;
         new_y = y - _drag_y;
 
         _dragged_dialog.style.left = new_x + 'px';
         _dragged_dialog.style.top  = new_y + 'px';
     };
-
+    
     var _windowMouseUp = function (ev) {
         if (!_dragged_dialog) {
             return;
         }
 
         var touches = ev.changedTouches,
-
+            
             touch = null,
-
+            
             i,
 
             owner_doc = _dragged_dialog.ownerDocument,
             owner_win = owner_doc.defaultView || owner_doc.parentWindow;
-
+        
         if (touches) {
             for (i = 0; i < touches.length; i += 1) {
                 touch = touches[i];
-
+                
                 if (touch.identifier === _touch_identifier) {
                     _dragged_dialog = null;
-
+                    
                     owner_doc.body.style.cursor = "default";
-
+                    
                     owner_win.removeEventListener('touchmove', _windowMouseMove, false);
                     owner_win.removeEventListener('touchend', _windowMouseUp, false);
-
+                    
                     break;
                 }
             }
         } else {
             _dragged_dialog = null;
-
+            
             owner_doc.body.style.cursor = "default";
-
+            
             owner_win.removeEventListener('mousemove', _windowMouseMove, false);
             owner_win.removeEventListener('mouseup', _windowMouseUp, false);
         }
     };
-
+    
     var _onMouseDown = function (ev) {
         var x = ev.clientX,
             y = ev.clientY,
-
+            
             left = 0,
             top = 0,
 
@@ -600,36 +610,36 @@ var WUI_Dialog = new (function() {
             owner_win,
 
             dragged_dialog;
-
+        
         ev.preventDefault();
 
         if (_dragged_dialog === null) {
             if (touches) {
                 _touch_identifier = touches[0].identifier;
-
+                
                 x = touches[0].clientX;
                 y = touches[0].clientY;
             } else if (ev.button !== 0) {
                 return;
             }
         }
-
+        
         dragged_dialog = ev.target.parentElement;
 
         if (dragged_dialog.classList.contains(_class_name.maximize) ||
            !dragged_dialog.classList.contains(_class_name.draggable)) {
             return;
         }
-
+        
         _dragged_dialog = dragged_dialog;
 
         owner_doc = _dragged_dialog.ownerDocument;
         owner_win = owner_doc.defaultView || owner_doc.parentWindow;
 
         _focus(_dragged_dialog);
-
+        
         owner_doc.body.style.cursor = "move";
-
+        
         left = parseInt(_dragged_dialog.style.left, 10);
         top = parseInt(_dragged_dialog.style.top,  10);
 
@@ -642,7 +652,7 @@ var WUI_Dialog = new (function() {
         owner_win.addEventListener('mouseup',  _windowMouseUp, false);
         owner_win.addEventListener('touchend', _windowMouseUp, false);
     };
-
+    
     var _onStartResize = function (e) {
         e.preventDefault();
         e.stopPropagation();
@@ -794,27 +804,27 @@ var WUI_Dialog = new (function() {
 
     /***********************************************************
         Public section.
-
+        
         Functions.
     ************************************************************/
 
-    this.create = function (id, options) {
+    this.create = function (id, options) { 
         var opts = {},
-
+            
             key;
-
+        
         if (_widget_list[id] !== undefined) {
             console.log("WUI_Dialog id '" + id + "' already created, aborting.");
-
+            
             return;
         }
-
+        
         for (key in _known_options) {
             if (_known_options.hasOwnProperty(key)) {
                 opts[key] = _known_options[key];
             }
         }
-
+        
         if (options !== undefined) {
             for (key in options) {
                 if (options.hasOwnProperty(key)) {
@@ -824,11 +834,11 @@ var WUI_Dialog = new (function() {
                 }
             }
         }
-
+        
         var dialog = document.getElementById(id),
-
+            
             header = document.createElement("div"),
-
+            
             resize_handler = null,
 
             header_detach_btn    = null,
@@ -838,53 +848,53 @@ var WUI_Dialog = new (function() {
             header_title_wrapper = null,
 
             status_bar = null;
-
+            
         if (dialog === null) {
             if (typeof console !== "undefined") {
                 console.log("WUI dialog create, unknow element with id \"" + id + "\".");
             }
-
+        
             return;
         }
-
+        
         var content = dialog.firstElementChild;
-
+        
         if (content === null) {
             content = document.createElement("div");
-
+            
             dialog.appendChild(content);
         }
-
+        
         // set dialog style
         dialog.style.width  = opts.width;
         dialog.style.height = opts.height;
 
         dialog.classList.add(_class_name.dialog);
-
+        
         content.classList.add(_class_name.content);
-
+        
         // build the dialog header (btns and the title)
         header.className = _class_name.header;
-
+        
         if (opts.status_bar) {
             content.style.height = dialog.offsetHeight - 64 + "px";
         } else {
             content.style.height = dialog.offsetHeight - 32 + "px";
         }
-
+        
         //if (opts.title !== "") {
             header_title_wrapper = document.createElement("div");
             header_title = document.createElement("div");
 
             header_title_wrapper.style.display = "inline-block";
-
+            
             header_title.className = "wui-dialog-title";
             header_title_wrapper.innerHTML = opts.title;
-
+            
             header_title.appendChild(header_title_wrapper);
             header.appendChild(header_title);
         //}
-
+        
         if (opts.open) {
             dialog.classList.add(_class_name.open);
         } else {
@@ -899,14 +909,14 @@ var WUI_Dialog = new (function() {
         }
 
         if (opts.closable) {
-            header_close_btn = document.createElement("div");
+            header_close_btn = document.createElement("div"); 
             header_close_btn.className = _class_name.btn + " " + _class_name.btn_close;
 
             header_close_btn.title = "Close";
 
             header.appendChild(header_close_btn);
         }
-
+        
         if (opts.minimizable) {
             header_minimaxi_btn = document.createElement("div");
             header_minimaxi_btn.className = _class_name.btn + " " + _class_name.minimize;
@@ -950,7 +960,7 @@ var WUI_Dialog = new (function() {
 
         // go!
         dialog.insertBefore(header, content);
-
+        
         if (opts.resizable) {
             resize_handler = document.createElement("div");
 
@@ -973,19 +983,19 @@ var WUI_Dialog = new (function() {
                                 resize_handler: resize_handler,
 
                                 opts: opts,
-
+            
                                 detachable_ref: null,
 
                                 modal_element: null,
 
                                 status_bar: status_bar
                             };
-
+        
         _computeThenSetPosition(dialog);
 
         return id;
     };
-
+    
     this.setStatusBarContent = function (id, content) {
         var widget = _widget_list[id],
 
@@ -1028,10 +1038,10 @@ var WUI_Dialog = new (function() {
             if (typeof console !== "undefined") {
                 console.log("Cannot open WUI dialog \"" + id + "\".");
             }
-
-            return;
+            
+            return;   
         }
-
+        
         if (widget.detachable_ref) {
             if (!widget.detachable_ref.closed) {
                 widget.detachable_ref.focus();
@@ -1114,12 +1124,12 @@ var WUI_DropDown = new (function() {
 
     /***********************************************************
         Private section.
-
+        
         Fields.
     ************************************************************/
-
+    
     var _widget_list = {},
-
+        
         _class_name = {
             dropdown:   "wui-dropdown",
             item:       "wui-dropdown-item",
@@ -1128,28 +1138,28 @@ var WUI_DropDown = new (function() {
             open:       "wui-dropdown-open",
             on:         "wui-dropdown-on"
         },
-
+        
         _known_options = {
             width: "auto",
             height: 24,
-
+            
             ms_before_hiding: 2000,
-
+            
             vertical: false,
-
+            
             vspacing: 0,
-
+            
             selected_id: 0, // default item selected
-
+            
             on_item_selected: null
         };
-
+    
     /***********************************************************
         Private section.
-
+        
         Functions.
     ************************************************************/
-
+    
     var _getElementOffset = function (element) {
         var owner_doc = element.ownerDocument,
             box = element.getBoundingClientRect(),
@@ -1157,7 +1167,7 @@ var WUI_DropDown = new (function() {
             docEl = owner_doc.documentElement,
 
             owner_win = owner_doc.defaultView || owner_doc.parentWindow,
-
+        
             scrollTop = owner_win.pageYOffset || docEl.scrollTop || body.scrollTop,
             scrollLeft = owner_win.pageXOffset || docEl.scrollLeft || body.scrollLeft,
 
@@ -1169,7 +1179,7 @@ var WUI_DropDown = new (function() {
 
         return { top: Math.round(top), left: Math.round(left) };
     };
-
+    
     var _createFloatingContent = function (doc, widget) {
         var floating_content = doc.createElement("div"),
             div_item = null,
@@ -1222,10 +1232,10 @@ var WUI_DropDown = new (function() {
         }
 
         widget.floating_content = null;
-
+        
         widget.close_timeout = null;
     };
-
+    
     var _click = function (ev) {
         ev.preventDefault();
         ev.stopPropagation();
@@ -1258,52 +1268,52 @@ var WUI_DropDown = new (function() {
         ev.stopPropagation();
 
         var current_element = ev.target,
-
+            
             widget,
-
+            
             floating_content = null,
-
+            
             floating_content_childs = null,
-
+            
             i;
-
+        
         if (current_element.classList.contains(_class_name.item)) {
             floating_content = current_element.parentElement;
-
+            
             widget = _widget_list[floating_content.dataset.linkedto];
         } else {
-            return;
+            return;   
         }
-
+        
         floating_content_childs = floating_content.getElementsByTagName('div');
 
         for (i = 0; i < floating_content_childs.length; i += 1) {
             floating_content_childs[i].classList.remove(_class_name.selected);
         }
-
+        
         current_element.classList.add(_class_name.selected);
-
+        
         widget.selected_id = parseInt(current_element.dataset.index, 10);
 
         widget.target_element.lastElementChild.innerHTML = current_element.textContent;
-
+        
         if (widget.opts.on_item_selected !== undefined) {
-            widget.opts.on_item_selected(current_element.dataset.index);
+            widget.opts.on_item_selected(current_element.dataset.index);  
         }
 
         _deleteFloatingContent(current_element.ownerDocument, widget.target_element, widget);
     };
-
+    
     var _mouseOver = function (ev) {
         ev.preventDefault();
         ev.stopPropagation();
 
         var current_element = ev.target,
-
+            
             widget = null,
-
+            
             offset = null,
-
+            
             floating_content = null,
 
             owner_doc = current_element.ownerDocument,
@@ -1311,7 +1321,7 @@ var WUI_DropDown = new (function() {
 
         if (current_element.classList.contains(_class_name.dropdown)) {
             widget = _widget_list[current_element.id];
-
+            
             if (widget.floating_content === null) {
                 current_element.classList.add(_class_name.on);
 
@@ -1335,22 +1345,22 @@ var WUI_DropDown = new (function() {
         } else {
             return;
         }
-
+        
         owner_win.clearTimeout(widget.close_timeout);
 
         current_element.addEventListener("mouseleave", _mouseLeave, false);
     };
-
+    
     var _mouseLeave = function (ev) {
         ev.preventDefault();
 
         var current_element = ev.target,
-
+            
             widget = null,
 
             owner_doc = current_element.ownerDocument,
             owner_win = owner_doc.defaultView || owner_doc.parentWindow;
-
+    
         if (current_element.classList.contains(_class_name.content)) {
             widget = _widget_list[current_element.dataset.linkedto];
         } else if (current_element.classList.contains(_class_name.item)) {
@@ -1358,7 +1368,7 @@ var WUI_DropDown = new (function() {
         } else {
             widget = _widget_list[current_element.id];
         }
-
+            
         widget.close_timeout = owner_win.setTimeout(_deleteFloatingContent, widget.opts.ms_before_hiding, owner_doc, widget.target_element, widget);
 
         current_element.removeEventListener("mouseleave", _mouseLeave, false);
@@ -1366,7 +1376,7 @@ var WUI_DropDown = new (function() {
 
     /***********************************************************
         Public section.
-
+        
         Functions.
     ************************************************************/
 
@@ -1374,21 +1384,21 @@ var WUI_DropDown = new (function() {
         var dropdown = document.getElementById(id),
 
             opts = {},
-
+        
             key;
-
+        
         if (_widget_list[id] !== undefined) {
             console.log("WUI_DropDown id '" + id + "' already created, aborting.");
-
+            
             return;
         }
-
+        
         for (key in _known_options) {
             if (_known_options.hasOwnProperty(key)) {
                 opts[key] = _known_options[key];
             }
         }
-
+        
         if (options !== undefined) {
             for (key in options) {
                 if (options.hasOwnProperty(key)) {
@@ -1398,30 +1408,30 @@ var WUI_DropDown = new (function() {
                 }
             }
         }
-
+        
         dropdown.classList.add(_class_name.dropdown);
-
+        
         dropdown.style.width = opts.width;
         dropdown.style.height = opts.height;
-
+        
         var div_icon = document.createElement("div");
         div_icon.classList.add("wui-dropdown-icon");
 
         dropdown.appendChild(div_icon);
-
+        
         var div_button = document.createElement("div");
         div_button.classList.add("wui-dropdown-text");
-
+        
         if (content_array.length !== 0) {
             div_button.innerHTML = content_array[opts.selected_id];
         }
-
+        
         dropdown.appendChild(div_button);
-
+        
         dropdown.addEventListener("click", _click, false);
-
+        
         dropdown.addEventListener("mouseover", _mouseOver, false);
-
+        
         var dd = {
             element: dropdown,
 
@@ -1430,23 +1440,23 @@ var WUI_DropDown = new (function() {
             selected_id: opts.selected_id,
 
             content_array: content_array,
-
+            
             opts: opts,
-
+            
             button_item: div_button,
-
+            
             hover_count: 0,
-
+            
             target_element: null,
 
             close_timeout: null
         };
-
+        
         _widget_list[id] = dd;
 
         return id;
     };
-
+    
     this.destroy = function (id) {
         var widget = _widget_list[id],
 
@@ -1477,19 +1487,19 @@ var WUI_RangeSlider = new (function() {
 
     /***********************************************************
         Private section.
-
+        
         Fields.
     ************************************************************/
-
+    
     var _widget_list = {},
-
+        
         _hook_value = null,
-
+        
         _grabbed_widget = null,
         _grabbed_hook_element = null,
-
+        
         _touch_identifier = null,
-
+        
         _class_name = {
             hook:       "wui-rangeslider-hook",
             bar:        "wui-rangeslider-bar",
@@ -1497,45 +1507,45 @@ var WUI_RangeSlider = new (function() {
 
             hook_focus: "wui-rangeslider-hook-focus"
         },
-
+        
         _known_options = {
             width: 148,
             height: 8,
-
+            
             title: "",
-
+            
             title_min_width: 0,
             value_min_width: 0,
-
+            
             min: 0,
             max: 1,
-
+            
             step: 0.01,
             scroll_step: 0.01,
-
+            
             vertical: false,
-
+            
             title_on_top: false,
-
+            
             on_change: null,
-
+            
             default_value: 0.5
         };
-
+    
     /***********************************************************
         Private section.
-
+        
         Functions.
     ************************************************************/
-
-    var _getElementOffset = function (element) {
+    
+    var _getElementOffset = function (element) {    
         var owner_doc = element.ownerDocument,
             box = element.getBoundingClientRect(),
             body = owner_doc.body,
             docEl = owner_doc.documentElement,
 
             owner_win = owner_doc.defaultView || owner_doc.parentWindow,
-
+        
             scrollTop = owner_win.pageYOffset || docEl.scrollTop || body.scrollTop,
             scrollLeft = owner_win.pageXOffset || docEl.scrollLeft || body.scrollLeft,
 
@@ -1547,13 +1557,13 @@ var WUI_RangeSlider = new (function() {
 
         return { top: Math.round(top), left: Math.round(left) };
     };
-
+    
     var _onChange = function (func, value) {
         if (func !== null) {
             func(value);
-        }
+        }  
     };
-
+    
     // thank to Nick Knowlson - http://stackoverflow.com/questions/4912788/truncate-not-round-off-decimal-numbers-in-javascript
     var _truncateDecimals = function (num, digits) {
         var numS = num.toString(),
@@ -1564,33 +1574,33 @@ var WUI_RangeSlider = new (function() {
 
         return parseFloat(finalResult);
     };
-
+    
     var _getHookElementFromTarget = function (ev_target) {
         if (ev_target.classList.contains(_class_name.hook)) {
             return ev_target;
         } else if (ev_target.classList.contains(_class_name.filler)) {
             return ev_target.firstElementChild;
         }
-
+            
         return ev_target.firstElementChild.firstElementChild;
     };
-
+    
     var _update = function (rs_element, rs, value) {
         var element = rs_element,
-
+            
             value_input = element.childNodes[2],
 
             widget = _widget_list[element.id],
-
+        
             bar    = element.childNodes[1],
             filler = bar.firstElementChild,
             hook   = filler.firstElementChild,
-
+            
             width = rs.opts.width,
             height = rs.opts.height,
-
+        
             pos = Math.abs((value - rs.opts.min) / rs.opts.range);
-
+        
         value = _truncateDecimals(value, 4);
 
         if (rs.opts.vertical) {
@@ -1603,10 +1613,10 @@ var WUI_RangeSlider = new (function() {
 
             hook.style.marginTop  = -width + "px";
             hook.style.marginLeft = -width / 2 - 1 + "px";
-
+            
             hook.style.width  = width * 2 + "px";
             hook.style.height = width * 2 + "px";
-
+            
             value_input.style.marginTop = "13px";
 
             // all theses are to support synchronization between a detached dialog and the original dialog
@@ -1627,15 +1637,15 @@ var WUI_RangeSlider = new (function() {
             }
         } else {
             pos = Math.round(pos * width);
-
+            
             filler.style.width = pos + "px";
             filler.style.height = "100%";
-
+            
             hook.style.left = pos + "px";
-
+            
             hook.style.marginTop  = -height / 2 + "px";
             hook.style.marginLeft = -height + "px";
-
+            
             hook.style.width  = height * 2 + "px";
             hook.style.height = height * 2 + "px";
 
@@ -1658,30 +1668,30 @@ var WUI_RangeSlider = new (function() {
 
         rs.value = value;
     };
-
+    
     var _mouseMove = function (ev) {
         ev.preventDefault();
-
+        
         if (_grabbed_hook_element !== null) {
             var filler = _grabbed_hook_element.parentElement,
                 bar = filler.parentElement,
-
+                
                 value_input = bar.parentElement.lastElementChild,
 
                 bar_offset = _getElementOffset(bar),
                 max_pos = bar.offsetWidth,
-
+                
                 cursor_relative_pos = 0,
-
+                
                 x = ev.clientX,
                 y = ev.clientY,
-
+            
                 touches = ev.changedTouches,
-
+            
                 touch = null,
-
+            
                 i, v;
-
+            
             if (touches) {
                 for (i = 0; i < touches.length; i += 1) {
                     touch = touches[i];
@@ -1694,31 +1704,31 @@ var WUI_RangeSlider = new (function() {
                     }
                 }
             }
-
+            
             if (_grabbed_widget.opts.vertical) {
                 max_pos = bar.offsetHeight;
-
+                
                 cursor_relative_pos = Math.round((bar_offset.top + bar.offsetHeight - y) / _grabbed_widget.opts.step) * _grabbed_widget.opts.step;
             } else {
-                cursor_relative_pos = Math.round((x - bar_offset.left) / _grabbed_widget.opts.step) * _grabbed_widget.opts.step;
+                cursor_relative_pos = Math.round((x - bar_offset.left) / _grabbed_widget.opts.step) * _grabbed_widget.opts.step;   
             }
 
             if (cursor_relative_pos > max_pos) {
                 cursor_relative_pos = max_pos;
-
+                
                 _hook_value = _grabbed_widget.opts.max;
             } else if (cursor_relative_pos < 0) {
                 cursor_relative_pos = 0;
-
+                
                 _hook_value = _grabbed_widget.opts.min;
             } else {
                 _hook_value = (Math.round((_grabbed_widget.opts.min + (cursor_relative_pos / max_pos) * _grabbed_widget.opts.range) / _grabbed_widget.opts.step) * _grabbed_widget.opts.step);
             }
-
+            
             if (_grabbed_widget.value === _hook_value) {
-                return;
+                return;   
             }
-
+            
             _grabbed_widget.value = _hook_value;
 
             v = _truncateDecimals(_hook_value, 4);
@@ -1736,11 +1746,11 @@ var WUI_RangeSlider = new (function() {
                 _grabbed_hook_element.style.left = cursor_relative_pos + "px";
                 _grabbed_widget.hook.style.left = cursor_relative_pos + "px";
             }
-
+            
             _onChange(_grabbed_widget.opts.on_change, _hook_value);
         }
     };
-
+    
     var _rsMouseUp = function (ev) {
         if (!_grabbed_hook_element) {
             return;
@@ -1749,36 +1759,36 @@ var WUI_RangeSlider = new (function() {
         ev.preventDefault();
 
         var touches = ev.changedTouches,
-
+            
             touch = null,
-
+            
             stop_drag = false,
-
+            
             i,
 
             owner_doc = _grabbed_hook_element.ownerDocument,
             owner_win = owner_doc.defaultView || owner_doc.parentWindow;
-
+        
         if (touches) {
             for (i = 0; i < touches.length; i += 1) {
                 touch = touches[i];
-
+                
                 if (touch.identifier === _touch_identifier) {
                     stop_drag = true;
-
+                    
                     owner_win.removeEventListener("touchend", _rsMouseUp, false);
                     owner_win.removeEventListener("touchmove", _mouseMove, false);
-
+                    
                     break;
                 }
             }
         } else {
             stop_drag = true;
-
+            
             owner_win.removeEventListener("mouseup", _rsMouseUp, false);
             owner_win.removeEventListener("mousemove", _mouseMove, false);
         }
-
+        
         if (stop_drag) {
             _grabbed_hook_element.classList.remove(_class_name.hook_focus);
 
@@ -1788,46 +1798,46 @@ var WUI_RangeSlider = new (function() {
             owner_doc.body.style.cursor = "default";
         }
     };
-
+    
     var _rsMouseDown = function (ev) {
         ev.preventDefault();
         ev.stopPropagation();
-
+        
         var rs_element = null,
-
+            
             drag_slider = false,
-
+            
             touches = ev.changedTouches,
 
             owner_doc,
             owner_win;
-
+        
         if (_grabbed_widget === null) {
             if (touches) {
                 _touch_identifier = touches[0].identifier;
-
+                
                 drag_slider = true;
             }
         }
-
+        
         if (ev.button === 0) {
             drag_slider = true;
         }
-
+        
         if (drag_slider) {
             _grabbed_hook_element = _getHookElementFromTarget(ev.target);
-
+            
             _grabbed_hook_element.classList.add(_class_name.hook_focus);
-
+            
             rs_element = _grabbed_hook_element.parentElement.parentElement.parentElement;
-
+            
             _grabbed_widget = _widget_list[rs_element.id];
 
             owner_doc = rs_element.ownerDocument;
             owner_win = owner_doc.defaultView || owner_doc.parentWindow;
 
             owner_doc.body.style.cursor = "pointer";
-
+            
             _mouseMove(ev);
 
             owner_win.addEventListener("mousemove", _mouseMove, false);
@@ -1836,102 +1846,102 @@ var WUI_RangeSlider = new (function() {
             owner_win.addEventListener("touchend",  _rsMouseUp, false);
         }
     };
-
+    
     var _rsDblClick = function (ev) {
         ev.preventDefault();
         ev.stopPropagation();
-
+        
         var hook_element = ev.target,
-
+            
             rs_element = hook_element.parentElement.parentElement.parentElement,
-
+        
             grabbed_widget = _widget_list[rs_element.id],
-
+            
             value = grabbed_widget.opts.default_value;
 
         _update(rs_element, grabbed_widget, value);
 
         _onChange(grabbed_widget.opts.on_change, value);
     };
-
-    var _rsMouseWheel = function (ev) {
+    
+    var _rsMouseWheel = function (ev) {   
         ev.preventDefault();
         ev.stopPropagation();
-
+        
         var hook_element = _getHookElementFromTarget(ev.target),
-
+            
             rs_element = hook_element.parentElement.parentElement.parentElement,
-
+        
             grabbed_widget = _widget_list[rs_element.id],
-
+            
             delta = ev.wheelDelta ? ev.wheelDelta / 40 : ev.detail ? -ev.detail : 0,
-
+            
             value = grabbed_widget.value;
-
+        
         if (delta >= 0) {
             value += grabbed_widget.opts.scroll_step;
         } else {
             value -= grabbed_widget.opts.scroll_step;
         }
-
+        
         if (value > grabbed_widget.opts.max) {
             value = grabbed_widget.opts.max;
         } else if (value < grabbed_widget.opts.min) {
-            value = grabbed_widget.opts.min;
+            value = grabbed_widget.opts.min;  
         }
-
+        
         _update(rs_element, grabbed_widget, value);
-
+        
         _onChange(grabbed_widget.opts.on_change, value);
     };
-
+    
     var _inputChange = function (ev) {
         if ((ev.target.validity) && (!ev.target.validity.valid)) {
-            return;
+            return;   
         }
-
+        
         var target = ev.target.parentElement.childNodes[1];
-
+        
         if (target === undefined) {
-            return;
+            return;   
         }
-
+        
         var hook_element = _getHookElementFromTarget(target),
-
+            
             rs_element = hook_element.parentElement.parentElement.parentElement,
-
+        
             grabbed_widget = _widget_list[rs_element.id];
 
         _update(rs_element, grabbed_widget, ev.target.value);
-
+        
         _onChange(grabbed_widget.opts.on_change, ev.target.value);
     };
-
+    
     /***********************************************************
         Public section.
-
+        
         Functions.
     ************************************************************/
 
     this.create = function (id, options) {
         var range_slider = document.getElementById(id),
-
+            
             opts = {},
-
+            
             key;
-
+        
         if (_widget_list[id] !== undefined) {
             console.log("WUI_RangeSlider id '" + id + "' already created, aborting.");
-
+            
             return;
         }
-
+        
         for (key in _known_options) {
             if (_known_options.hasOwnProperty(key)) {
                 opts[key] = _known_options[key];
             }
         }
-
+        
         if (options !== undefined) {
             for (key in options) {
                 if (options.hasOwnProperty(key)) {
@@ -1940,19 +1950,19 @@ var WUI_RangeSlider = new (function() {
                     }
                 }
             }
-
+            
             if (options.max !== undefined) {
                 opts.range = options.max;
             }
-
+            
             if (options.step !== undefined) {
                 opts.step = options.step;
-
+                
                 if (options.scroll_step === undefined) {
                     opts.scroll_step = opts.step;
                 }
             }
-
+            
             if (options.title_on_top !== undefined) {
                 opts.title_on_top = options.title_on_top;
             } else {
@@ -1960,7 +1970,7 @@ var WUI_RangeSlider = new (function() {
                     opts.title_on_top = true;
                 }
             }
-
+            
             if (options.default_value !== undefined) {
                 opts.default_value = options.default_value;
             } else {
@@ -1969,21 +1979,21 @@ var WUI_RangeSlider = new (function() {
                 }
             }
         }
-
+        
         if (opts.min < 0) {
             opts.range = opts.max - opts.min;
         }
-
+        
         // build up the range slider widget internal data structure
         _widget_list[id] = null;
-
+        
         // build the range slider and its items
         range_slider.classList.add("wui-rangeslider");
-
+        
         if (opts.title_on_top) {
             range_slider.classList.add("wui-rangeslider-title-ontop");
         }
-
+        
         var title_div   = document.createElement("div"),
             bar         = document.createElement("div"),
             filler      = document.createElement("div"),
@@ -1992,8 +2002,8 @@ var WUI_RangeSlider = new (function() {
             value_input = document.createElement("input"),
 
             rs = {
-                    element: range_slider,
-
+                    element: range_slider, 
+                
                     opts: opts,
 
                     bar: bar,
@@ -2001,12 +2011,12 @@ var WUI_RangeSlider = new (function() {
                     hook: hook,
 
                     value_input: value_input,
-
-                    value: opts.default_value,
+                  
+                    value: opts.default_value, 
                  };
-
+        
         title_div.innerHTML = opts.title;
-
+        
         value_input.setAttribute("value", opts.default_value);
         value_input.setAttribute("type",  "number");
         value_input.setAttribute("min",   opts.min);
@@ -2014,13 +2024,13 @@ var WUI_RangeSlider = new (function() {
         value_input.setAttribute("step",  opts.step);
 
         value_input.classList.add("wui-rangeslider-input");
-
+        
         value_div.classList.add("wui-rangeslider-value");
         title_div.classList.add("wui-rangeslider-title");
         bar.classList.add(_class_name.bar);
         filler.classList.add(_class_name.filler);
         hook.classList.add(_class_name.hook);
-
+        
         if (opts.vertical) {
             title_div.style.textAlign = "center";
         }
@@ -2031,26 +2041,26 @@ var WUI_RangeSlider = new (function() {
 
         bar.style.width  = opts.width + "px";
         bar.style.height = opts.height + "px";
-
+        
         bar.appendChild(filler);
         filler.appendChild(hook);
-
+        
         range_slider.appendChild(title_div);
         range_slider.appendChild(bar);
 
         range_slider.appendChild(value_input);
-
+        
 
         bar.addEventListener("mousedown", _rsMouseDown, false);
         bar.addEventListener("touchstart", _rsMouseDown, false);
-
+            
         hook.addEventListener("dblclick", _rsDblClick, false);
-
+            
         value_input.addEventListener("input", _inputChange, false);
-
+            
         bar.addEventListener("mousewheel", _rsMouseWheel, false);
         bar.addEventListener("DOMMouseScroll", _rsMouseWheel, false);
-
+        
         _widget_list[id] = rs;
 
         _update(range_slider, rs, opts.default_value);
@@ -2085,12 +2095,12 @@ var WUI_Tabs = new (function() {
 
     /***********************************************************
         Private section.
-
+        
         Fields.
     ************************************************************/
-
+    
     var _widget_list = {},
-
+        
         _class_name = {
             enabled:      "wui-tab-enabled",
             disabled:     "wui-tab-disabled",
@@ -2101,7 +2111,7 @@ var WUI_Tabs = new (function() {
             tab_content:  "wui-tab-content",
             underline:    "wui-tabs-underline"
         },
-
+        
         _known_options = {
             on_tab_click: null,
 
@@ -2110,34 +2120,34 @@ var WUI_Tabs = new (function() {
 
     /***********************************************************
         Private section.
-
+        
         Functions.
     ************************************************************/
-
+    
     var _onTabClick = function (ev) {
         ev.preventDefault();
         ev.stopPropagation();
 
         var tab_elem = ev.target,
-
+            
             tabs = tab_elem.parentElement,
             content = tabs.nextElementSibling.nextElementSibling,
-
+            
             widget_id = tabs.parentElement.id,
-
+            
             widget = _widget_list[widget_id],
 
             tab_index = 0,
             elem = null,
-
+            
             i = 0;
-
+        
         for (i = 0; i < tabs.childElementCount; i += 1) {
             elem = tabs.children[i];
-
+            
             elem.classList.remove(_class_name.enabled);
             elem.classList.add(_class_name.disabled);
-
+            
             widget.tabs[i].classList.remove(_class_name.enabled);
             widget.tabs[i].classList.add(_class_name.disabled);
 
@@ -2148,9 +2158,9 @@ var WUI_Tabs = new (function() {
 
         for (i = 0; i < content.childElementCount; i += 1) {
             elem = content.children[i];
-
+            
             elem.classList.remove(_class_name.display_none);
-
+            
             widget.contents[i].classList.remove(_class_name.display_none);
 
             if (tab_index !== i) {
@@ -2159,7 +2169,7 @@ var WUI_Tabs = new (function() {
                 widget.contents[i].classList.add(_class_name.display_none);
             }
         }
-
+        
         widget.tabs[tab_index].classList.remove(_class_name.disabled);
         widget.tabs[tab_index].classList.add(_class_name.enabled);
 
@@ -2170,10 +2180,10 @@ var WUI_Tabs = new (function() {
             widget.opts.on_tab_click(tab_index);
         }
     };
-
+    
     /***********************************************************
         Public section.
-
+        
         Functions.
     ************************************************************/
 
@@ -2184,31 +2194,31 @@ var WUI_Tabs = new (function() {
      */
     this.create = function (id, options) {
         var element = document.getElementById(id),
-
+            
             tabs      = element.firstElementChild,
             underline = document.createElement("div"),
             content   = tabs.nextElementSibling,
-
+            
             first_tab = tabs.children[0],
-
+            
             opts = {},
-
+            
             key,
 
             i = 0;
-
+        
         if (_widget_list[id] !== undefined) {
             console.log("WUI_Tabs id '" + id + "' already created, aborting.");
-
+            
             return;
         }
-
+        
         for (key in _known_options) {
             if (_known_options.hasOwnProperty(key)) {
                 opts[key] = _known_options[key];
             }
         }
-
+        
         if (options !== undefined) {
             for (key in options) {
                 if (options.hasOwnProperty(key)) {
@@ -2218,61 +2228,61 @@ var WUI_Tabs = new (function() {
                 }
             }
         }
-
+        
         element.style.overflow = "hidden";
 
         underline.className = "wui-tabs-underline";
-
+        
         element.insertBefore(underline, content);
-
+        
         // style tabs
         tabs.classList.add(_class_name.tabs);
-
+        
         var tab_count = tabs.childElementCount,
             tab_elems = [];
-
+        
         for (i = 0; i < tab_count; i += 1) {
             var tab = tabs.children[i];
-
+            
             tab.classList.add("wui-tab");
-
+            
             if (tab !== first_tab) {
                 tab.classList.add(_class_name.disabled);
             }
-
+            
             tab.addEventListener("click", _onTabClick, false);
             tab.addEventListener("touchstart", _onTabClick, false);
 
             tab_elems.push(tab);
         }
-
+        
         first_tab.classList.add(_class_name.enabled);
         first_tab.classList.add("wui-first-tab");
-
+        
         // style tabs content
         content.classList.add("wui-tabs-content");
-
+        
         var tab_content_count = content.childElementCount,
             content_elems = [content.children[0]];
-
+        
         content.style.height = opts.height;
-
-        content.children[0].classList.add(_class_name.tab_content);
-
+        
+        content.children[0].classList.add(_class_name.tab_content);  
+        
         for (i = 1; i < tab_content_count; i += 1) {
             var tab_content = content.children[i];
-
+            
             tab_content.classList.add(_class_name.tab_content);
             tab_content.classList.add(_class_name.display_none);
 
             content_elems.push(tab_content);
         }
-
+        
         _widget_list[id] = { element: element, tabs: tab_elems, contents: content_elems, opts : opts };
-
+        
         return id;
     };
-
+    
     /**
      * Get tab content element from a widget id and tab id
      * @param   {String} id     Widget id
@@ -2282,20 +2292,20 @@ var WUI_Tabs = new (function() {
     this.getContentElement = function (id, tab_id) {
         var element = document.getElementById(id);
         var content = element.firstElementChild.nextElementSibling.nextElementSibling;
-
+        
         return content.children[tab_id];
     };
-
+    
     /**
      * Get a tab name from a widget id and tab id
      * @param   {String} id     Widget id
      * @param   {Number} tab_id Tab id
      * @returns {String} Tab name
      */
-
+    
     this.getTabName = function (id, tab_id) {
         var content = this.getContentElement(id, tab_id);
-
+        
         return content.getAttribute("data-group-name");
     };
 
@@ -2343,12 +2353,12 @@ var WUI_ToolBar = new (function() {
 
     /***********************************************************
         Private section.
-
+        
         Fields.
     ************************************************************/
-
+    
     var _widget_list = {},
-
+        
         _class_name = {
             minimize_icon:  "wui-toolbar-minimize-icon",
             maximize_icon:  "wui-toolbar-maximize-icon",
@@ -2367,28 +2377,28 @@ var WUI_ToolBar = new (function() {
             dd_item:        "wui-toolbar-dropdown-item",
             dd_open:        "wui-toolbar-dropdown-open"
         },
-
+        
         _known_options = {
             item_hmargin: null,
             item_vmargin: null,
 
             item_width: 32,
             item_height: 32,
-
+            
             icon_width: 32,
             icon_height: 32,
-
+            
             allow_groups_minimize: false,
-
+            
             vertical: false
         };
 
     /***********************************************************
         Private section.
-
+        
         Functions.
     ************************************************************/
-
+    
     var _getWidget = function (toolbar_id) {
         var widget = _widget_list[toolbar_id];
 
@@ -2437,7 +2447,7 @@ var WUI_ToolBar = new (function() {
             return _widget_list[element.parentElement.parentElement.id];
         }
     };
-
+    
     var _propagate = function (tool, type, state) {
         if (tool.on_click !== undefined &&
             tool.on_click !== null) {
@@ -2445,15 +2455,15 @@ var WUI_ToolBar = new (function() {
                 id: tool.id,
                 type: type
             };
-
+            
             if (state !== undefined) {
                 o.state = state;
             }
-
+            
             tool.on_click(o);
         }
     };
-
+    
     var _createDdFloatingContent = function (doc, tool, widget) {
         var dropdown_floating_content = doc.createElement("div"), j;
 
@@ -2495,19 +2505,19 @@ var WUI_ToolBar = new (function() {
 
     var _toggle = function (element, toolbar_id, propagate) {
         var widget = null,
-
+            
             state = false,
-
+            
             toggle_group,
-
+            
             tb,
 
             tools,
 
             i = 0;
-
+        
         widget = _getWidgetFromElement(element, toolbar_id);
-
+        
         tb = widget.element;
 
         if (element.parentElement) {
@@ -2517,11 +2527,11 @@ var WUI_ToolBar = new (function() {
         }
 
         var my_tool = widget.tools[parseInt(element.dataset.tool_id, 10)];
-
+        
         if (my_tool.element.dataset.on === "1") {
             my_tool.element.dataset.on = 0;
             element.dataset.on = 0;
-
+            
             my_tool.element.title = my_tool.tooltip;
 
             element.title = my_tool.tooltip;
@@ -2536,12 +2546,12 @@ var WUI_ToolBar = new (function() {
         } else {
             my_tool.element.dataset.on = 1;
             element.dataset.on = 1;
-
+            
             if (my_tool.tooltip_toggled !== undefined) {
                 my_tool.element.title = my_tool.tooltip_toggled;
                 element.title = my_tool.tooltip_toggled;
             }
-
+            
             if (my_tool.toggled_icon !== undefined) {
                 my_tool.element.classList.add(my_tool.toggled_icon);
                 my_tool.element.classList.remove(my_tool.icon);
@@ -2549,10 +2559,10 @@ var WUI_ToolBar = new (function() {
                 element.classList.add(my_tool.toggled_icon);
                 element.classList.remove(my_tool.icon);
             }
-
+            
             state = true;
         }
-
+        
         if (my_tool.toggled_style !== "none") {
             if (element.classList.contains(_class_name.toggle_on)) {
                 my_tool.element.classList.remove(_class_name.toggle_on);
@@ -2562,7 +2572,7 @@ var WUI_ToolBar = new (function() {
                 element.classList.add(_class_name.toggle_on);
             }
         }
-
+        
         toggle_group = element.dataset.toggle_group;
 
         if (toggle_group !== undefined) {
@@ -2579,7 +2589,7 @@ var WUI_ToolBar = new (function() {
                     if (tool_element.dataset.on === "0") {
                         continue;
                     }
-
+                    
                     tool_element.dataset.on = "0";
                     tool.element.dataset.on = "0";
 
@@ -2607,7 +2617,7 @@ var WUI_ToolBar = new (function() {
             _propagate(my_tool, "toggle", state);
         }
     };
-
+    
     var _ddItemClick = function (ev) {
         ev.preventDefault();
         ev.stopPropagation();
@@ -2761,42 +2771,42 @@ var WUI_ToolBar = new (function() {
             if(ev.stopPropagation) {
                 ev.stopPropagation();
             }
-
+        
             owner_win.addEventListener("click", _removeDdFloatingContentHandler(my_tool, element), false);
         } else {
             _propagate(my_tool, "click");
         }
     };
-
+    
     var _minimizeGroup = function (minimize_element) {
         var group = minimize_element.nextSibling;
-
+        
         if (minimize_element.classList.contains(_class_name.minimize_icon)) {
             minimize_element.classList.add(_class_name.maximize_icon);
             minimize_element.classList.remove(_class_name.minimize_icon);
-
+            
             minimize_element.title = "Maximize group";
-
+            
             group.style.display = "none";
         } else {
             minimize_element.classList.add(_class_name.minimize_icon);
             minimize_element.classList.remove(_class_name.maximize_icon);
-
+            
             minimize_element.title = "Minimize group";
-
+            
             group.style.display = "";
         }
     };
-
+    
     /***********************************************************
         Public section.
-
+        
         Functions.
     ************************************************************/
-
+    
     /**
      * Create a toolbar widget from an element.
-     *
+     * 
      * @param   {String} id      DOM Element id
      * @param   {Object}   options [[Description]]
      * @param   {Array}    tools   [[Description]]
@@ -2804,30 +2814,30 @@ var WUI_ToolBar = new (function() {
      */
     this.create = function (id, options, tools) {
         var toolbar = document.getElementById(id),
-
+            
             group = null,
             elem = null,
-
+            
             index = null,
-
+            
             previous_group = null,
-
+            
             opts = {},
-
+            
             key;
-
+        
         if (_widget_list[id] !== undefined) {
             console.log("WUI_Toolbar id '" + id + "' already created, aborting.");
-
+            
             return;
         }
-
+        
         for (key in _known_options) {
             if (_known_options.hasOwnProperty(key)) {
                 opts[key] = _known_options[key];
             }
         }
-
+        
         if (options !== undefined) {
             for (key in options) {
                 if (options.hasOwnProperty(key)) {
@@ -2837,7 +2847,7 @@ var WUI_ToolBar = new (function() {
                 }
             }
         }
-
+        
         // build up the toolbar widget internal data structure
         _widget_list[id] = {
             element: toolbar,
@@ -2845,18 +2855,18 @@ var WUI_ToolBar = new (function() {
             tools: [],
             opts: opts
         };
-
+        
         // build the toolbar and its items
         toolbar.classList.add(_class_name.tb);
-
+        
         var group_class = _class_name.group,
             item_class = _class_name.item,
             spacer_class = "wui-toolbar-spacer",
             group_minimize_class = _class_name.minimize_group;
-
+        
         if (opts.vertical) {
             toolbar.classList.add("wui-toolbar-vertical");
-
+            
             group_class = _class_name.vertical_group;
             item_class += " wui-toolbar-item-vertical";
             spacer_class = "wui-toolbar-spacer-vertical";
@@ -2882,33 +2892,33 @@ var WUI_ToolBar = new (function() {
                 opts.item_vmargin = 0;
             }
         }
-
+        
         group_minimize_class = _class_name.button + " " + _class_name.minimize_icon + " " + group_minimize_class;
-
+        
         toolbar.addEventListener("click", _onClick, false);
 
         var i;
 
-        for(index in tools) {
+        for(index in tools) { 
             if (tools.hasOwnProperty(index)) {
                 if (previous_group !== null) {
                     elem = document.createElement("div");
                     elem.className = spacer_class;
-
+                    
                     toolbar.appendChild(elem);
                 }
-
+                
                 if (opts.allow_groups_minimize) {
                     elem = document.createElement("div");
                     elem.className = group_minimize_class;
-
+                    
                     elem.title = "Minimize group";
-
+                    
                     toolbar.appendChild(elem);
                 }
 
                 group = tools[index];
-
+               
                 var group_element = document.createElement("div");
                 group_element.className = group_class;
 
@@ -2921,7 +2931,7 @@ var WUI_ToolBar = new (function() {
                 for (i = 0; i < group.length; i += 1) {
                     var tool = group[i],
                         tool_element = document.createElement("div"),
-
+                        
                         tool_id = _widget_list[id].tools.length,
 
                         widget = {
@@ -2939,7 +2949,7 @@ var WUI_ToolBar = new (function() {
                         j;
 
                     tool_element.className = item_class;
-
+                    
                     tool_element.style.minWidth     = opts.item_width   + "px";
                     tool_element.style.minHeight    = opts.item_height  + "px";
                     tool_element.style.marginLeft   = opts.item_hmargin + "px";
@@ -2948,24 +2958,24 @@ var WUI_ToolBar = new (function() {
                     tool_element.style.marginBottom = opts.item_vmargin + "px";
 
                     tool_element.style.backgroundSize = (opts.icon_width - 4) + "px " + (opts.icon_height - 4) + "px";
-
+                    
                     group_element.appendChild(tool_element);
-
+                    
                     _widget_list[id].tools.push(widget);
-
+                    
                     tool_element.dataset.tool_id = tool_id;
-
+                    
                     widget.tooltip = tool.tooltip;
-
+                    
                     if (tool.tooltip !== undefined) {
-                        tool_element.title = tool.tooltip;
+                        tool_element.title = tool.tooltip; 
                     }
-
+                    
                     if (tool.text !== undefined) {
                         tool_element.innerHTML = tool.text;
-
+                        
                         tool_element.style.lineHeight = opts.item_height + "px";
-
+                        
                         tool_element.classList.add("wui-toolbar-text");
 
                         if (tool.icon !== undefined) {
@@ -2977,19 +2987,19 @@ var WUI_ToolBar = new (function() {
                     if (tool.icon !== undefined) {
                         tool_element.classList.add(tool.icon);
                     }
-
+                    
                     // handle button type
                     if (tool.type === "toggle") {
                         tool_element.classList.add(_class_name.toggle);
-
+                        
                         widget.toggled_icon = tool.toggled_icon;
                         widget.tooltip_toggled = tool.tooltip_toggled;
                         widget.toggled_style = tool.toggled_style;
-
+                        
                         if (tool.toggle_group !== undefined) {
                             tool_element.dataset.toggle_group = tool.toggle_group;
                         }
-
+                        
                         if (tool.toggle_state) {
                             tool_element.dataset.on = "1";
                         }
@@ -3006,13 +3016,13 @@ var WUI_ToolBar = new (function() {
                         tool_element.classList.add(_class_name.button);
                     }
                 }
-
+                
                 toolbar.appendChild(group_element);
-
+                
                 previous_group = group;
            }
         }
-
+        
         // now setup tools state, this could have been done before,
         // but to work with the detachable dialog widget we need them added to the toolbar before calling _toggle etc.
         var tools_elems = toolbar.getElementsByClassName(_class_name.item);
@@ -3363,10 +3373,10 @@ var WUI = new (function() {
 
     /***********************************************************
         Private section.
-
+        
         Fields.
     ************************************************************/
-
+    
     var _class_name = {
             display_none:  "wui-display-none",
             hide_fi_500:   "wui-hide-fi-500",
@@ -3384,13 +3394,13 @@ var WUI = new (function() {
 
         _drag_x = 0,
         _drag_y = 0;
-
+    
     /***********************************************************
         Private section.
-
+        
         Functions.
     ************************************************************/
-
+    
     var _hideHandler = function (element, fade_finish_cb, hide_when_fade_finish) {
         var handler = function () {
             if (hide_when_fade_finish) {
@@ -3524,7 +3534,7 @@ var WUI = new (function() {
 
     /***********************************************************
         Public section.
-
+        
         Functions.
     ************************************************************/
 
