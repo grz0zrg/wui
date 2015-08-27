@@ -89,7 +89,7 @@ var WUI_Dialog = new (function() {
     ************************************************************/
 
     // this keep track of event listeners... globally
-    // a tricky solution but the only one i know of until a standard pop up or someone have a better solution
+    // a tricky solution but the only one i know of until a standard pop up or someone has a better solution
     if (!Element.prototype['_addEventListener']) {
         Element.prototype._addEventListener = Element.prototype.addEventListener;
         Element.prototype.addEventListener = function(a, b, c) {
@@ -454,7 +454,7 @@ var WUI_Dialog = new (function() {
                                      '<title>' + stripped_title + '</title>',
                                      css_html,
                                      '</head>',
-                                     '<body id="' + dialog.id + '" class="wui-dialog-detach-window-body">',
+                                     '<body id="' + dialog.id + '" class="wui-dialog-detach-window-body" onload="parent.opener.WUI_Dialog.childWindowLoaded(\'' + dialog.id + '\')">',
                                      //dialog.children[1].outerHTML,
                                      '</body>',
                                      '</html>'].join(''));
@@ -473,14 +473,6 @@ var WUI_Dialog = new (function() {
         }
 
         child_window.addEventListener("resize", function () { _onWindowResize(child_window); }, false);
-
-        child_window.addEventListener("load", function () {
-            _addListenerWalk(dialog.children[1], child_window.document.body.firstElementChild);
-
-            if (widget.opts.on_detach) {
-                widget.opts.on_detach(child_window);
-            }
-        });
 
         child_window.addEventListener("beforeunload", function () {
             //_removeDetachedWindow(widget);
@@ -1112,5 +1104,17 @@ var WUI_Dialog = new (function() {
         element.parentElement.removeChild(element);
 
         delete _widget_list[id];
+    };
+    
+    // called from a dialog detached window, this basically ensure that the window is initialized before adding back listeners on elements
+    this.childWindowLoaded = function (id) {
+        var widget = _widget_list[id],
+            child_window = widget.detachable_ref;
+        
+        _addListenerWalk(widget.dialog.children[1], child_window.document.body.firstElementChild);
+
+        if (widget.opts.on_detach) {
+            widget.opts.on_detach(child_window);
+        }
     };
 })();
