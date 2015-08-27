@@ -454,7 +454,7 @@ var WUI_Dialog = new (function() {
                                      '<title>' + stripped_title + '</title>',
                                      css_html,
                                      '</head>',
-                                     '<body id="' + dialog.id + '" class="wui-dialog-detach-window-body" onload="parent.opener.WUI_Dialog.childWindowLoaded(\'' + dialog.id + '\')">',
+                                     '<body id="' + dialog.id + "\" class=\"wui-dialog-detach-window-body\" onload=\"parent.opener.WUI_Dialog.childWindowLoaded('" + dialog.id + "')\">",
                                      //dialog.children[1].outerHTML,
                                      '</body>',
                                      '</html>'].join(''));
