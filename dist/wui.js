@@ -23,6 +23,7 @@ var WUI_Dialog = new (function() {
         _resize_start_y = 0,
 
         _resize_timeout = null,
+        _detach_load_timeout = null,
 
         _detached_windows = [],
 
@@ -429,6 +430,8 @@ var WUI_Dialog = new (function() {
             "height=" + h,
             "top=" + (dbc.top + screen_top + 32),//((window_h-h)/2 + screen_top),
             "left=" + (dbc.left  + screen_left)].join(','));//((window_w-w) / 2 + screen_left)].join(','));
+        
+        widget.detachable_ref = child_window;
 
         css_html = "";
 
@@ -454,7 +457,7 @@ var WUI_Dialog = new (function() {
                                      '<title>' + stripped_title + '</title>',
                                      css_html,
                                      '</head>',
-                                     '<body id="' + dialog.id + "\" class=\"wui-dialog-detach-window-body\" onload=\"parent.opener.WUI_Dialog.childWindowLoaded('" + dialog.id + "')\">",
+                                     '<body id="' + dialog.id + "\" class=\"wui-dialog-detach-window-body\" onload=\"parent.opener.WUI_Dialog.childWindowLoaded(document.body.id)\">",
                                      //dialog.children[1].outerHTML,
                                      '</body>',
                                      '</html>'].join(''));
@@ -482,8 +485,6 @@ var WUI_Dialog = new (function() {
                 document.body.removeChild(widget.modal_element);
             }*/
         }, false);
-
-        widget.detachable_ref = child_window;
 
         _detached_windows.push(child_window);
     };
@@ -1111,10 +1112,20 @@ var WUI_Dialog = new (function() {
         var widget = _widget_list[id],
             child_window = widget.detachable_ref;
         
-        _addListenerWalk(widget.dialog.children[1], child_window.document.body.firstElementChild);
+        if (!child_window) {
+            return;
+        }
+        
+        if (child_window.document.body.firstElementChild) {
+            _addListenerWalk(widget.dialog.children[1], child_window.document.body.firstElementChild);
 
-        if (widget.opts.on_detach) {
-            widget.opts.on_detach(child_window);
+            if (widget.opts.on_detach) {
+                widget.opts.on_detach(child_window);
+            }
+        } else {
+            window.setTimeout(function(){ // temporary
+                WUI_Dialog.childWindowLoaded(id);
+            }, 500);
         }
     };
 })();
