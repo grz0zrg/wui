@@ -156,7 +156,7 @@ All WUI widgets work very well with the detachable feature, what you change in t
 <br/>
 >**Notes**: 
 >
->On iPad, the detach feature will not work well because Safari will open the dialog as a new tab.
+>On iPad, the detach feature will work but Safari will open the dialog as a new tab.
 >
 >=====
 > The detach feature keep track of events by overriding `addEventListener`, in order to work correctly the WUI_Dialog/WUI library should be loaded before you or other libs add events.
