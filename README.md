@@ -149,7 +149,7 @@ WUI_Tabs.create("my_tabs", {
 
 Dialogs can be draggable, closable, minimizable, resizable, detachable, modal and act as panels, they also go in front of others when you move them.
 
-One of the coolest (and maybe 'unique') feature of the dialog widget is the ability to be detached from the window it is on and act as a proper window without breaking the content (including events), this may be very usefull, the user can detach any dialogs and move them on other screens etc.
+One of the coolest (and maybe 'unique') feature of the dialog widget is the ability to be detached from the window it is on and act as a proper window without breaking the content (including events), this may be very useful, the user can detach any dialogs and move them on other screens etc.
 
 All WUI widgets work very well with the detachable feature, what you change in the detachable dialog will be changed in the 'original' dialog, this should be the same dialog after all, for example, if you toggle a WUI_ToolBar button in the detached dialog and close it, when you open the dialog again (detached or not) the button will be toggled, the only thing which is not synced is the size of the detached dialog and its position.
 
@@ -314,7 +314,7 @@ WUI_DropDown.create("my_dropdown", {
 <a name="toolbar"></a>
 ### ToolBar ###
 
-The toolbar can be horizontal or vertical, have groups and minimizable groups, have three type of buttons, simple, toggle and dropdown (usefull to make menu bar), a set of toggle buttons can be linked (grouped), buttons can be an icon, a text or both.
+The toolbar can be horizontal or vertical, have groups and minimizable groups, have three type of buttons, simple, toggle and dropdown (useful to make menu bar), a set of toggle buttons can be linked (grouped), buttons can be an icon, a text or both.
 
 <br/>*Method*:
 
