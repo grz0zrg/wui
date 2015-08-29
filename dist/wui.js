@@ -257,7 +257,12 @@ var WUI_Dialog = new (function() {
 
     var _minimize = function (minimize_btn, dialog) {
         var widget = _widget_list[dialog.id],
+            
             resize_handler = widget.resize_handler;
+        
+        if (widget.dialog !== dialog) {
+            _minimize(widget.header_minimaxi_btn, widget.dialog);
+        }
 
         minimize_btn.classList.toggle(_class_name.minimize);
         minimize_btn.classList.toggle(_class_name.maximize);
@@ -520,7 +525,9 @@ var WUI_Dialog = new (function() {
 
         ev.preventDefault();
         
-        var x = ev.clientX,
+        var widget = _widget_list[_dragged_dialog.id],
+        
+            x = ev.clientX,
             y = ev.clientY,
             
             touches = ev.changedTouches,
@@ -549,6 +556,11 @@ var WUI_Dialog = new (function() {
 
         _dragged_dialog.style.left = new_x + 'px';
         _dragged_dialog.style.top  = new_y + 'px';
+        
+        if (widget.dialog !== _dragged_dialog) {
+            widget.dialog.style.left = new_x + 'px';
+            widget.dialog.style.top  = new_y + 'px';
+        }
     };
     
     var _windowMouseUp = function (ev) {
@@ -974,6 +986,8 @@ var WUI_Dialog = new (function() {
                                 minimized_id: -1,
 
                                 resize_handler: resize_handler,
+            
+                                header_minimaxi_btn: header_minimaxi_btn,
 
                                 opts: opts,
             
@@ -1243,7 +1257,9 @@ var WUI_DropDown = new (function() {
         dd.classList.remove(_class_name.on);
 
         if (widget.floating_content) {
-            doc.body.removeChild(widget.floating_content);
+            if (widget.floating_content.parentElement === doc.body) {
+                doc.body.removeChild(widget.floating_content);
+            }
         }
 
         widget.floating_content = null;
@@ -1309,8 +1325,11 @@ var WUI_DropDown = new (function() {
         current_element.classList.add(_class_name.selected);
         
         widget.selected_id = parseInt(current_element.dataset.index, 10);
-
         widget.target_element.lastElementChild.innerHTML = current_element.textContent;
+        
+        if (widget.element !== widget.target_element) {
+            widget.element.lastElementChild.innerHTML = current_element.textContent;
+        }
         
         if (widget.opts.on_item_selected !== undefined) {
             widget.opts.on_item_selected(current_element.dataset.index);  

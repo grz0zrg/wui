@@ -111,7 +111,9 @@ var WUI_DropDown = new (function() {
         dd.classList.remove(_class_name.on);
 
         if (widget.floating_content) {
-            doc.body.removeChild(widget.floating_content);
+            if (widget.floating_content.parentElement === doc.body) {
+                doc.body.removeChild(widget.floating_content);
+            }
         }
 
         widget.floating_content = null;
@@ -177,8 +179,11 @@ var WUI_DropDown = new (function() {
         current_element.classList.add(_class_name.selected);
         
         widget.selected_id = parseInt(current_element.dataset.index, 10);
-
         widget.target_element.lastElementChild.innerHTML = current_element.textContent;
+        
+        if (widget.element !== widget.target_element) {
+            widget.element.lastElementChild.innerHTML = current_element.textContent;
+        }
         
         if (widget.opts.on_item_selected !== undefined) {
             widget.opts.on_item_selected(current_element.dataset.index);  
