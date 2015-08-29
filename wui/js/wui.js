@@ -227,6 +227,10 @@ var WUI = new (function() {
      */
     this.draggable = function (element, draggable_state, on_drag_cb) {
         if (draggable_state) {
+            if (element.classList.contains(_class_name.draggable)) {
+                return;
+            }
+            
             element.classList.add(_class_name.draggable);
 
             element.addEventListener("mousedown",  _dragStart, false);
@@ -239,6 +243,10 @@ var WUI = new (function() {
                 element: element
             });
         } else {
+            if (!element.classList.contains(_class_name.draggable)) {
+                return;
+            }
+            
             element.classList.remove(_class_name.draggable);
 
             element.removeEventListener("mousedown",  _dragStart, false);

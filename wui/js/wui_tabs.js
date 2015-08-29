@@ -26,7 +26,7 @@ var WUI_Tabs = new (function() {
         _known_options = {
             on_tab_click: null,
 
-            height: "calc(100% - 32px)"
+            height: "calc(100% - 30px)"
         };
 
     /***********************************************************
