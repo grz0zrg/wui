@@ -343,6 +343,7 @@ var WUI_ToolBar = new (function() {
 
     var _onClick = function (ev) {
         ev.preventDefault();
+        ev.stopPropagation();
 
         var element = ev.target;
 

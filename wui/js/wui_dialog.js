@@ -1098,7 +1098,7 @@ var WUI_Dialog = new (function() {
             return;
         }
 
-        _close(widget.dialog, true, propagate);
+        _close(widget.dialog, true, propagate, true);
     };
 
     this.destroy = function (id) {
