@@ -9,7 +9,9 @@ var WUI_Dialog = new (function() {
         Fields.
     ************************************************************/
     
-    var _widget_list = {},
+    var _self = this,
+    
+        _widget_list = {},
         
         _dragged_dialog = null,
         _resized_dialog = null,
@@ -479,6 +481,8 @@ var WUI_Dialog = new (function() {
 
             child_window.document.body.appendChild(new_status_bar);
         }
+        
+        child_window.addEventListener("keyup", function (ev) { if (ev.keyCode !== 27) { return; } _close(dialog, true, true, true); }, false);
 
         child_window.addEventListener("resize", function () { _onWindowResize(child_window); }, false);
 
@@ -515,6 +519,27 @@ var WUI_Dialog = new (function() {
             dialog = element.parentElement.parentElement;
 
             _detach(dialog);
+        }
+    };
+    
+    var _onKeyUp = function (ev) {
+        if (ev.keyCode !== 27) {
+            return;
+        }
+        
+        var key, widget;
+        
+        for(key in _widget_list) { 
+            if (_widget_list.hasOwnProperty(key)) {
+                widget = _widget_list[key];
+                
+                if (widget.dialog.style.zIndex === "101" && 
+                    widget.dialog.classList.contains(_class_name.open)) {
+                    _self.close(key, true);
+                    
+                    return;
+                }
+            }
         }
     };
     
@@ -953,7 +978,7 @@ var WUI_Dialog = new (function() {
 
             dialog.appendChild(status_bar);
         }
-
+        
         header.addEventListener("click", _onClick, false);
         header.addEventListener("touchstart", _onClick, false);
 
@@ -999,6 +1024,8 @@ var WUI_Dialog = new (function() {
                             };
         
         _computeThenSetPosition(dialog);
+        
+        _focus(dialog);
 
         return id;
     };
@@ -1086,6 +1113,20 @@ var WUI_Dialog = new (function() {
 
         _focus(dialog);
     };
+    
+    this.focus = function (id) {
+        var widget = _widget_list[id];
+
+        if (widget === undefined) {
+            if (typeof console !== "undefined") {
+                console.log("Cannot focus WUI dialog \"" + id + "\".");
+            }
+
+            return;
+        }
+        
+        _focus(widget.dialog);
+    };
 
     this.close = function (id, propagate) {
         var widget = _widget_list[id];
@@ -1142,6 +1183,8 @@ var WUI_Dialog = new (function() {
             }, 500);
         }
     };
+    
+    document.addEventListener("keyup", _onKeyUp, false);
 })();
 
 /* jslint browser: true */

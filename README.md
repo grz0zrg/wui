@@ -1,7 +1,7 @@
 WUI
 =====
 
-Collection of **easy to use** and **lightweight** (*~4.4kb css*, *~10.7kb js* gzipped) vanilla GUI widgets for the web.
+Collection of **easy to use** and **lightweight** (*~4.4kb css*, *~10.8kb js* gzipped) vanilla GUI widgets for the web.
 
 **Require no dependencies, all widgets can be used on their own.**
 
@@ -173,6 +173,7 @@ All WUI widgets work very well with the detachable feature, what you change in t
 *   destroy(wui_dialog)
 *   open(wui_dialog, detach)
 *   close(wui_dialog, propagate)
+*   focus(wui_dialog)
 *   setStatusBarContent(wui_dialog, html_content)
   
 <br/>*Example*:
@@ -258,6 +259,13 @@ Open and want to close it programmatically?
 
 ```javascript
 WUI_Dialog.close(my_dialog, true); // last argument is optional (default to false) mean the on_close function will be called
+```
+<br/>
+
+Focusing a specific dialog
+
+```javascript
+WUI_Dialog.focus(my_dialog);
 ```
 <br/>
 
