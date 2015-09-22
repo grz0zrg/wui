@@ -25,7 +25,6 @@ var WUI_Dialog = new (function() {
         _resize_start_y = 0,
 
         _resize_timeout = null,
-        _detach_load_timeout = null,
 
         _detached_windows = [],
 
@@ -189,6 +188,8 @@ var WUI_Dialog = new (function() {
         var cz_index = 0,
 
             tmp_dialog = null,
+            
+            elem = null,
 
             widget = _widget_list[dialog.id];
 
@@ -208,6 +209,17 @@ var WUI_Dialog = new (function() {
                     }
                 }
             }
+        }
+        
+        // traverse backward to see if it is contained by another dialog and focus all the parents, note: could be done once for performances
+        elem = widget.dialog.parentElement;
+        
+        while (elem !== null) {
+            if (elem.classList.contains(_class_name.dialog)) {
+                elem.style.zIndex = 101;
+            }
+            
+            elem = elem.parentElement;
         }
 
         dialog.style.zIndex = 101;
@@ -1032,9 +1044,7 @@ var WUI_Dialog = new (function() {
     
     this.setStatusBarContent = function (id, content) {
         var widget = _widget_list[id],
-
-            detached_dialog_elem,
-
+            
             status_bar,
 
             detach_ref;

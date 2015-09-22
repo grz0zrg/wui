@@ -1,7 +1,7 @@
 WUI
 =====
 
-Collection of **easy to use** and **lightweight** (*~4.4kb css*, *~10.8kb js* gzipped) vanilla GUI widgets for the web.
+Collection of **easy to use** and **lightweight** (*~4.4kb css*, *~10.9kb js* gzipped) vanilla GUI widgets for the web.
 
 **Require no dependencies, all widgets can be used on their own.**
 
@@ -76,6 +76,7 @@ Fade in/Fade out method default to 500ms if no duration is provided
 *Methods*:
 
 >*   draggable(element, draggable_state, on_drag_cb)
+*   lockDraggable(element, axis)
 *   fadeIn(element, duration_ms)
 *   fadeOut(element, duration_ms, fade_finish_cb, hide_when_fade_finish)
 
@@ -85,6 +86,9 @@ Fade in/Fade out method default to 500ms if no duration is provided
 // make the element draggable
 // Note: If you want to remove the element while it is draggable, make it undraggable first by passing false as second argument of this function, this is because WUI keep a reference of the element and it may cause memory leaks, passing false will make the reference go away
 WUI.draggable(my_element, true);
+
+// lock draggable element to a specific axis ('x' or 'y', to clear the lock, just call it without specifying axis or specify whatever)
+WUI.lockDraggable(my_element, 'x');
 
 // apply a 500ms fade in effect to an element
 WUI.fadeIn(my_element, 500);
@@ -187,7 +191,7 @@ All WUI widgets work very well with the detachable feature, what you change in t
 ```
 
 ```javascript
-var my_dialog = WUI_Dialog.create("my_dialog", {    
+var my_dialog = WUI_Dialog.create("my_dialog", {
 	title: "dialog title",
     
     width: "20%",

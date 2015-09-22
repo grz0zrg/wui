@@ -117,11 +117,15 @@ var WUI = new (function() {
             }
         }
 
-        new_x = x - _drag_x;
-        new_y = y - _drag_y;
-
-        _dragged_element.style.left = new_x + 'px';
-        _dragged_element.style.top  = new_y + 'px';
+        if (draggable.axisLock !== 0) {
+            new_x = x - _drag_x;
+            _dragged_element.style.left = new_x + 'px';
+        }
+        
+        if (draggable.axisLock !== 1) {
+            new_y = y - _drag_y;
+            _dragged_element.style.top  = new_y + 'px';
+        }
 
         if (draggable) {
             draggable.cb(_dragged_element, new_x, new_y);
@@ -240,7 +244,8 @@ var WUI = new (function() {
 
             _draggables.push({
                 cb: on_drag_cb,
-                element: element
+                element: element,
+                axisLock: null
             });
         } else {
             if (!element.classList.contains(_class_name.draggable)) {
@@ -263,6 +268,22 @@ var WUI = new (function() {
 
                 draggable.element.dataset.wui_draggable_id = i;
             }
+        }
+    };
+    
+    this.lockDraggable = function (element, axis) {
+        if (!element.classList.contains(_class_name.draggable)) {
+            return;
+        }
+        
+        var draggable = _draggables[parseInt(element.dataset.wui_draggable_id, 10)];
+        
+        if (axis === 'x') {
+            draggable.axisLock = 0;
+        } else if (axis === 'y') {
+            draggable.axisLock = 1;
+        } else {
+            draggable.axisLock = null;
         }
     };
 })();

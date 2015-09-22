@@ -25,7 +25,6 @@ var WUI_Dialog = new (function() {
         _resize_start_y = 0,
 
         _resize_timeout = null,
-        _detach_load_timeout = null,
 
         _detached_windows = [],
 
@@ -189,6 +188,8 @@ var WUI_Dialog = new (function() {
         var cz_index = 0,
 
             tmp_dialog = null,
+            
+            elem = null,
 
             widget = _widget_list[dialog.id];
 
@@ -208,6 +209,17 @@ var WUI_Dialog = new (function() {
                     }
                 }
             }
+        }
+        
+        // traverse backward to see if it is contained by another dialog and focus all the parents, note: could be done once for performances
+        elem = widget.dialog.parentElement;
+        
+        while (elem !== null) {
+            if (elem.classList.contains(_class_name.dialog)) {
+                elem.style.zIndex = 101;
+            }
+            
+            elem = elem.parentElement;
         }
 
         dialog.style.zIndex = 101;
@@ -1032,9 +1044,7 @@ var WUI_Dialog = new (function() {
     
     this.setStatusBarContent = function (id, content) {
         var widget = _widget_list[id],
-
-            detached_dialog_elem,
-
+            
             status_bar,
 
             detach_ref;
@@ -3561,11 +3571,15 @@ var WUI = new (function() {
             }
         }
 
-        new_x = x - _drag_x;
-        new_y = y - _drag_y;
-
-        _dragged_element.style.left = new_x + 'px';
-        _dragged_element.style.top  = new_y + 'px';
+        if (draggable.axisLock !== 0) {
+            new_x = x - _drag_x;
+            _dragged_element.style.left = new_x + 'px';
+        }
+        
+        if (draggable.axisLock !== 1) {
+            new_y = y - _drag_y;
+            _dragged_element.style.top  = new_y + 'px';
+        }
 
         if (draggable) {
             draggable.cb(_dragged_element, new_x, new_y);
@@ -3684,7 +3698,8 @@ var WUI = new (function() {
 
             _draggables.push({
                 cb: on_drag_cb,
-                element: element
+                element: element,
+                axisLock: null
             });
         } else {
             if (!element.classList.contains(_class_name.draggable)) {
@@ -3707,6 +3722,22 @@ var WUI = new (function() {
 
                 draggable.element.dataset.wui_draggable_id = i;
             }
+        }
+    };
+    
+    this.lockDraggable = function (element, axis) {
+        if (!element.classList.contains(_class_name.draggable)) {
+            return;
+        }
+        
+        var draggable = _draggables[parseInt(element.dataset.wui_draggable_id, 10)];
+        
+        if (axis === 'x') {
+            draggable.axisLock = 0;
+        } else if (axis === 'y') {
+            draggable.axisLock = 1;
+        } else {
+            draggable.axisLock = null;
         }
     };
 })();
