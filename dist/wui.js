@@ -3556,8 +3556,8 @@ var WUI = new (function() {
 
             draggable = _draggables[parseInt(_dragged_element.dataset.wui_draggable_id, 10)],
 
-            new_x, new_y;
-
+            new_x = draggable.x, new_y = draggable.y;
+        
         if (touches) {
             for (i = 0; i < touches.length; i += 1) {
                 touch = touches[i];
@@ -3574,13 +3574,17 @@ var WUI = new (function() {
         if (draggable.axisLock !== 0) {
             new_x = x - _drag_x;
             _dragged_element.style.left = new_x + 'px';
+            
+            draggable.x = new_x;
         }
         
         if (draggable.axisLock !== 1) {
             new_y = y - _drag_y;
             _dragged_element.style.top  = new_y + 'px';
+            
+            draggable.y = new_y;
         }
-
+        
         if (draggable) {
             draggable.cb(_dragged_element, new_x, new_y);
         }
@@ -3695,11 +3699,13 @@ var WUI = new (function() {
             element.addEventListener("touchstart", _dragStart, false);
 
             element.dataset.wui_draggable_id = _draggables.length;
-
+            
             _draggables.push({
                 cb: on_drag_cb,
                 element: element,
-                axisLock: null
+                axisLock: null,
+                x: parseInt(element.style.left, 10),
+                y: parseInt(element.style.top, 10)
             });
         } else {
             if (!element.classList.contains(_class_name.draggable)) {
