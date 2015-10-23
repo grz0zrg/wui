@@ -545,7 +545,8 @@ var WUI_Dialog = new (function() {
             if (_widget_list.hasOwnProperty(key)) {
                 widget = _widget_list[key];
                 
-                if (widget.dialog.style.zIndex === "101" && 
+                if (widget.opts.closable &&
+                    widget.dialog.style.zIndex === "101" && 
                     widget.dialog.classList.contains(_class_name.open)) {
                     _self.close(key, true);
                     
