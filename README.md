@@ -5,6 +5,8 @@ Collection of **easy to use** and **lightweight** (*~4.4kb css*, *~10.9kb js* gz
 
 **Require no dependencies, all widgets can be used on their own.**
 
+There is a dark and a bright theme, the dark theme is the default theme and is more polished than the bright one.
+
 Good for single page apps, experiments and the like.
 
 <br/>
@@ -24,7 +26,9 @@ Good for single page apps, experiments and the like.
 
 #####Usage
 
-There is a minified and gzipped up to date ready-to-use css/js files in the **_dist_** folder, to use the entire library, just include them in your HTML file
+There is a minified and gzipped up to date ready-to-use js file in the **_dist_** folder, to use the entire library, just include it in your HTML file
+
+There is also a minified and gzipped up to date ready-to-use css file for each themes in the **_dist/[theme_name]_** folder, to use it, just include it in your HTML file
 
 ```html
 <link rel="stylesheet" type="text/css" href="wui.min.css"/>

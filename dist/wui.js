@@ -882,6 +882,8 @@ var WUI_Dialog = new (function() {
             
             header = document.createElement("div"),
             
+            header_btn = [],
+            
             resize_handler = null,
 
             header_detach_btn    = null,

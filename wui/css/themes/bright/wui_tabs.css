@@ -1,0 +1,133 @@
+.wui-tabs {
+    width: 100%;
+    height: 24px;
+    
+    border-top-right-radius: 4px;
+    
+    pointer-events: none;
+    
+    padding-top: 4px;
+    
+    white-space: nowrap;
+
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.wui-tab-enabled:first-letter {
+
+}
+
+.wui-tab-enabled {
+    color: #000000 !important;
+        
+    border-top: 1px solid #808080 !important;
+    border-left: 1px solid #808080;
+    border-right: 1px solid #808080;
+    border-bottom: 1px solid #CAD7E1 !important;
+    
+    pointer-events: none !important;
+    
+    text-shadow: 0 0 1px #a0a0a0;
+}
+
+.wui-tab-disabled {
+    margin-right: 1px;
+    margin-left: 1px;
+}
+
+.wui-tabs-underline {
+    border-top: 1px solid #808080;
+
+    margin-top: 1px;
+}
+
+.wui-tabs-content {
+    width: 100%;
+
+    background-color: rgb(202, 215, 225);
+    
+    overflow: auto;
+}
+
+.wui-tab-content {
+    height: 100%;
+    
+    border-radius: 4px;
+    
+    color: black;
+}
+
+.wui-first-tab {
+    margin-left: 20px;
+}
+
+.wui-first-tab.wui-tab-disabled {
+    margin-left: 21px;
+}
+
+.wui-tab {
+    display: inline-block;
+    
+    font-size: 9pt;
+    letter-spacing: 0.12pc;
+    
+    height: 100%;
+    
+    border-top-right-radius: 6px;
+    border-top-left-radius: 6px;
+    
+    border-top: 1px solid #A2C4DA;
+
+    padding-right: 1px;
+    padding-left: 1px;
+    
+    text-align: center;
+    
+    line-height: 24px;
+    
+    color: #282828;
+    
+    border-bottom: 1px solid #808080;
+    
+    pointer-events: all;
+    
+    z-index: 1;
+    
+    line-height: 24px;
+    
+    padding-left: 8px;
+    padding-right: 8px;
+    
+    background: -webkit-linear-gradient(rgb(162, 175, 185), rgb(202, 215, 225), rgb(202, 215, 225))no-repeat border-box;
+
+    background: linear-gradient(rgb(162, 175, 185),rgb(202, 215, 225),rgb(202, 215, 225))no-repeat border-box;
+}
+
+.wui-tab:hover {
+    cursor: pointer;
+    /*
+    background-color: #101010 !important;
+    */
+    color: #000000 !important;
+}
+
+.wui-tab-display-none {
+    display: none;   
+}
+
+@media only screen and (max-device-width: 480px) {
+    .wui-tabs {
+        overflow: auto;   
+    }
+    
+    .wui-tab-content {
+        overflow: auto;   
+    }
+    
+    .wui-first-tab {
+        margin-left: 6px !important;
+    }
+}

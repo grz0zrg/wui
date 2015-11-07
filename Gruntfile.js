@@ -1,12 +1,15 @@
+var js_arr = ['wui/js/wui_dialog.js', 'wui/js/wui_dropdown.js', 'wui/js/wui_range_slider.js', 'wui/js/wui_tabs.js', 'wui/js/wui_toolbar.js', 'wui/js/wui_circular_menu.js', 'wui/js/wui.js'];
+
 module.exports = function(grunt) {
   	grunt.initConfig({
     	pkg: grunt.file.readJSON('package.json'),
  
  		concat: {
- 			dist: {
+ 			dist_dark: {
  				files: {
-					'dist/wui.js':  ['wui/js/wui_dialog.js', 'wui/js/wui_dropdown.js', 'wui/js/wui_range_slider.js', 'wui/js/wui_tabs.js', 'wui/js/wui_toolbar.js', 'wui/js/wui_circular_menu.js', 'wui/js/wui.js'],
- 					'dist/wui.css': ['wui/css/wui_dialog.css', 'wui/css/wui_dropdown.css', 'wui/css/wui_range_slider.css', 'wui/css/wui_tabs.css', 'wui/css/wui_toolbar.css', 'wui/css/wui_circular_menu.css', 'wui/css/wui.css']
+					'dist/wui.js': js_arr,
+ 					'dist/dark/wui.css': ['wui/css/themes/dark/wui_dialog.css', 'wui/css/themes/dark/wui_dropdown.css', 'wui/css/themes/dark/wui_range_slider.css', 'wui/css/themes/dark/wui_tabs.css', 'wui/css/themes/dark/wui_toolbar.css', 'wui/css/themes/dark/wui_circular_menu.css', 'wui/css/wui.css'],
+ 					'dist/bright/wui.css': ['wui/css/themes/bright/wui_dialog.css', 'wui/css/themes/bright/wui_dropdown.css', 'wui/css/themes/bright/wui_range_slider.css', 'wui/css/themes/bright/wui_tabs.css', 'wui/css/themes/bright/wui_toolbar.css', 'wui/css/themes/bright/wui_circular_menu.css', 'wui/css/wui.css']
  				}
  			}
  		},
@@ -65,15 +68,24 @@ module.exports = function(grunt) {
 		  	
 		  	target: {
 				files: {
-			  		'dist/wui.min.css': ['wui/css/wui_dialog.css', 'wui/css/wui_dropdown.css', 'wui/css/wui_range_slider.css', 'wui/css/wui_tabs.css', 'wui/css/wui_toolbar.css', 'wui/css/wui_circular_menu.css', 'wui/css/wui.css'],
+			  		'dist/dark/wui.min.css': ['wui/css/themes/dark/wui_dialog.css', 'wui/css/themes/dark/wui_dropdown.css', 'wui/css/themes/dark/wui_range_slider.css', 'wui/css/themes/dark/wui_tabs.css', 'wui/css/themes/dark/wui_toolbar.css', 'wui/css/themes/dark/wui_circular_menu.css', 'wui/css/wui.css'],
+			  		'dist/bright/wui.min.css': ['wui/css/themes/bright/wui_dialog.css', 'wui/css/themes/bright/wui_dropdown.css', 'wui/css/themes/bright/wui_range_slider.css', 'wui/css/themes/bright/wui_tabs.css', 'wui/css/themes/bright/wui_toolbar.css', 'wui/css/themes/bright/wui_circular_menu.css', 'wui/css/wui.css'],
 
-                    'dist/widgets/WUI.min.css':                                ['wui/css/wui.css'],
-		      		'dist/widgets/WUI_Dialog/wui_dialog.min.css':              ['wui/css/wui_dialog.css'],
-		      		'dist/widgets/WUI_DropDown/wui_dropdown.min.css':          ['wui/css/wui_dropdown.css'],
-		      		'dist/widgets/WUI_RangeSlider/wui_range_slider.min.css':   ['wui/css/wui_range_slider.css'],
-		      		'dist/widgets/WUI_Tabs/wui_tabs.min.css':                  ['wui/css/wui_tabs.css'],
-		      		'dist/widgets/WUI_ToolBar/wui_toolbar.min.css':            ['wui/css/wui_toolbar.css'],
-                    'dist/widgets/WUI_CircularMenu/wui_circular_menu.min.css': ['wui/css/wui_circular_menu.css']
+                    'dist/widgets/WUI.min.css':                                     ['wui/css/wui.css'],
+		      		'dist/widgets/WUI_Dialog/dark/wui_dialog.min.css':              ['wui/css/themes/dark/wui_dialog.css'],
+		      		'dist/widgets/WUI_DropDown/dark/wui_dropdown.min.css':          ['wui/css/themes/dark/wui_dropdown.css'],
+		      		'dist/widgets/WUI_RangeSlider/dark/wui_range_slider.min.css':   ['wui/css/themes/dark/wui_range_slider.css'],
+		      		'dist/widgets/WUI_Tabs/dark/wui_tabs.min.css':                  ['wui/css/themes/dark/wui_tabs.css'],
+		      		'dist/widgets/WUI_ToolBar/dark/wui_toolbar.min.css':            ['wui/css/themes/dark/wui_toolbar.css'],
+                    'dist/widgets/WUI_CircularMenu/dark/wui_circular_menu.min.css': ['wui/css/themes/dark/wui_circular_menu.css'],
+                    
+                   'dist/widgets/WUI.min.css':                                ['wui/css/wui.css'],
+		      		'dist/widgets/WUI_Dialog/bright/wui_dialog.min.css':              ['wui/css/themes/bright/wui_dialog.css'],
+		      		'dist/widgets/WUI_DropDown/bright/wui_dropdown.min.css':          ['wui/css/themes/bright/wui_dropdown.css'],
+		      		'dist/widgets/WUI_RangeSlider/bright/wui_range_slider.min.css':   ['wui/css/themes/bright/wui_range_slider.css'],
+		      		'dist/widgets/WUI_Tabs/bright/wui_tabs.min.css':                  ['wui/css/themes/bright/wui_tabs.css'],
+		      		'dist/widgets/WUI_ToolBar/bright/wui_toolbar.min.css':            ['wui/css/themes/bright/wui_toolbar.css'],
+                    'dist/widgets/WUI_CircularMenu/bright/wui_circular_menu.min.css': ['wui/css/themes/bright/wui_circular_menu.css']
 				}
 		  	}
 		},
@@ -87,15 +99,24 @@ module.exports = function(grunt) {
 			target: {
 				files: [
 					{expand: true, src: ['dist/wui.min.js'],  dest: '', ext: '.gz.js'},
-					{expand: true, src: ['dist/wui.min.css'], dest: '', ext: '.gz.css'},
+					{expand: true, src: ['dist/dark/wui.min.css'], dest: '', ext: '.gz.css'},
+					{expand: true, src: ['dist/bright/wui.min.css'], dest: '', ext: '.gz.css'},
 
                     {expand: true, src: ['dist/widgets/WUI.min.css'],                                dest: '', ext: '.gz.css'},
-					{expand: true, src: ['dist/widgets/WUI_Dialog/wui_dialog.min.css'],              dest: '', ext: '.gz.css'},
-					{expand: true, src: ['dist/widgets/WUI_DropDown/wui_dropdown.min.css'],          dest: '', ext: '.gz.css'},
-					{expand: true, src: ['dist/widgets/WUI_RangeSlider/wui_range_slider.min.css'],   dest: '', ext: '.gz.css'},
-					{expand: true, src: ['dist/widgets/WUI_Tabs/wui_tabs.min.css'],                  dest: '', ext: '.gz.css'},
-					{expand: true, src: ['dist/widgets/WUI_ToolBar/wui_toolbar.min.css'],            dest: '', ext: '.gz.css'},
-					{expand: true, src: ['dist/widgets/WUI_CircularMenu/wui_circular_menu.min.css'], dest: '', ext: '.gz.css'},
+					{expand: true, src: ['dist/widgets/WUI_Dialog/dark/wui_dialog.min.css'],              dest: '', ext: '.gz.css'},
+					{expand: true, src: ['dist/widgets/WUI_DropDown/dark/wui_dropdown.min.css'],          dest: '', ext: '.gz.css'},
+					{expand: true, src: ['dist/widgets/WUI_RangeSlider/dark/wui_range_slider.min.css'],   dest: '', ext: '.gz.css'},
+					{expand: true, src: ['dist/widgets/WUI_Tabs/dark/wui_tabs.min.css'],                  dest: '', ext: '.gz.css'},
+					{expand: true, src: ['dist/widgets/WUI_ToolBar/dark/wui_toolbar.min.css'],            dest: '', ext: '.gz.css'},
+					{expand: true, src: ['dist/widgets/WUI_CircularMenu/dark/wui_circular_menu.min.css'], dest: '', ext: '.gz.css'},
+					
+                    {expand: true, src: ['dist/widgets/WUI.min.css'],                                dest: '', ext: '.gz.css'},
+					{expand: true, src: ['dist/widgets/WUI_Dialog/bright/wui_dialog.min.css'],              dest: '', ext: '.gz.css'},
+					{expand: true, src: ['dist/widgets/WUI_DropDown/bright/wui_dropdown.min.css'],          dest: '', ext: '.gz.css'},
+					{expand: true, src: ['dist/widgets/WUI_RangeSlider/bright/wui_range_slider.min.css'],   dest: '', ext: '.gz.css'},
+					{expand: true, src: ['dist/widgets/WUI_Tabs/bright/wui_tabs.min.css'],                  dest: '', ext: '.gz.css'},
+					{expand: true, src: ['dist/widgets/WUI_ToolBar/bright/wui_toolbar.min.css'],            dest: '', ext: '.gz.css'},
+					{expand: true, src: ['dist/widgets/WUI_CircularMenu/bright/wui_circular_menu.min.css'], dest: '', ext: '.gz.css'},
 
                     {expand: true, src: ['dist/widgets/WUI.min.js'],                                dest: '', ext: '.gz.js'},
 					{expand: true, src: ['dist/widgets/WUI_Dialog/wui_dialog.min.js'],              dest: '', ext: '.gz.js'},
