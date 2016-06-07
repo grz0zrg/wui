@@ -882,8 +882,6 @@ var WUI_Dialog = new (function() {
             
             header = document.createElement("div"),
             
-            header_btn = [],
-            
             resize_handler = null,
 
             header_detach_btn    = null,
@@ -1590,12 +1588,16 @@ var WUI_RangeSlider = new (function() {
         
         _touch_identifier = null,
         
+        _container_suffix_id = "_wui_container",
+        
         _class_name = {
-            hook:       "wui-rangeslider-hook",
-            bar:        "wui-rangeslider-bar",
-            filler:     "wui-rangeslider-filler",
+            hook:        "wui-rangeslider-hook",
+            bar:         "wui-rangeslider-bar",
+            filler:      "wui-rangeslider-filler",
 
-            hook_focus: "wui-rangeslider-hook-focus"
+            hook_focus:  "wui-rangeslider-hook-focus",
+            
+            value_input: "wui-rangeslider-input"
         },
         
         _known_options = {
@@ -1619,7 +1621,26 @@ var WUI_RangeSlider = new (function() {
             
             on_change: null,
             
-            default_value: 0.5
+            default_value: 0.5,
+            
+            /*
+                can be an object with the following form (example) :
+                    {
+                        min: { min: 0, max: 0, val: 0 },
+                        max: { min: 0, max: 0, val: 0 },
+                        step: { min: 0, max: 0, val: 0 },
+                        scroll_step: { min: 0, max: 0, val: 0 }
+                    }
+                if one of these keys are undefined, the option will be not configurable
+            */
+            configurable: null
+        },
+        
+        _known_configurable_options = {
+            min: 0,
+            max: 0,
+            step: 0,
+            scroll_step: 0
         };
     
     /***********************************************************
@@ -1677,14 +1698,14 @@ var WUI_RangeSlider = new (function() {
     
     var _update = function (rs_element, rs, value) {
         var element = rs_element,
-            
-            value_input = element.childNodes[2],
 
             widget = _widget_list[element.id],
         
-            bar    = element.childNodes[1],
+            bar    = element.getElementsByClassName(_class_name.bar)[0],//element.childNodes[1],
             filler = bar.firstElementChild,
             hook   = filler.firstElementChild,
+            
+            value_input = bar.nextElementSibling,
             
             width = rs.opts.width,
             height = rs.opts.height,
@@ -1766,7 +1787,7 @@ var WUI_RangeSlider = new (function() {
             var filler = _grabbed_hook_element.parentElement,
                 bar = filler.parentElement,
                 
-                value_input = bar.parentElement.lastElementChild,
+                value_input = bar.nextElementSibling,//bar.parentElement.lastElementChild,
 
                 bar_offset = _getElementOffset(bar),
                 max_pos = bar.offsetWidth,
@@ -2007,6 +2028,173 @@ var WUI_RangeSlider = new (function() {
         _onChange(grabbed_widget.opts.on_change, ev.target.value);
     };
     
+    var _fnConfInputChange = function (ev, widget, conf_key) {
+        return function (ev) {
+            var target = ev.target,
+                opts = widget.opts;
+
+            if ((target.validity) && (!target.validity.valid)) {
+                return;   
+            }
+
+            if (conf_key === "min") {
+                opts.min = _truncateDecimals(target.value, 4);
+
+                widget.value_input.min = opts.min;
+                
+                //if (opts.min < 0) {
+                    opts.range = opts.max - opts.min;
+                //}
+            } else if (conf_key === "max") {
+                opts.max = _truncateDecimals(target.value, 4);
+
+                widget.value_input.max = opts.max;
+                
+                //opts.range = opts.max;
+                
+                //if (opts.min < 0) {
+                    opts.range = opts.max - opts.min;
+                //}
+            } else if (conf_key === "step") {
+                opts.step = _truncateDecimals(target.value, 4);
+
+                widget.value_input.step = opts.step;
+            } else if (conf_key === "scroll_step") {
+                opts.scroll_step = _truncateDecimals(target.value, 4);
+            }
+            
+            if (opts.configurable[conf_key] !== undefined) {
+                opts.configurable[conf_key].val = target.value;
+            }
+        };
+    };
+    
+    var _onConfigurableBtnClick = function (ev) {
+        ev.preventDefault();
+        ev.stopPropagation();
+        
+        var target = ev.target,
+            rs_element = target.parentElement,
+        
+            widget = _widget_list[rs_element.id],
+            
+            opts = widget.opts,
+            
+            owner_doc = target.ownerDocument,
+            
+            id = widget.element.id + _container_suffix_id,
+            
+            fn,
+            btn_offset,
+            key, key_value,
+            configure_container,
+            input_label, input_element,
+            close_btn,
+            i = 1;
+        
+        if (!document.getElementById(id)) {
+            widget.configure_panel_open = false;
+        }
+
+        if (widget.configure_panel_open === true) {
+            return;
+        }
+        
+        configure_container = owner_doc.createElement("div");
+        configure_container.className = "wui-rangeslider-configure-container";
+        
+        close_btn = owner_doc.createElement("div");
+        close_btn.className = "wui-rangeslider-configure-close";
+        
+        fn = function (ev) {
+                widget.configure_panel_open = false;
+            
+                var doc_cc = document.getElementById(id),
+                    own_cc = ev.target.ownerDocument.getElementById(id);
+                
+                if (doc_cc) {
+                    doc_cc.parentElement.removeChild(doc_cc);
+                }
+            
+                if (own_cc) {
+                    own_cc.parentElement.removeChild(own_cc);
+                }
+            };
+
+        close_btn.addEventListener("click", fn, false);
+        close_btn.addEventListener("touchstart", fn, false);
+        
+        configure_container.id = id;
+        
+        configure_container.appendChild(close_btn);
+        
+        for (key in opts.configurable) {
+            if (opts.configurable.hasOwnProperty(key)) {
+                if (_known_configurable_options[key] !== undefined) {
+                    key_value = opts.configurable[key];
+                    
+                    input_label = owner_doc.createElement("div");
+                    input_label.style.display = "inline-block";
+                    input_label.style.marginRight = "8px";
+                    input_label.style.width = "80px";
+                    input_label.style.textAlign = "right";
+                    input_label.innerHTML = key.replace("_", " ") + " : ";
+                    
+                    input_element = owner_doc.createElement("input");
+                    input_element.className = _class_name.value_input;
+
+                    //input_element.style.display = "inline-block";
+                    
+                    configure_container.appendChild(input_label);
+                    configure_container.appendChild(input_element);
+                    
+                    if (i%2 === 0) {
+                        configure_container.appendChild(owner_doc.createElement("div"));
+                    }
+                    
+                    input_element.setAttribute("type",  "number");
+                    
+                    if (key_value !== undefined) {
+                        if (key_value.min !== undefined) {
+                            input_element.setAttribute("min", key_value.min);
+                            input_element.title = input_element.title + " min: " + key_value.min;
+                        }
+                        if (key_value.max !== undefined) {
+                            input_element.setAttribute("max", key_value.max);
+                            input_element.title = input_element.title + " max: " + key_value.max;
+                        }
+                        if (key_value.val !== undefined) {
+                            input_element.setAttribute("value", key_value.val);
+                        } else {
+                            if (key === "min") {
+                                input_element.setAttribute("value", opts.min);
+                            } else if (key === "max") {
+                                input_element.setAttribute("value", opts.max);
+                            } else if (key === "step") {
+                                input_element.setAttribute("value", opts.step);
+                            } else if (key === "scroll_step") {
+                                input_element.setAttribute("value", opts.scroll_step);
+                            }
+                        }
+                    }
+                    
+                    input_element.addEventListener("input", _fnConfInputChange(ev, widget, key), false);
+                    
+                    i += 1;
+                }
+            }
+        }
+        
+        btn_offset = _getElementOffset(target);
+        
+        //configure_container.style.top = btn_offset.top + "px";
+        //configure_container.style.left = btn_offset.left + "px";
+        
+        /*owner_doc.body*/rs_element.insertBefore(configure_container, target);
+        
+        widget.configure_panel_open = true;
+    };
+    
     /***********************************************************
         Public section.
         
@@ -2113,7 +2301,7 @@ var WUI_RangeSlider = new (function() {
         value_input.setAttribute("max",   opts.max);
         value_input.setAttribute("step",  opts.step);
 
-        value_input.classList.add("wui-rangeslider-input");
+        value_input.classList.add(_class_name.value_input);
         
         value_div.classList.add("wui-rangeslider-value");
         title_div.classList.add("wui-rangeslider-title");
@@ -2140,6 +2328,45 @@ var WUI_RangeSlider = new (function() {
 
         range_slider.appendChild(value_input);
         
+        if (opts.configurable) {
+            var configurable_opts = 0;
+            for (key in opts.configurable) {
+                if (opts.configurable.hasOwnProperty(key)) {
+                    if (_known_configurable_options[key] !== undefined) {
+                        configurable_opts += 1;
+                    }
+                }
+            }
+            
+            // add configurable button
+            if (configurable_opts > 0) {
+                var configurable_btn_div = document.createElement("div");
+                
+                configurable_btn_div.classList.add("wui-rangeslider-configurable-btn");
+                
+                configurable_btn_div.addEventListener("click", _onConfigurableBtnClick, false);
+                configurable_btn_div.addEventListener("touchstart", _onConfigurableBtnClick, false);
+                
+                // accomodate the slider layour for the configurable button
+                if (opts.title_on_top && !opts.vertical) {
+                    configurable_btn_div.style.bottom = "0";
+                    title_div.style.marginBottom = "4px";
+                } else if (opts.title_on_top && opts.vertical) {
+                    title_div.style.marginLeft = "16px";
+                    title_div.style.marginRight = "16px";
+                    configurable_btn_div.style.top = "0";
+                } else {
+                    title_div.style.marginLeft = "16px";
+                    configurable_btn_div.style.top = "0";
+                }
+                
+                if (opts.vertical) {
+                    range_slider.appendChild(configurable_btn_div);
+                } else {
+                    range_slider.insertBefore(configurable_btn_div, title_div);
+                }
+            }
+        }
 
         bar.addEventListener("mousedown", _rsMouseDown, false);
         bar.addEventListener("touchstart", _rsMouseDown, false);
@@ -2161,7 +2388,11 @@ var WUI_RangeSlider = new (function() {
     this.destroy = function (id) {
         var widget = _widget_list[id],
 
-            element;
+            element,
+            
+            owner_doc,
+            
+            container_element;
 
         if (widget === undefined) {
             console.log("Element id '" + id + "' is not a WUI_RangeSlider, destroying aborted.");
@@ -2172,6 +2403,14 @@ var WUI_RangeSlider = new (function() {
         element = widget.element;
 
         element.parentElement.removeChild(element);
+        
+        owner_doc = element.ownerDocument;
+        
+        container_element = owner_doc.getElementById(id + _container_suffix_id);
+        
+        if (container_element) {
+            owner_doc.removeChild(container_element);
+        }
 
         delete _widget_list[id];
     };

@@ -447,7 +447,7 @@ WUI_ToolBar.toggle(my_toolbar, 0, true); // the last argument is optional and me
 <a name="rangeslider"></a>
 ### RangeSlider ###
 
-Range slider widget can be horizontal or vertical, have a negative/positive range, the value can be changed with the mouse wheel or by moving the hook point by dragging or by clicking on the slider bar, a double click on the slider will reset the value to its default value, the value also appear as an input which perform automatically all sanity check and will indicate if the value is correct or not (red)
+Range slider widget can be horizontal or vertical, can be user configurable (step, min, max etc options can be set by the user as he want it), have a negative/positive range, the value can be changed with the mouse wheel or by moving the hook point by dragging or by clicking on the slider bar, a double click on the slider will reset the value to its default value, the value also appear as an input which perform automatically all sanity check and will indicate if the value is correct or not (red)
 
 <br/>*Method*:
 
@@ -488,6 +488,19 @@ WUI_RangeSlider.create("my_range_slider", {
     // used to line up multiple sliders perfectly
     title_min_width: 150,
     value_min_width: 48,
+    
+    // allow the user to configure the parameters of the slider, a settings button will appear around the slider and when it is clicked, a box with input fields will allow the user to change range and step values
+    // this can be usefull if an "unlimited" slider is needed or simply to allow the step to be changed by the user
+    // Note: if you want a few parameters to be configurable, just remove those you don't want in that object
+    configurable: {
+    	// this allow the "min" parameter of the slider to be configurable
+    	// "min" and "max" is the allowed range of the created input field, it is used to set some boundaries to what range of values the user can set
+    	// it is also possible to leave the object empty (like "max" below) to allow unlimited sliders (any values for min/max will be then allowed, allowing the user to extend the range as he like)
+    	min: { min: -100, max: 100 },
+    	max: { },
+    	step: { min: 0.1, max: 2 },
+    	scroll_step: { max: 5 }
+    },
   
     // function to call when the slider value change with the value passed as argument
     on_change: slider_change
