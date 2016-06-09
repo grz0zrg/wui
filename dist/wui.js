@@ -2113,11 +2113,15 @@ var WUI_RangeSlider = new (function() {
                     own_cc = ev.target.ownerDocument.getElementById(id);
                 
                 if (doc_cc) {
-                    doc_cc.parentElement.removeChild(doc_cc);
+                    if (doc_cc.parentElement) {
+                        doc_cc.parentElement.removeChild(doc_cc);
+                    }
                 }
             
                 if (own_cc) {
-                    own_cc.parentElement.removeChild(own_cc);
+                    if (own_cc.parentElement) {
+                        own_cc.parentElement.removeChild(own_cc);
+                    }
                 }
             };
 
