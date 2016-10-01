@@ -4,6 +4,7 @@
   "main": "Gruntfile.js",
   "author": "Verneuil Julien",
   "license": "BSD-3-Clause",
+  "description": "Collection of easy to use and lightweight vanilla GUI widgets for the web.",
   "homepage": "https://github.com/grz0zrg/wui",
   "repository" : {
     "type" : "git",
