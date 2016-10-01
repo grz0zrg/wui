@@ -3,6 +3,12 @@
   "version": "0.5.0",
   "main": "Gruntfile.js",
   "author": "Verneuil Julien",
+  "license": "BSD-3-Clause",
+  "homepage": "https://github.com/grz0zrg/wui",
+  "repository" : {
+    "type" : "git",
+    "url" : "https://github.com/grz0zrg/wui.git"
+  },
   "devDependencies": {
     "grunt": "~0.4.0",
     "grunt-contrib-compress": "",

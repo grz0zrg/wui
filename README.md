@@ -50,7 +50,7 @@ grunt dist
 
 ###Introduction
 
-*   [WUI](#wui)
+*   [WUI](#wui_main)
 *   [WUI_Tabs](#tabs)
 *   [WUI_Dialog](#dialog)
 *   [WUI_DropDown](#dropdown)
@@ -70,7 +70,7 @@ A bit of style hacking may be necessary if you want widgets to suit your need or
 
 =====
 
-<a name="wui"></a>
+<a name="wui_main"></a>
 ### WUI ###
 
 Not really a widget but a collection of tools, can be helpful if you want to add draggable functionality to an element or apply fade in/out.
@@ -89,6 +89,7 @@ Fade in/Fade out method default to 500ms if no duration is provided
 ```javascript
 // make the element draggable
 // Note: If you want to remove the element while it is draggable, make it undraggable first by passing false as second argument of this function, this is because WUI keep a reference of the element and it may cause memory leaks, passing false will make the reference go away
+// a callback for the third argument can be specified to gather the new position, like: function (element, x, y) {  }
 WUI.draggable(my_element, true);
 
 // lock draggable element to a specific axis ('x' or 'y', to clear the lock, just call it without specifying axis or specify whatever)

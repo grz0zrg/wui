@@ -3832,7 +3832,9 @@ var WUI = new (function() {
         }
         
         if (draggable) {
-            draggable.cb(_dragged_element, new_x, new_y);
+            if (draggable.cb !== undefined) {
+                draggable.cb(_dragged_element, new_x, new_y);
+            }
         }
     };
 
