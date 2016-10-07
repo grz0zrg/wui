@@ -385,7 +385,7 @@ var my_toolbar = WUI_ToolBar.create("my_toolbar", {
         // toggle state of the button after creation, only if it is a toggle button
         toggle_state: true,
         
-        // function called when a button is clicked, if the item is of type "toggle", an object containing a field "type" and "state" will be passed as argument
+        // function called when a button is clicked, if the item is of type "toggle", an object containing a field "id" (id of the toolbar tool), "type" (will contain "toggle") and "state" (0 or 1) will be passed as argument
         on_click: toolbar_item_toggle,
         
         // tooltip
