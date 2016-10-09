@@ -937,12 +937,6 @@ var WUI_Dialog = new (function() {
             header_title.appendChild(header_title_wrapper);
             header.appendChild(header_title);
         //}
-        
-        if (opts.open) {
-            dialog.classList.add(_class_name.open);
-        } else {
-            dialog.classList.add(_class_name.closed);
-        }
 
         if (opts.draggable) {
             dialog.classList.toggle(_class_name.draggable);
@@ -1039,6 +1033,13 @@ var WUI_Dialog = new (function() {
         _computeThenSetPosition(dialog);
         
         _focus(dialog);
+
+
+        if (opts.open) {
+            this.open(id, false);
+        } else {
+            dialog.classList.add(_class_name.closed);
+        }
 
         return id;
     };
