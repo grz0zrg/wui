@@ -248,7 +248,7 @@ var my_dialog = WUI_Dialog.create("my_dialog", {
     min_height: 64,
     
     // option to keep the align when resized, example: if the dialog is centered in the window, the dialog will always be in center when it is resized
-    keep_align_when_resized: true;
+    keep_align_when_resized: true,
     
     // can be used to position the dialog, default to 0
     top: 0,
