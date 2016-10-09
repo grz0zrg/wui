@@ -189,7 +189,9 @@ All WUI widgets work very well with the detachable feature, what you change in t
   
 ```html
 <div id="my_dialog">
-the dialog content
+	<div>
+		the dialog content
+	</div>
 </div>
 ```
 
