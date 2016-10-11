@@ -153,7 +153,11 @@ var WUI_Dialog = new (function() {
                 _removeDetachedWindow(widget);
             }
         }
-        
+
+        if (widget.dialog.classList.contains(_class_name.closed)) {
+            return;
+        }
+
         if (remove_modal_element) {
             if (widget.modal_element) {
                 document.body.removeChild(widget.modal_element);
