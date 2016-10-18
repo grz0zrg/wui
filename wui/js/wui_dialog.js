@@ -848,6 +848,10 @@ var WUI_Dialog = new (function() {
             }
         }
     };
+    
+    var _createFailed = function () {
+        console.log("WUI_RangeSlider 'create' failed, first argument not an id nor a DOM element.");
+    };
 
     /***********************************************************
         Public section.
@@ -856,9 +860,41 @@ var WUI_Dialog = new (function() {
     ************************************************************/
 
     this.create = function (id, options) { 
-        var opts = {},
+        var dialog,
+            
+            header = document.createElement("div"),
+            
+            resize_handler = null,
+
+            header_detach_btn    = null,
+            header_close_btn     = null,
+            header_minimaxi_btn  = null,
+            header_title         = null,
+            header_title_wrapper = null,
+
+            status_bar = null,
+            
+            opts = {},
             
             key;
+        
+        if ((typeof id) === "string") {
+            dialog = document.getElementById(id);
+        } else if ((typeof id) === "object") {
+            if ((typeof id.innerHTML) !== "string") {
+                _createFailed();
+                
+                return;
+            }
+            
+            dialog = id;
+
+            id = dialog.id;
+        } else {
+            _createFailed();
+            
+            return;
+        }
         
         if (_widget_list[id] !== undefined) {
             console.log("WUI_Dialog id '" + id + "' already created, aborting.");
@@ -880,28 +916,6 @@ var WUI_Dialog = new (function() {
                     }
                 }
             }
-        }
-        
-        var dialog = document.getElementById(id),
-            
-            header = document.createElement("div"),
-            
-            resize_handler = null,
-
-            header_detach_btn    = null,
-            header_close_btn     = null,
-            header_minimaxi_btn  = null,
-            header_title         = null,
-            header_title_wrapper = null,
-
-            status_bar = null;
-            
-        if (dialog === null) {
-            if (typeof console !== "undefined") {
-                console.log("WUI dialog create, unknow element with id \"" + id + "\".");
-            }
-        
-            return;
         }
         
         var content = dialog.firstElementChild;
@@ -1016,7 +1030,7 @@ var WUI_Dialog = new (function() {
 
             dialog.appendChild(resize_handler);
         }
-
+        
         _widget_list[id] =  {
                                 dialog: dialog,
                                 minimized_id: -1,
@@ -1037,8 +1051,7 @@ var WUI_Dialog = new (function() {
         _computeThenSetPosition(dialog);
         
         _focus(dialog);
-
-
+        
         if (opts.open) {
             this.open(id, false);
         } else {

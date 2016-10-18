@@ -1,7 +1,7 @@
 WUI
 =====
 
-Collection of **easy to use** and **lightweight** (*~5.2kb css*, *~11.7kb js* gzipped) vanilla GUI widgets for the web.
+Collection of **easy to use** and **lightweight** (*~5.2kb css*, *~11.9kb js* gzipped) vanilla GUI widgets for the web.
 
 **Require no dependencies, all widgets can be used on their own.**
 
@@ -58,7 +58,7 @@ grunt dist
 *   [WUI_RangeSlider](#rangeslider)
 *   [WUI_CircularMenu](#circularmenu)
 
-The WUI API is simple, all widgets have a method **_"create"_** which take a DOM element identifier as first argument (which is used as a bind target) and an option object as second argument to customize it, WUI_ToolBar has a third argument which is used to specify the content of the toolbar.
+The WUI API is simple, all widgets have a method **_"create"_** which take a DOM element (which should contain an identifier) or a DOM element identifier as first argument which is used as a bind target and an option object as a second argument to customize it, WUI_ToolBar has a third argument which is used to specify the content of the toolbar.
 
 All **_"create"_** methods return a reference of the widget which can be used later to do stuff with the widget like destroying them, the reference is a string (it is the dialog element id).
 

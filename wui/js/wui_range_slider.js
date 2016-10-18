@@ -50,7 +50,7 @@ var WUI_RangeSlider = new (function() {
             vertical: false,
             
             title_on_top: false,
-            
+
             on_change: null,
             
             default_value: 0.5,
@@ -631,6 +631,10 @@ var WUI_RangeSlider = new (function() {
         widget.configure_panel_open = true;
     };
     
+    var _createFailed = function () {
+        console.log("WUI_RangeSlider 'create' failed, first argument not an id nor a DOM element.");
+    };
+    
     /***********************************************************
         Public section.
         
@@ -638,11 +642,29 @@ var WUI_RangeSlider = new (function() {
     ************************************************************/
 
     this.create = function (id, options) {
-        var range_slider = document.getElementById(id),
+        var range_slider,
             
             opts = {},
             
             key;
+
+        if ((typeof id) === "string") {
+            range_slider = document.getElementById(id);
+        } else if ((typeof id) === "object") {
+            if ((typeof id.innerHTML) !== "string") {
+                _createFailed();
+                
+                return;
+            }
+            
+            range_slider = id;
+
+            id = range_slider.id;
+        } else {
+            _createFailed();
+            
+            return;
+        }
         
         if (_widget_list[id] !== undefined) {
             console.log("WUI_RangeSlider id '" + id + "' already created, aborting.");

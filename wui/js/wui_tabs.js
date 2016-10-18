@@ -92,6 +92,10 @@ var WUI_Tabs = new (function() {
         }
     };
     
+    var _createFailed = function () {
+        console.log("WUI_RangeSlider 'create' failed, first argument not an id nor a DOM element.");
+    };
+    
     /***********************************************************
         Public section.
         
@@ -104,19 +108,42 @@ var WUI_Tabs = new (function() {
      * @param {Function} tab_click_callback Called when a tab is clicked
      */
     this.create = function (id, options) {
-        var element = document.getElementById(id),
+        var element,
             
-            tabs      = element.firstElementChild,
+            tabs,
             underline = document.createElement("div"),
-            content   = tabs.nextElementSibling,
+            content,
             
-            first_tab = tabs.children[0],
+            first_tab,
             
             opts = {},
             
             key,
 
             i = 0;
+        
+        if ((typeof id) === "string") {
+            element = document.getElementById(id);
+        } else if ((typeof id) === "object") {
+            if ((typeof id.innerHTML) !== "string") {
+                _createFailed();
+                
+                return;
+            }
+            
+            element = id;
+
+            id = element.id;
+        } else {
+            _createFailed();
+            
+            return;
+        }
+        
+        tabs = element.firstElementChild;
+        content = tabs.nextElementSibling;
+            
+        first_tab = tabs.children[0];
         
         if (_widget_list[id] !== undefined) {
             console.log("WUI_Tabs id '" + id + "' already created, aborting.");

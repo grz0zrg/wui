@@ -452,6 +452,10 @@ var WUI_ToolBar = new (function() {
         }
     };
     
+    var _createFailed = function () {
+        console.log("WUI_RangeSlider 'create' failed, first argument not an id nor a DOM element.");
+    };
+    
     /***********************************************************
         Public section.
         
@@ -467,7 +471,7 @@ var WUI_ToolBar = new (function() {
      * @returns {String} Created widget reference, internally used to recognize the widget
      */
     this.create = function (id, options, tools) {
-        var toolbar = document.getElementById(id),
+        var toolbar,
             
             group = null,
             elem = null,
@@ -479,6 +483,24 @@ var WUI_ToolBar = new (function() {
             opts = {},
             
             key;
+        
+        if ((typeof id) === "string") {
+            toolbar = document.getElementById(id);
+        } else if ((typeof id) === "object") {
+            if ((typeof id.innerHTML) !== "string") {
+                _createFailed();
+                
+                return;
+            }
+            
+            toolbar = id;
+
+            id = toolbar.id;
+        } else {
+            _createFailed();
+            
+            return;
+        }
         
         if (_widget_list[id] !== undefined) {
             console.log("WUI_Toolbar id '" + id + "' already created, aborting.");

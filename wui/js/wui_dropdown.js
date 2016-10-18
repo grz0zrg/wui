@@ -262,6 +262,10 @@ var WUI_DropDown = new (function() {
         current_element.removeEventListener("mouseleave", _mouseLeave, false);
     };
 
+    var _createFailed = function () {
+        console.log("WUI_RangeSlider 'create' failed, first argument not an id nor a DOM element.");
+    };
+    
     /***********************************************************
         Public section.
         
@@ -269,11 +273,29 @@ var WUI_DropDown = new (function() {
     ************************************************************/
 
     this.create = function (id, options, content_array) {
-        var dropdown = document.getElementById(id),
+        var dropdown,
 
             opts = {},
         
             key;
+        
+        if ((typeof id) === "string") {
+            dropdown = document.getElementById(id);
+        } else if ((typeof id) === "object") {
+            if ((typeof id.innerHTML) !== "string") {
+                _createFailed();
+                
+                return;
+            }
+            
+            dropdown = id;
+
+            id = dropdown.id;
+        } else {
+            _createFailed();
+            
+            return;
+        }
         
         if (_widget_list[id] !== undefined) {
             console.log("WUI_DropDown id '" + id + "' already created, aborting.");

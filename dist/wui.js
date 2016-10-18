@@ -848,6 +848,10 @@ var WUI_Dialog = new (function() {
             }
         }
     };
+    
+    var _createFailed = function () {
+        console.log("WUI_RangeSlider 'create' failed, first argument not an id nor a DOM element.");
+    };
 
     /***********************************************************
         Public section.
@@ -856,9 +860,41 @@ var WUI_Dialog = new (function() {
     ************************************************************/
 
     this.create = function (id, options) { 
-        var opts = {},
+        var dialog,
+            
+            header = document.createElement("div"),
+            
+            resize_handler = null,
+
+            header_detach_btn    = null,
+            header_close_btn     = null,
+            header_minimaxi_btn  = null,
+            header_title         = null,
+            header_title_wrapper = null,
+
+            status_bar = null,
+            
+            opts = {},
             
             key;
+        
+        if ((typeof id) === "string") {
+            dialog = document.getElementById(id);
+        } else if ((typeof id) === "object") {
+            if ((typeof id.innerHTML) !== "string") {
+                _createFailed();
+                
+                return;
+            }
+            
+            dialog = id;
+
+            id = dialog.id;
+        } else {
+            _createFailed();
+            
+            return;
+        }
         
         if (_widget_list[id] !== undefined) {
             console.log("WUI_Dialog id '" + id + "' already created, aborting.");
@@ -880,28 +916,6 @@ var WUI_Dialog = new (function() {
                     }
                 }
             }
-        }
-        
-        var dialog = document.getElementById(id),
-            
-            header = document.createElement("div"),
-            
-            resize_handler = null,
-
-            header_detach_btn    = null,
-            header_close_btn     = null,
-            header_minimaxi_btn  = null,
-            header_title         = null,
-            header_title_wrapper = null,
-
-            status_bar = null;
-            
-        if (dialog === null) {
-            if (typeof console !== "undefined") {
-                console.log("WUI dialog create, unknow element with id \"" + id + "\".");
-            }
-        
-            return;
         }
         
         var content = dialog.firstElementChild;
@@ -1016,7 +1030,7 @@ var WUI_Dialog = new (function() {
 
             dialog.appendChild(resize_handler);
         }
-
+        
         _widget_list[id] =  {
                                 dialog: dialog,
                                 minimized_id: -1,
@@ -1037,8 +1051,7 @@ var WUI_Dialog = new (function() {
         _computeThenSetPosition(dialog);
         
         _focus(dialog);
-
-
+        
         if (opts.open) {
             this.open(id, false);
         } else {
@@ -1467,6 +1480,10 @@ var WUI_DropDown = new (function() {
         current_element.removeEventListener("mouseleave", _mouseLeave, false);
     };
 
+    var _createFailed = function () {
+        console.log("WUI_RangeSlider 'create' failed, first argument not an id nor a DOM element.");
+    };
+    
     /***********************************************************
         Public section.
         
@@ -1474,11 +1491,29 @@ var WUI_DropDown = new (function() {
     ************************************************************/
 
     this.create = function (id, options, content_array) {
-        var dropdown = document.getElementById(id),
+        var dropdown,
 
             opts = {},
         
             key;
+        
+        if ((typeof id) === "string") {
+            dropdown = document.getElementById(id);
+        } else if ((typeof id) === "object") {
+            if ((typeof id.innerHTML) !== "string") {
+                _createFailed();
+                
+                return;
+            }
+            
+            dropdown = id;
+
+            id = dropdown.id;
+        } else {
+            _createFailed();
+            
+            return;
+        }
         
         if (_widget_list[id] !== undefined) {
             console.log("WUI_DropDown id '" + id + "' already created, aborting.");
@@ -1623,7 +1658,7 @@ var WUI_RangeSlider = new (function() {
             vertical: false,
             
             title_on_top: false,
-            
+
             on_change: null,
             
             default_value: 0.5,
@@ -2204,6 +2239,10 @@ var WUI_RangeSlider = new (function() {
         widget.configure_panel_open = true;
     };
     
+    var _createFailed = function () {
+        console.log("WUI_RangeSlider 'create' failed, first argument not an id nor a DOM element.");
+    };
+    
     /***********************************************************
         Public section.
         
@@ -2211,11 +2250,29 @@ var WUI_RangeSlider = new (function() {
     ************************************************************/
 
     this.create = function (id, options) {
-        var range_slider = document.getElementById(id),
+        var range_slider,
             
             opts = {},
             
             key;
+
+        if ((typeof id) === "string") {
+            range_slider = document.getElementById(id);
+        } else if ((typeof id) === "object") {
+            if ((typeof id.innerHTML) !== "string") {
+                _createFailed();
+                
+                return;
+            }
+            
+            range_slider = id;
+
+            id = range_slider.id;
+        } else {
+            _createFailed();
+            
+            return;
+        }
         
         if (_widget_list[id] !== undefined) {
             console.log("WUI_RangeSlider id '" + id + "' already created, aborting.");
@@ -2519,6 +2576,10 @@ var WUI_Tabs = new (function() {
         }
     };
     
+    var _createFailed = function () {
+        console.log("WUI_RangeSlider 'create' failed, first argument not an id nor a DOM element.");
+    };
+    
     /***********************************************************
         Public section.
         
@@ -2531,19 +2592,42 @@ var WUI_Tabs = new (function() {
      * @param {Function} tab_click_callback Called when a tab is clicked
      */
     this.create = function (id, options) {
-        var element = document.getElementById(id),
+        var element,
             
-            tabs      = element.firstElementChild,
+            tabs,
             underline = document.createElement("div"),
-            content   = tabs.nextElementSibling,
+            content,
             
-            first_tab = tabs.children[0],
+            first_tab,
             
             opts = {},
             
             key,
 
             i = 0;
+        
+        if ((typeof id) === "string") {
+            element = document.getElementById(id);
+        } else if ((typeof id) === "object") {
+            if ((typeof id.innerHTML) !== "string") {
+                _createFailed();
+                
+                return;
+            }
+            
+            element = id;
+
+            id = element.id;
+        } else {
+            _createFailed();
+            
+            return;
+        }
+        
+        tabs = element.firstElementChild;
+        content = tabs.nextElementSibling;
+            
+        first_tab = tabs.children[0];
         
         if (_widget_list[id] !== undefined) {
             console.log("WUI_Tabs id '" + id + "' already created, aborting.");
@@ -3137,6 +3221,10 @@ var WUI_ToolBar = new (function() {
         }
     };
     
+    var _createFailed = function () {
+        console.log("WUI_RangeSlider 'create' failed, first argument not an id nor a DOM element.");
+    };
+    
     /***********************************************************
         Public section.
         
@@ -3152,7 +3240,7 @@ var WUI_ToolBar = new (function() {
      * @returns {String} Created widget reference, internally used to recognize the widget
      */
     this.create = function (id, options, tools) {
-        var toolbar = document.getElementById(id),
+        var toolbar,
             
             group = null,
             elem = null,
@@ -3164,6 +3252,24 @@ var WUI_ToolBar = new (function() {
             opts = {},
             
             key;
+        
+        if ((typeof id) === "string") {
+            toolbar = document.getElementById(id);
+        } else if ((typeof id) === "object") {
+            if ((typeof id.innerHTML) !== "string") {
+                _createFailed();
+                
+                return;
+            }
+            
+            toolbar = id;
+
+            id = toolbar.id;
+        } else {
+            _createFailed();
+            
+            return;
+        }
         
         if (_widget_list[id] !== undefined) {
             console.log("WUI_Toolbar id '" + id + "' already created, aborting.");

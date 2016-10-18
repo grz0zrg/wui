@@ -1,6 +1,6 @@
 .wui-dialog {
     visibility: hidden;
-
+    
     opacity: 0;
 
     position: fixed;
@@ -56,6 +56,10 @@
     transition-delay: 0s;
 
     pointer-events: all !important;
+}
+
+.wui-dialog-closed {
+    display = "none";
 }
 
 .wui-dialog-header {
