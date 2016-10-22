@@ -2634,6 +2634,7 @@ var WUI_RangeSlider = new (function() {
             
             widget.midi.learn = false;
             widget.midi.learn_elem.style = _midi_learn_disabled_color;
+            widget.midi.learn_elem.title = kdevice + " " + kcontroller;
             _midi_learn_current = null;
             
             return;

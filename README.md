@@ -545,16 +545,18 @@ MIDI usage example :
 
 ```javascript
 // setup Web MIDI so we can control the MIDI enabled sliders with any connected MIDI controllers
-navigator.requestMIDIAccess().then(
-        function (m) {
-            m.inputs.forEach(
-                function (midi_input) {
-                    midi_input.onmidimessage = function (midi_message) {
-                        WUI_RangeSlider.submitMIDIMessage(midi_message);
-                    };
-                }
-            );
-    });
+if (navigator.requestMIDIAccess) {
+    navigator.requestMIDIAccess().then(
+            function (m) {
+                m.inputs.forEach(
+                    function (midi_input) {
+                        midi_input.onmidimessage = function (midi_message) {
+                            WUI_RangeSlider.submitMIDIMessage(midi_message);
+                        };
+                    }
+                );
+        });
+}
 ```
 <br/>
 
