@@ -1,13 +1,23 @@
 WUI
 =====
 
-Collection of **easy to use** and **lightweight** (*~5.2kb css*, *~11.9kb js* gzipped) vanilla GUI widgets for the web.
+Collection of **easy to use** and **lightweight** (*~5.3kb css*, *~12.5kb js* gzipped) vanilla GUI widgets for the web.
 
 **Require no dependencies, all widgets can be used on their own.**
 
 There is a dark and a bright theme, the dark theme is the default theme and is more polished than the bright one.
 
-Good for single page apps, experiments and the like.
+The main advantages compared to other libraries are:
+
+* Widgets can be used on their own (no dependencies)
+* Input and Slider widgets can be MIDI controlled with two mode (absolute, relative) and configurable
+* Dialogs can be detached (and everything related to WUI will still work)
+* Circular menu :)
+* Easily customizable
+* Lightweight
+* ...
+
+Good for single page apps, audio apps, experiments and the like.
 
 <br/>
 
@@ -55,6 +65,7 @@ grunt dist
 *   [WUI_Dialog](#dialog)
 *   [WUI_DropDown](#dropdown)
 *   [WUI_ToolBar](#toolbar)
+*   [WUI_Input](#input)
 *   [WUI_RangeSlider](#rangeslider)
 *   [WUI_CircularMenu](#circularmenu)
 
@@ -445,15 +456,32 @@ WUI_ToolBar.toggle(my_toolbar, 0, true); // the last argument is optional and me
 
 ======
 
+<a name="input"></a>
+### Input ###
+
+WUI does not support an input widget out of the box but there is a shortcut "WUI_Input" which is just a RangeSlider in disguise, you must set the "bar" option to false and you get an input and it share the same properties like MIDI support and so on, see RangeSlider widget for options and methods.
+
+======
+
 <a name="rangeslider"></a>
 ### RangeSlider ###
 
-Range slider widget can be horizontal or vertical, can be user configurable (step, min, max etc options can be set by the user as he want it), have a negative/positive range, the value can be changed with the mouse wheel or by moving the hook point by dragging or by clicking on the slider bar, a double click on the slider will reset the value to its default value, the value also appear as an input which perform automatically all sanity check and will indicate if the value is correct or not (red)
+Range slider widget can be horizontal or vertical, can be user configurable (step, min, max etc options can be set by the user as he want it), have a negative/positive range, the value can be changed with the mouse wheel, by moving the hook point by dragging, by a MIDI controller or by clicking on the slider bar, a double click on the slider will reset the value to its default value, the value also appear as an input which perform automatically all sanity check and will indicate if the value is correct or not (red)
+
+One of the coolest (and maybe 'unique') feature of the WUI slider widget is the ability to be controlled entirely from MIDI controllers with absolute and relative mode, it is as easy as calling a function when a MIDIMessage is received and all MIDI enabled sliders will be usable with any MIDI interfaces.
+
+To assign a MIDI controller, the widget implement a sort of MIDI learn function, you click on a square on MIDI enabled sliders and, when a MIDI data is received, the controller is automatically assigned to that widget and you can start to control it from your MIDI interface...
+
+The "rel" MIDI mode allow infinite values, it work well with "endless" rotary controls (also called encoders).
+The "abs" MIDI mode is based on the "min" and "max" property, it act as a percentage of the range, if you want to match MIDI spec, just assign "0" and "127" for "min" and "max" option.
+
+Only MIDI input is supported at the moment but it should not be hard to add MIDI output later on.
 
 <br/>*Method*:
 
 >*   create(id, options)
 *   destroy(wui_rangeslider)
+*   submitMIDIMessage(midi_event)
   
 <br/>*Example*:
 
@@ -485,6 +513,10 @@ WUI_RangeSlider.create("my_range_slider", {
     title_on_top: true,
   
     title: "my range slider",
+    
+    // enable the slider to be controllable by MIDI
+    // can be a boolean (or anything) if you do not need to configure it, otherwise an object with a fiel "type" with value "rel" or "abs", by default the control type is set to "abs"
+    midi: false,
   
     // used to line up multiple sliders perfectly
     title_min_width: 150,
@@ -506,6 +538,23 @@ WUI_RangeSlider.create("my_range_slider", {
     // function to call when the slider value change with the value passed as argument
     on_change: slider_change
   });
+```
+<br/>
+
+MIDI usage example :
+
+```javascript
+// setup Web MIDI so we can control the MIDI enabled sliders with any connected MIDI controllers
+navigator.requestMIDIAccess().then(
+        function (m) {
+            m.inputs.forEach(
+                function (midi_input) {
+                    midi_input.onmidimessage = function (midi_message) {
+                        WUI_RangeSlider.submitMIDIMessage(midi_message);
+                    };
+                }
+            );
+    });
 ```
 <br/>
 
@@ -567,6 +616,8 @@ It was not built to target mobile devices, but it still support touch events and
 Tested and work ok with IE 11, Opera 12, Chrome (30, 35, 40), Firefox (31, 37) and Safari (6, 7, 8).
 
 Mostly work (problems with the ToolBar and Dialog) under IE 10 but i do not support it.
+
+The Web MIDI API should be supported by the browser if you want to use the MIDI features.
 
 =====
 

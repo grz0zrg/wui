@@ -22,6 +22,13 @@ var WUI_RangeSlider = new (function() {
         
         _container_suffix_id = "_wui_container",
         
+        _midi_learn_disabled_color = "background-color: #ff0000",
+        _midi_learn_enabled_color = "background-color: #00ff00",
+        _midi_learn_current = null,
+        _midi_controls =  {
+            
+        },
+        
         _class_name = {
             hook:        "wui-rangeslider-hook",
             bar:         "wui-rangeslider-bar",
@@ -54,6 +61,10 @@ var WUI_RangeSlider = new (function() {
             on_change: null,
             
             default_value: 0.5,
+            
+            bar: true,
+            
+            midi: null,
             
             /*
                 can be an object with the following form (example) :
@@ -133,17 +144,23 @@ var WUI_RangeSlider = new (function() {
 
             widget = _widget_list[element.id],
         
-            bar    = element.getElementsByClassName(_class_name.bar)[0],//element.childNodes[1],
-            filler = bar.firstElementChild,
-            hook   = filler.firstElementChild,
+            bar,
+            filler,
+            hook,
             
-            value_input = bar.nextElementSibling,
+            value_input,
             
             width = rs.opts.width,
             height = rs.opts.height,
         
             pos = Math.abs((value - rs.opts.min) / rs.opts.range);
         
+        bar = element.getElementsByClassName(_class_name.bar)[0];
+        filler = bar.firstElementChild;
+        hook = filler.firstElementChild;
+
+        value_input = bar.nextElementSibling;
+                
         value = _truncateDecimals(value, 4);
 
         if (rs.opts.vertical) {
@@ -501,6 +518,54 @@ var WUI_RangeSlider = new (function() {
         };
     };
     
+    var _onMIDILearnBtnClick = function (ev) {
+        ev.preventDefault();
+        ev.stopPropagation();
+        
+        var target = ev.target,
+            rs_element = target.parentElement,
+        
+            widget = _widget_list[rs_element.id],
+            
+            opts = widget.opts,
+            
+            owner_doc = target.ownerDocument,
+            
+            key,
+            value_obj,
+            
+            input;
+        
+        if (widget.midi.learn) {
+            
+            widget.midi.learn = false;
+            
+            target.style = "";
+            
+            _midi_learn_current = null;
+            
+            return;
+        }
+        
+        for(key in _widget_list) { 
+            if (_widget_list.hasOwnProperty(key)) {
+                value_obj = _widget_list[key];
+               
+                value_obj.midi.learn = false;
+               
+                if (value_obj.midi.learn_elem) {
+                    value_obj.midi.learn_elem.style = "";
+                }
+            }
+        }
+        
+        widget.midi.learn = true;
+        
+        target.style = _midi_learn_enabled_color;
+        
+        _midi_learn_current = rs_element.id;
+    };
+    
     var _onConfigurableBtnClick = function (ev) {
         ev.preventDefault();
         ev.stopPropagation();
@@ -742,9 +807,19 @@ var WUI_RangeSlider = new (function() {
                 
                     opts: opts,
 
-                    bar: bar,
-                    filler: filler,
-                    hook: hook,
+                    bar: null,
+                    filler: null,
+                    hook: null,
+                
+                    midi: {
+                        device: null,
+                        controller: null,
+                        
+                        ctrl_type: "abs",
+                        
+                        learn: false,
+                        learn_elem: null
+                    },
 
                     value_input: value_input,
                   
@@ -755,8 +830,6 @@ var WUI_RangeSlider = new (function() {
         
         value_input.setAttribute("value", opts.default_value);
         value_input.setAttribute("type",  "number");
-        value_input.setAttribute("min",   opts.min);
-        value_input.setAttribute("max",   opts.max);
         value_input.setAttribute("step",  opts.step);
 
         value_input.classList.add(_class_name.value_input);
@@ -778,11 +851,32 @@ var WUI_RangeSlider = new (function() {
         bar.style.width  = opts.width + "px";
         bar.style.height = opts.height + "px";
         
+        range_slider.appendChild(title_div);
+        
+        if (!opts.bar) {
+            bar.style.display = "none";
+            
+            value_input.style.marginTop = "6px";
+            
+            if (options["max"]) {
+                value_input.setAttribute("min",   opts.min);
+            }
+            
+            if (options["min"]) {
+                value_input.setAttribute("max",   opts.max);
+            }
+        } else {
+            value_input.setAttribute("min",   opts.min);
+            value_input.setAttribute("max",   opts.max);
+        }
+        
         bar.appendChild(filler);
         filler.appendChild(hook);
-        
-        range_slider.appendChild(title_div);
         range_slider.appendChild(bar);
+
+        rs.bar = bar;
+        rs.filler = filler;
+        rs.hook = hook;
 
         range_slider.appendChild(value_input);
         
@@ -805,7 +899,7 @@ var WUI_RangeSlider = new (function() {
                 configurable_btn_div.addEventListener("click", _onConfigurableBtnClick, false);
                 configurable_btn_div.addEventListener("touchstart", _onConfigurableBtnClick, false);
                 
-                // accomodate the slider layour for the configurable button
+                // accomodate the slider layout for the configurable button
                 if (opts.title_on_top && !opts.vertical) {
                     configurable_btn_div.style.bottom = "0";
                     title_div.style.marginBottom = "4px";
@@ -825,16 +919,38 @@ var WUI_RangeSlider = new (function() {
                 }
             }
         }
+        
+        if (opts.midi) {
+            if (navigator.requestMIDIAccess) {
+                var midi_learn_elem = document.createElement("div");
+                midi_learn_elem.classList.add("wui-rangeslider-midi-learn-btn");
+                
+                midi_learn_elem.addEventListener("click", _onMIDILearnBtnClick, false);
+                midi_learn_elem.addEventListener("touchstart", _onMIDILearnBtnClick, false);
+                
+                rs.midi.learn_elem = midi_learn_elem;
+                
+                if (opts.midi["type"]) {
+                    rs.midi.ctrl_type = opts.midi.type;
+                }
+                
+                range_slider.appendChild(midi_learn_elem);
+            } else {
+                console.log("WUI_RangeSlider id '" + id + "' : Web MIDI API is disabled. (not supported by your browser?)");
+            }
+        }
 
-        bar.addEventListener("mousedown", _rsMouseDown, false);
-        bar.addEventListener("touchstart", _rsMouseDown, false);
-            
-        hook.addEventListener("dblclick", _rsDblClick, false);
-            
+        if (opts.bar) {
+            bar.addEventListener("mousedown", _rsMouseDown, false);
+            bar.addEventListener("touchstart", _rsMouseDown, false);
+
+            hook.addEventListener("dblclick", _rsDblClick, false);
+
+            bar.addEventListener("mousewheel", _rsMouseWheel, false);
+            bar.addEventListener("DOMMouseScroll", _rsMouseWheel, false);
+        }
+        
         value_input.addEventListener("input", _inputChange, false);
-            
-        bar.addEventListener("mousewheel", _rsMouseWheel, false);
-        bar.addEventListener("DOMMouseScroll", _rsMouseWheel, false);
         
         _widget_list[id] = rs;
 
@@ -872,4 +988,105 @@ var WUI_RangeSlider = new (function() {
 
         delete _widget_list[id];
     };
+    
+    this.submitMIDIMessage = function (midi_event) {
+        var id,
+            
+            widget,
+            
+            device = midi_event.data[0],
+            controller = midi_event.data[1],
+            value = parseInt(midi_event.data[2], 10),
+            
+            kdevice = "d" + device,
+            kcontroller = "c" + controller,
+            
+            ctrl_obj,
+            
+            new_value,
+            
+            i = 0;
+        
+        if (_midi_learn_current) {
+            widget = _widget_list[_midi_learn_current];
+            
+            if (!_midi_controls[kdevice]) {
+                _midi_controls[kdevice] = {};
+            }
+            
+            if (!_midi_controls[kdevice][kcontroller]) {
+                _midi_controls[kdevice][kcontroller] = { 
+                        prev_value: value,
+                        widgets: [],
+                        increments: 1
+                    };
+            }
+            
+            _midi_controls[kdevice][kcontroller].widgets.push(_midi_learn_current);
+            
+            widget.midi.learn = false;
+            widget.midi.learn_elem.style = _midi_learn_disabled_color;
+            _midi_learn_current = null;
+            
+            return;
+        }
+        
+        if (_midi_controls[kdevice]) {
+            if (_midi_controls[kdevice][kcontroller]) {
+                ctrl_obj = _midi_controls[kdevice][kcontroller];
+                
+                for (i = 0; i < ctrl_obj.widgets.length; i += 1) {
+                    widget = _widget_list[ctrl_obj.widgets[i]];
+                    
+                    if (widget.midi.ctrl_type === "abs") {
+                        new_value = widget.opts.min + widget.opts.range * (value / 127.0);
+                        
+                        _update(widget.element, widget, new_value);
+        
+                        _onChange(widget.opts.on_change, new_value);
+                    } else if (widget.midi.ctrl_type === "rel") {
+                        if (ctrl_obj.prev_value > value) {
+                            ctrl_obj.increments = -widget.opts.step;
+                            
+                            new_value = widget.value - widget.opts.step;
+                            
+                            if (new_value < widget.opts.min) {
+                                continue;
+                            }
+                            
+                            ctrl_obj.prev_value = value;
+                        } else if (ctrl_obj.prev_value < value) {
+                            ctrl_obj.increments = widget.opts.step;
+                            
+                            new_value = widget.value + widget.opts.step;
+
+                            if (new_value > widget.opts.max) {
+                                continue;
+                            }
+                            
+                            ctrl_obj.prev_value = value;
+                        } else {
+                            new_value = widget.value + ctrl_obj.increments;
+                            
+                            if (new_value > widget.opts.max) {
+                                ctrl_obj.increments = 0;
+                                
+                                continue;
+                            } else if (new_value < widget.opts.min) {
+                                ctrl_obj.increments = 0;
+                                
+                                continue;
+                            }
+                        }
+                        
+                        _update(widget.element, widget, new_value);
+        
+                        _onChange(widget.opts.on_change, new_value);
+                    }
+                }
+            }
+        }
+    };
 })();
+
+var WUI_Input = WUI_RangeSlider;

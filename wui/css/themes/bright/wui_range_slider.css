@@ -48,6 +48,19 @@
     position: relative;
 }
 
+.wui-rangeslider-midi-learn-btn {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    background-color: #ff0000;
+    right: 0;
+    top: 0;
+}
+
+.wui-rangeslider-midi-learn-btn:hover {
+    cursor: pointer;   
+}
+
 .wui-rangeslider-title-ontop .wui-rangeslider-title {
     margin-bottom: 1px;
     margin-top: 8px;
@@ -164,7 +177,7 @@
     font-size: 9pt;
     
     margin-bottom: 4px;
-    margin-top: 6px;
+    margin-top: 14px;
     
     border-radius: 4px;
     
