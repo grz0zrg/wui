@@ -811,6 +811,8 @@ var WUI_RangeSlider = new (function() {
                     filler: null,
                     hook: null,
                 
+                    endless: false,
+                
                     midi: {
                         device: null,
                         controller: null,
@@ -879,6 +881,10 @@ var WUI_RangeSlider = new (function() {
         rs.hook = hook;
 
         range_slider.appendChild(value_input);
+        
+        if (!options.max && !options.min) {
+            rs.endless = true;
+        }
         
         if (opts.configurable) {
             var configurable_opts = 0;
@@ -1051,7 +1057,7 @@ var WUI_RangeSlider = new (function() {
                             
                             new_value = widget.value - widget.opts.step;
                             
-                            if (new_value < widget.opts.min) {
+                            if (new_value < widget.opts.min && !widget.endless) {
                                 continue;
                             }
                             
@@ -1061,7 +1067,7 @@ var WUI_RangeSlider = new (function() {
                             
                             new_value = widget.value + widget.opts.step;
 
-                            if (new_value > widget.opts.max) {
+                            if (new_value > widget.opts.max && !widget.endless) {
                                 continue;
                             }
                             
@@ -1069,14 +1075,12 @@ var WUI_RangeSlider = new (function() {
                         } else {
                             new_value = widget.value + ctrl_obj.increments;
                             
-                            if (new_value > widget.opts.max) {
-                                ctrl_obj.increments = 0;
-                                
-                                continue;
-                            } else if (new_value < widget.opts.min) {
-                                ctrl_obj.increments = 0;
-                                
-                                continue;
+                            if (!widget.endless) {
+                                if (new_value > widget.opts.max) {
+                                    continue;
+                                } else if (new_value < widget.opts.min) {
+                                    continue;
+                                }
                             }
                         }
                         
