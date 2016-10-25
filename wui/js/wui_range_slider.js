@@ -553,6 +553,35 @@ var WUI_RangeSlider = new (function() {
         };
     };
     
+    var _remove_midi_controls = function (id) {
+        var device,
+            control,
+            
+            ctrl_obj,
+            
+            widget_id,
+            
+            i;
+        
+        if (id) {
+            for(device in _midi_controls) {
+                for(control in _midi_controls[device]) {
+                    ctrl_obj = _midi_controls[device][control];
+
+                    for (i = 0; i < ctrl_obj.widgets.length; i += 1) {
+                        widget_id = ctrl_obj.widgets[i];
+
+                        if (widget_id === id) {
+                            ctrl_obj.widgets.splice(i, 1);
+
+                            return;
+                        }
+                    }
+                }
+            }
+        }
+    };
+    
     var _onMIDILearnBtnClick = function (ev) {
         ev.preventDefault();
         ev.stopPropagation();
@@ -580,8 +609,13 @@ var WUI_RangeSlider = new (function() {
             widget.midi.learn = false;
             
             target.style = "";
+            target.title = _title.midi_learn_btn;
+            
+            widget.midi.learn_elem.title = _title.midi_learn_btn;
             
             _midi_learn_current = null;
+            
+            _remove_midi_controls(rs_element.id);
             
             return;
         }
@@ -1033,6 +1067,8 @@ var WUI_RangeSlider = new (function() {
             midi_learn_current = null;
         }
         
+        _remove_midi_controls(id);
+        
         element = widget.element;
 
         element.parentElement.removeChild(element);
@@ -1094,7 +1130,7 @@ var WUI_RangeSlider = new (function() {
                 elems = detached_slider.getElementsByClassName(_class_name.midi_learn_btn);
                 if (elems.length > 0) {
                     elems[0].style = "";
-                    elems[0].title = _title.midi_learn_btn;
+                    elems[0].title = kdevice + " " + kcontroller;
                 }
             }
             
