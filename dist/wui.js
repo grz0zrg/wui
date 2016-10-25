@@ -1630,21 +1630,27 @@ var WUI_RangeSlider = new (function() {
         
         _container_suffix_id = "_wui_container",
         
-        _midi_learn_disabled_color = "background-color: #ff0000",
+        //_midi_learn_disabled_color = "background-color: #ff0000",
         _midi_learn_enabled_color = "background-color: #00ff00",
         _midi_learn_current = null,
         _midi_controls =  {
             
         },
         
+        _title = {
+            midi_learn_btn: "MIDI learn"  
+        },
+        
         _class_name = {
-            hook:        "wui-rangeslider-hook",
-            bar:         "wui-rangeslider-bar",
-            filler:      "wui-rangeslider-filler",
+            hook:           "wui-rangeslider-hook",
+            bar:            "wui-rangeslider-bar",
+            filler:         "wui-rangeslider-filler",
 
-            hook_focus:  "wui-rangeslider-hook-focus",
+            hook_focus:     "wui-rangeslider-hook-focus",
             
-            value_input: "wui-rangeslider-input"
+            value_input:    "wui-rangeslider-input",
+            
+            midi_learn_btn: "wui-rangeslider-midi-learn-btn"
         },
         
         _known_options = {
@@ -1699,6 +1705,53 @@ var WUI_RangeSlider = new (function() {
         
         Functions.
     ************************************************************/
+    
+    // this function is used to find the same slider element from a detached WUI dialog, if you know a better way to do this, you are welcome!
+    // the limitation is : if you change the title of the detached dialog, the window handle will be not found ... so is your slider, actually this will affect only MIDI enabled sliders at the moment.
+    var _getDetachedElement = function (id) {
+        var node = document.getElementById(id),
+            
+            wui_dialog = null,
+            win_handle,
+    
+            title,
+            elems,
+            
+            i = 0;
+
+        while (node) {
+            if (node.classList) {
+                if (node.classList.contains('wui-dialog')) {
+                    wui_dialog = node;
+                    break;
+                }
+            }
+
+            node = node.parentNode;
+        }
+        
+        if (wui_dialog) {
+            elems = wui_dialog.getElementsByClassName('wui-dialog-title');
+            if (elems.length > 0) {
+                title = elems[0].innerText || elems[0].textContent || '';
+                
+                if (title !== '') {
+                    win_handle = window.open(null, title);
+                    
+                    if (win_handle) {
+                        if (win_handle.document.body.childElementCount === 0 && 
+                            win_handle.document.head.childElementCount === 0) {
+                            win_handle.close();
+                        } else {
+                            return win_handle.document.getElementById(id);
+                        }
+                    }
+                }
+            }
+        }
+        
+        return null;
+    };
     
     var _getElementOffset = function (element) {    
         var owner_doc = element.ownerDocument,
@@ -1788,7 +1841,7 @@ var WUI_RangeSlider = new (function() {
             value_input.style.marginTop = "13px";
 
             // all theses are to support synchronization between a detached dialog and the original dialog
-            // TODO: optimize all this
+            // TODO: optimize/clean all this mess :P
             if (widget.element !== element) {
                 widget.filler.style.position = "absolute";
                 widget.filler.style.bottom = "0";
@@ -2139,8 +2192,12 @@ var WUI_RangeSlider = new (function() {
             
             owner_doc = target.ownerDocument,
             
+            detached_slider,
+            
             key,
             value_obj,
+            
+            elems,
             
             input;
         
@@ -2158,8 +2215,17 @@ var WUI_RangeSlider = new (function() {
         for(key in _widget_list) { 
             if (_widget_list.hasOwnProperty(key)) {
                 value_obj = _widget_list[key];
-               
+                
                 value_obj.midi.learn = false;
+                
+                detached_slider = _getDetachedElement(key);
+                
+                if (detached_slider) {
+                    elems = detached_slider.getElementsByClassName(_class_name.midi_learn_btn);
+                    if (elems.length > 0) {
+                        elems[0].style = "";
+                    }
+                }
                
                 if (value_obj.midi.learn_elem) {
                     value_obj.midi.learn_elem.style = "";
@@ -2537,7 +2603,8 @@ var WUI_RangeSlider = new (function() {
         if (opts.midi) {
             if (navigator.requestMIDIAccess) {
                 var midi_learn_elem = document.createElement("div");
-                midi_learn_elem.classList.add("wui-rangeslider-midi-learn-btn");
+                midi_learn_elem.classList.add(_class_name.midi_learn_btn);
+                midi_learn_elem.title = _title.midi_learn_btn;
                 
                 midi_learn_elem.addEventListener("click", _onMIDILearnBtnClick, false);
                 midi_learn_elem.addEventListener("touchstart", _onMIDILearnBtnClick, false);
@@ -2588,6 +2655,10 @@ var WUI_RangeSlider = new (function() {
             return;
         }
 
+        if (_midi_learn_current === id) {
+            midi_learn_current = null;
+        }
+        
         element = widget.element;
 
         element.parentElement.removeChild(element);
@@ -2604,7 +2675,7 @@ var WUI_RangeSlider = new (function() {
     };
     
     this.submitMIDIMessage = function (midi_event) {
-        var id,
+        var id = _midi_learn_current,
             
             widget,
             
@@ -2617,12 +2688,17 @@ var WUI_RangeSlider = new (function() {
             
             ctrl_obj,
             
+            elems,
+            elem,
+            
+            detached_slider,
+            
             new_value,
             
             i = 0;
         
         if (_midi_learn_current) {
-            widget = _widget_list[_midi_learn_current];
+            widget = _widget_list[id];
             
             if (!_midi_controls[kdevice]) {
                 _midi_controls[kdevice] = {};
@@ -2636,10 +2712,20 @@ var WUI_RangeSlider = new (function() {
                     };
             }
             
-            _midi_controls[kdevice][kcontroller].widgets.push(_midi_learn_current);
+            _midi_controls[kdevice][kcontroller].widgets.push(id);
+            
+            detached_slider = _getDetachedElement(id);
+            
+            if (detached_slider) {
+                elems = detached_slider.getElementsByClassName(_class_name.midi_learn_btn);
+                if (elems.length > 0) {
+                    elems[0].style = "";
+                    elems[0].title = _title.midi_learn_btn;
+                }
+            }
             
             widget.midi.learn = false;
-            widget.midi.learn_elem.style = _midi_learn_disabled_color;
+            widget.midi.learn_elem.style = "";
             widget.midi.learn_elem.title = kdevice + " " + kcontroller;
             _midi_learn_current = null;
             
@@ -2651,12 +2737,21 @@ var WUI_RangeSlider = new (function() {
                 ctrl_obj = _midi_controls[kdevice][kcontroller];
                 
                 for (i = 0; i < ctrl_obj.widgets.length; i += 1) {
-                    widget = _widget_list[ctrl_obj.widgets[i]];
+                    id = ctrl_obj.widgets[i];
+                    
+                    widget = _widget_list[id];
+                    
+                    detached_slider = _getDetachedElement(id);
+                    if (detached_slider) {
+                        elem = detached_slider;
+                    } else {
+                        elem = widget.element;
+                    }
                     
                     if (widget.midi.ctrl_type === "abs") {
                         new_value = widget.opts.min + widget.opts.range * (value / 127.0);
                         
-                        _update(widget.element, widget, new_value);
+                        _update(elem, widget, new_value);
         
                         _onChange(widget.opts.on_change, new_value);
                     } else if (widget.midi.ctrl_type === "rel") {
@@ -2692,7 +2787,7 @@ var WUI_RangeSlider = new (function() {
                             }
                         }
                         
-                        _update(widget.element, widget, new_value);
+                        _update(elem, widget, new_value);
         
                         _onChange(widget.opts.on_change, new_value);
                     }
