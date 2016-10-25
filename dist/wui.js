@@ -129,7 +129,9 @@ var WUI_Dialog = new (function() {
     ************************************************************/
     
     var _removeDetachedWindow = function (widget) {
-        for (var i = 0; i < _detached_windows.length; i += 1) {
+        var i = 0;
+        
+        for (i = 0; i < _detached_windows.length; i += 1) {
             if (_detached_windows[i] === widget.detachable_ref) {
                 _detached_windows.splice(i, 1);
                 break;
@@ -1213,6 +1215,27 @@ var WUI_Dialog = new (function() {
         }
     };
     
+    // get the corresponding detached dialog for dialog dialog_id
+    this.getDetachedDialog = function (dialog_id) {
+        var widget = _widget_list[dialog_id],
+            
+            i = 0;
+        
+        if (widget === undefined) {
+            console.log("WUI_Dialog.getDetachedDialog: Element id '" + id + "' is not a WUI_Dialog.");
+
+            return null;
+        }
+            
+        for (i = 0; i < _detached_windows.length; i += 1) {
+            if (_detached_windows[i] === widget.detachable_ref) {
+                return widget.detachable_ref;
+            }
+        }
+        
+        return null;
+    };
+    
     document.addEventListener("keyup", _onKeyUp, false);
 })();
 
@@ -1706,47 +1729,29 @@ var WUI_RangeSlider = new (function() {
         Functions.
     ************************************************************/
     
-    // this function is used to find the same slider element from a detached WUI dialog, if you know a better way to do this, you are welcome!
-    // the limitation is : if you change the title of the detached dialog, the window handle will be not found ... so is your slider, actually this will affect only MIDI enabled sliders at the moment.
+    // find the same slider element from a detached WUI_Dialog
     var _getDetachedElement = function (id) {
         var node = document.getElementById(id),
             
-            wui_dialog = null,
-            win_handle,
-    
-            title,
-            elems,
-            
-            i = 0;
+            wui_dialog_id,
+            win_handle;
 
         while (node) {
             if (node.classList) {
                 if (node.classList.contains('wui-dialog')) {
-                    wui_dialog = node;
+                    wui_dialog_id = node.id;
                     break;
                 }
             }
 
             node = node.parentNode;
         }
-        
-        if (wui_dialog) {
-            elems = wui_dialog.getElementsByClassName('wui-dialog-title');
-            if (elems.length > 0) {
-                title = elems[0].innerText || elems[0].textContent || '';
-                
-                if (title !== '') {
-                    win_handle = window.open(null, title);
-                    
-                    if (win_handle) {
-                        if (win_handle.document.body.childElementCount === 0 && 
-                            win_handle.document.head.childElementCount === 0) {
-                            win_handle.close();
-                        } else {
-                            return win_handle.document.getElementById(id);
-                        }
-                    }
-                }
+
+        if (WUI_Dialog) {
+            win_handle = WUI_Dialog.getDetachedDialog(wui_dialog_id);
+            
+            if (win_handle) {
+                return win_handle.document.getElementById(id);
             }
         }
         

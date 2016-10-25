@@ -98,47 +98,29 @@ var WUI_RangeSlider = new (function() {
         Functions.
     ************************************************************/
     
-    // this function is used to find the same slider element from a detached WUI dialog, if you know a better way to do this, you are welcome!
-    // the limitation is : if you change the title of the detached dialog, the window handle will be not found ... so is your slider, actually this will affect only MIDI enabled sliders at the moment.
+    // find the same slider element from a detached WUI_Dialog
     var _getDetachedElement = function (id) {
         var node = document.getElementById(id),
             
-            wui_dialog = null,
-            win_handle,
-    
-            title,
-            elems,
-            
-            i = 0;
+            wui_dialog_id,
+            win_handle;
 
         while (node) {
             if (node.classList) {
                 if (node.classList.contains('wui-dialog')) {
-                    wui_dialog = node;
+                    wui_dialog_id = node.id;
                     break;
                 }
             }
 
             node = node.parentNode;
         }
-        
-        if (wui_dialog) {
-            elems = wui_dialog.getElementsByClassName('wui-dialog-title');
-            if (elems.length > 0) {
-                title = elems[0].innerText || elems[0].textContent || '';
-                
-                if (title !== '') {
-                    win_handle = window.open(null, title);
-                    
-                    if (win_handle) {
-                        if (win_handle.document.body.childElementCount === 0 && 
-                            win_handle.document.head.childElementCount === 0) {
-                            win_handle.close();
-                        } else {
-                            return win_handle.document.getElementById(id);
-                        }
-                    }
-                }
+
+        if (WUI_Dialog) {
+            win_handle = WUI_Dialog.getDetachedDialog(wui_dialog_id);
+            
+            if (win_handle) {
+                return win_handle.document.getElementById(id);
             }
         }
         

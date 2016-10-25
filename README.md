@@ -195,6 +195,7 @@ All WUI widgets work very well with the detachable feature, what you change in t
 *   close(wui_dialog, propagate)
 *   focus(wui_dialog)
 *   setStatusBarContent(wui_dialog, html_content)
+*   getDetachedDialog(wui_dialog)
   
 <br/>*Example*:
   
@@ -293,6 +294,13 @@ Want to change the status bar content?
 
 ```javascript
 WUI_Dialog.setStatusBarContent(my_dialog, "My new status bar content");
+```
+<br/>
+
+Need access to the detached dialog window object?
+
+```javascript
+var detached_dialog_window = WUI_Dialog.getDetachedDialog(my_dialog);
 ```
 <br/>
 
@@ -476,12 +484,6 @@ The "rel" MIDI mode allow infinite values, it work well with "endless" rotary co
 The "abs" MIDI mode is based on the "min" and "max" property, it act as a percentage of the range, if you want to match MIDI spec, just assign "0" and "127" for "min" and "max" option.
 
 Only MIDI input is supported at the moment but it should not be hard to add MIDI output later on.
-
-<br/>
->**Notes**: 
->
->When MIDI enabled sliders are in a WUI detached dialog, the title of the detached dialog should remain the SAME as the dialog otherwise the input/slider in the detached dialog will not be updated when changes happen from MIDI controllers and the MIDI learn button will be broken, this is because WUI_RangeSlider try to get the detached window from the WUI dialog title walking up the DOM tree... (it use the window.open function... thus the window may also flicker if there is no detached dialogs as it will open and close a dummy one...) i do not know of any other convenient methods of doing this without breaking one of the major feature of the library (ie: no dependencies) except through a global created by the WUI_Dialog widget containing a list of detached dialogs, please suggest a better solution if you have one!
->
 
 <br/>*Method*:
 

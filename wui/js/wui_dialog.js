@@ -129,7 +129,9 @@ var WUI_Dialog = new (function() {
     ************************************************************/
     
     var _removeDetachedWindow = function (widget) {
-        for (var i = 0; i < _detached_windows.length; i += 1) {
+        var i = 0;
+        
+        for (i = 0; i < _detached_windows.length; i += 1) {
             if (_detached_windows[i] === widget.detachable_ref) {
                 _detached_windows.splice(i, 1);
                 break;
@@ -1211,6 +1213,27 @@ var WUI_Dialog = new (function() {
                 WUI_Dialog.childWindowLoaded(id);
             }, 500);
         }
+    };
+    
+    // get the corresponding detached dialog for dialog dialog_id
+    this.getDetachedDialog = function (dialog_id) {
+        var widget = _widget_list[dialog_id],
+            
+            i = 0;
+        
+        if (widget === undefined) {
+            console.log("WUI_Dialog.getDetachedDialog: Element id '" + id + "' is not a WUI_Dialog.");
+
+            return null;
+        }
+            
+        for (i = 0; i < _detached_windows.length; i += 1) {
+            if (_detached_windows[i] === widget.detachable_ref) {
+                return widget.detachable_ref;
+            }
+        }
+        
+        return null;
     };
     
     document.addEventListener("keyup", _onKeyUp, false);
