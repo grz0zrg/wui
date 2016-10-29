@@ -4297,7 +4297,7 @@ var WUI = new (function() {
         if (draggable.axisLock !== 0) {
             new_x = x - _drag_x;
             
-            if (draggable.virtual) {
+            if (!draggable.virtual) {
                 _dragged_element.style.left = new_x + 'px';
             }
             
@@ -4307,7 +4307,7 @@ var WUI = new (function() {
         if (draggable.axisLock !== 1) {
             new_y = y - _drag_y;
             
-            if (draggable.virtual) {
+            if (!draggable.virtual) {
                 _dragged_element.style.top  = new_y + 'px';
             }
             
