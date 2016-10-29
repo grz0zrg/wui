@@ -1222,7 +1222,7 @@ var WUI_Dialog = new (function() {
             i = 0;
         
         if (widget === undefined) {
-            console.log("WUI_Dialog.getDetachedDialog: Element id '" + id + "' is not a WUI_Dialog.");
+            console.log("WUI_Dialog.getDetachedDialog: Element id '" + dialog_id + "' is not a WUI_Dialog.");
 
             return null;
         }
