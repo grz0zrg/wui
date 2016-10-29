@@ -57,6 +57,8 @@ var WUI_RangeSlider = new (function() {
             min: 0,
             max: 1,
             
+            decimals: 4,
+            
             step: 0.01,
             scroll_step: 0.01,
             
@@ -196,7 +198,7 @@ var WUI_RangeSlider = new (function() {
 
         value_input = bar.nextElementSibling;
                 
-        value = _truncateDecimals(value, 4);
+        value = _truncateDecimals(value, widget.opts.decimals);
 
         if (rs.opts.vertical) {
             pos = Math.round(pos * bar.offsetHeight);
@@ -326,7 +328,7 @@ var WUI_RangeSlider = new (function() {
             
             _grabbed_widget.value = _hook_value;
 
-            v = _truncateDecimals(_hook_value, 4);
+            v = _truncateDecimals(_hook_value, _grabbed_widget.opts.decimals);
 
             value_input.value = v;
             _grabbed_widget.value_input.value = v;
@@ -522,7 +524,7 @@ var WUI_RangeSlider = new (function() {
             }
 
             if (conf_key === "min") {
-                opts.min = _truncateDecimals(target.value, 4);
+                opts.min = _truncateDecimals(target.value, opts.decimals);
 
                 widget.value_input.min = opts.min;
                 
@@ -530,7 +532,7 @@ var WUI_RangeSlider = new (function() {
                     opts.range = opts.max - opts.min;
                 //}
             } else if (conf_key === "max") {
-                opts.max = _truncateDecimals(target.value, 4);
+                opts.max = _truncateDecimals(target.value, opts.decimals);
 
                 widget.value_input.max = opts.max;
                 
@@ -540,11 +542,11 @@ var WUI_RangeSlider = new (function() {
                     opts.range = opts.max - opts.min;
                 //}
             } else if (conf_key === "step") {
-                opts.step = _truncateDecimals(target.value, 4);
+                opts.step = _truncateDecimals(target.value, opts.decimals);
 
                 widget.value_input.step = opts.step;
             } else if (conf_key === "scroll_step") {
-                opts.scroll_step = _truncateDecimals(target.value, 4);
+                opts.scroll_step = _truncateDecimals(target.value, opts.decimals);
             }
             
             if (opts.configurable[conf_key] !== undefined) {
