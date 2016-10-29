@@ -1,7 +1,7 @@
 WUI
 =====
 
-Collection of **easy to use** and **lightweight** (*~5.3kb css*, *~12.7kb js* gzipped) vanilla GUI widgets for the web.
+Collection of **easy to use** and **lightweight** (*~5.3kb css*, *~12.8kb js* gzipped) vanilla GUI widgets for the web.
 
 **Require no dependencies, all widgets can be used on their own.**
 
@@ -84,13 +84,14 @@ A bit of style hacking may be necessary if you want widgets to suit your need or
 <a name="wui_main"></a>
 ### WUI ###
 
-Not really a widget but a collection of tools, can be helpful if you want to add draggable functionality to an element or apply fade in/out.
+Not really a widget but a collection of tools, can be helpful if you want to add draggable/resizable functionality to an element or apply fade in/out.
 
 Fade in/Fade out method default to 500ms if no duration is provided
 <br/>
 *Methods*:
 
->*   draggable(element, draggable_state, on_drag_cb)
+>*   draggable(element, on_drag_cb, virtual)
+*   undraggable(element)
 *   lockDraggable(element, axis)
 *   fadeIn(element, duration_ms)
 *   fadeOut(element, duration_ms, fade_finish_cb, hide_when_fade_finish)
@@ -99,9 +100,13 @@ Fade in/Fade out method default to 500ms if no duration is provided
 
 ```javascript
 // make the element draggable
-// Note: If you want to remove the element while it is draggable, make it undraggable first by passing false as second argument of this function, this is because WUI keep a reference of the element and it may cause memory leaks, passing false will make the reference go away
-// a callback for the third argument can be specified to gather the new position, like: function (element, x, y) {  }
-WUI.draggable(my_element, true);
+// a callback for the second argument can be specified to gather the new position, like: function (element, x, y) {  }
+// third argument is a boolean and can be true to make the draggable functionality "virtual" which mean it will NOT modify the element position but still call the callback, it is left to the user to do any appropriate changes, this may be useful to add resizable functionality easily by using it with "lockDraggable", this default to false if not specified
+// Note: If you want to remove the element while it is draggable, make it undraggable first by calling the appropriate function (undraggable), this is because WUI keep an internal reference of the element and it may cause memory leaks later, calling undraggable will make the reference go away
+WUI.draggable(my_element, function (element, x, y) {  }, false);
+
+// make a WUI draggable element undraggable and remove the internal reference
+WUI.undraggable(my_element);
 
 // lock draggable element to a specific axis ('x' or 'y', to clear the lock, just call it without specifying axis or specify whatever)
 WUI.lockDraggable(my_element, 'x');

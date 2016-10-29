@@ -56,6 +56,8 @@ var WUI = new (function() {
 
         var x = ev.clientX,
             y = ev.clientY,
+            
+            draggable,
 
             touches = ev.changedTouches;
 
@@ -73,13 +75,20 @@ var WUI = new (function() {
                 return;
             }
         }
-
+        
         _dragged_element = ev.target;
-
+        
         document.body.style.cursor = "move";
-
-        _drag_x = x - parseInt(_dragged_element.style.left, 10);
-        _drag_y = y - parseInt(_dragged_element.style.top,  10);
+        
+        draggable = _draggables[parseInt(_dragged_element.dataset.wui_draggable_id, 10)];
+        
+        if (draggable.virtual) {
+            _drag_x = x - parseInt(draggable.x, 10);
+            _drag_y = y - parseInt(draggable.y,  10);
+        } else {
+            _drag_x = x - parseInt(_dragged_element.style.left, 10);
+            _drag_y = y - parseInt(_dragged_element.style.top,  10);
+        }
 
         window.addEventListener('mousemove', _drag, false);
         window.addEventListener('touchmove', _drag, false);
@@ -119,14 +128,20 @@ var WUI = new (function() {
 
         if (draggable.axisLock !== 0) {
             new_x = x - _drag_x;
-            _dragged_element.style.left = new_x + 'px';
+            
+            if (draggable.virtual) {
+                _dragged_element.style.left = new_x + 'px';
+            }
             
             draggable.x = new_x;
         }
         
         if (draggable.axisLock !== 1) {
             new_y = y - _drag_y;
-            _dragged_element.style.top  = new_y + 'px';
+            
+            if (draggable.virtual) {
+                _dragged_element.style.top  = new_y + 'px';
+            }
             
             draggable.y = new_y;
         }
@@ -233,49 +248,55 @@ var WUI = new (function() {
      *
      * @param {Object} element DOM Element
      * @param {Callback} function called when the element is being dragged, it has two argument which is the new x/y
-     * @param {Boolean} state false value mean the element will be no more draggable
+     * @param {Boolean} virtual true to keep track of element position WITHOUT updating the element position (updating it is left to users through the callback)
      */
-    this.draggable = function (element, draggable_state, on_drag_cb) {
-        if (draggable_state) {
-            if (element.classList.contains(_class_name.draggable)) {
-                return;
-            }
-            
-            element.classList.add(_class_name.draggable);
+    this.draggable = function (element, on_drag_cb, virtual) {
+        if (element.classList.contains(_class_name.draggable)) {
+            return;
+        }
 
-            element.addEventListener("mousedown",  _dragStart, false);
-            element.addEventListener("touchstart", _dragStart, false);
+        element.classList.add(_class_name.draggable);
 
-            element.dataset.wui_draggable_id = _draggables.length;
-            
-            _draggables.push({
-                cb: on_drag_cb,
-                element: element,
-                axisLock: null,
-                x: parseInt(element.style.left, 10),
-                y: parseInt(element.style.top, 10)
-            });
-        } else {
-            if (!element.classList.contains(_class_name.draggable)) {
-                return;
-            }
-            
-            element.classList.remove(_class_name.draggable);
+        element.addEventListener("mousedown",  _dragStart, false);
+        element.addEventListener("touchstart", _dragStart, false);
 
-            element.removeEventListener("mousedown",  _dragStart, false);
-            element.removeEventListener("touchstart", _dragStart, false);
+        element.dataset.wui_draggable_id = _draggables.length;
 
-            var id = parseInt(element.dataset.wui_draggable_id, 10),
+        _draggables.push({
+            cb: on_drag_cb,
+            element: element,
+            axisLock: null,
+            virtual: virtual,
+            x: parseInt(element.style.left, 10),
+            y: parseInt(element.style.top, 10)
+        });
+    };
+    
+    /**
+     * Make an element undraggable
+     *
+     * @param {Object} element DOM Element
+     */
+    this.undraggable = function (element) {
+        if (!element.classList.contains(_class_name.draggable)) {
+            return;
+        }
 
-                i;
+        element.classList.remove(_class_name.draggable);
 
-            _draggables.splice(id, 1);
+        element.removeEventListener("mousedown",  _dragStart, false);
+        element.removeEventListener("touchstart", _dragStart, false);
 
-            for (i = 0; i < _draggables.length; i += 1) {
-                var draggable = _draggables[i];
+        var id = parseInt(element.dataset.wui_draggable_id, 10),
 
-                draggable.element.dataset.wui_draggable_id = i;
-            }
+            i;
+
+        _draggables.splice(id, 1);
+
+        for (i = 0; i < _draggables.length; i += 1) {
+            var draggable = _draggables[i];
+
+            draggable.element.dataset.wui_draggable_id = i;
         }
     };
     
