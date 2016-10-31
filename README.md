@@ -1,7 +1,7 @@
 WUI
 =====
 
-Collection of **easy to use** and **lightweight** (*~5.3kb css*, *~12.9kb js* gzipped) vanilla GUI widgets for the web.
+Collection of **easy to use** and **lightweight** (*~5.3kb css*, *~13kb js* gzipped) vanilla GUI widgets for the web.
 
 **Require no dependencies, all widgets can be used on their own.**
 
@@ -519,6 +519,9 @@ WUI_RangeSlider.create("my_range_slider", {
     scroll_step: 2,
     
     vertical: false,
+
+    // max number of decimals to display for decimal values (default to 4)
+    decimals: 4,
   
     default_value: 0,
   
@@ -584,6 +587,8 @@ This widget `create` function does not return anything and the widget do not hav
 
 The menu can be shown around an element or a position, if an element is specified in the options, `x y` properties will be ignored, `x y` or `element` need to be set in order to use this widget, all other properties are optional.
 
+You can use the "angle" option (degree) to offset the items position by an amount.
+
 Items are simple round buttons, an icon class name can be specified, a tooltip and a callback.
 
 <br/>*Method*:
@@ -598,6 +603,8 @@ WUI_CircularMenu.create({
     y: 64,
     
     element: null, // if an element is specified, the menu will be shown around it
+    
+    angle: 90, // offset the items positions by 90°
     
     // radius
     rx: 64,

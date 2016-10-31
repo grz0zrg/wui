@@ -25,6 +25,8 @@ var WUI_CircularMenu = new (function() {
 
             rx: 64,
             ry: 48,
+            
+            angle: 0,
 
             item_width:  32,
             item_height: 32,
@@ -87,12 +89,33 @@ var WUI_CircularMenu = new (function() {
 
         return handler;
     };
+    
+    var _getElementOffset = function (elem) {
+        var box = elem.getBoundingClientRect(),
+            body = document.body,
+            docEl = document.documentElement,
+
+            scrollTop = window.pageYOffset || docEl.scrollTop || body.scrollTop,
+            scrollLeft = window.pageXOffset || docEl.scrollLeft || body.scrollLeft,
+
+            clientTop = docEl.clientTop || body.clientTop || 0,
+            clientLeft = docEl.clientLeft || body.clientLeft || 0,
+
+            top  = box.top +  scrollTop - clientTop,
+            left = box.left + scrollLeft - clientLeft;
+
+        return { top: Math.round(top), left: Math.round(left), width: box.width, height: box.height };
+    };
+    
+    var _toRadians = function (angle) {
+        return angle * (Math.PI / 180.0);
+    };
 
     var _addItems = function (opts, items, win, doc, x, y) {
         _destroy(doc);
 
-        var elem, item, i,
-            a = -(Math.PI / 2),
+        var elem, item, i, handler,
+            a = -(Math.PI / 2) + _toRadians(opts.angle),
             c = items.length,
             ia = (Math.PI * 2 / c);
 
@@ -133,7 +156,7 @@ var WUI_CircularMenu = new (function() {
             a += ia;
         }
 
-        var handler = _onClickOutHandler(win, doc);
+        handler = _onClickOutHandler(win, doc);
 
         win.addEventListener("click", handler);
 
@@ -183,7 +206,7 @@ var WUI_CircularMenu = new (function() {
         elem = opts.element;
 
         if (elem !== null) {
-            elem_bcr = elem.getBoundingClientRect();
+            elem_bcr = _getElementOffset(elem);
 
             owner_doc = elem.ownerDocument;
             owner_win = owner_doc.defaultView || owner_doc.parentWindow;
