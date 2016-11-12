@@ -5,7 +5,7 @@ module.exports = function(grunt) {
     	pkg: grunt.file.readJSON('package.json'),
  
  		concat: {
- 			dist_dark: {
+ 			dist: {
  				files: {
 					'dist/wui.js': js_arr,
  					'dist/dark/wui.css': ['wui/css/themes/dark/wui_dialog.css', 'wui/css/themes/dark/wui_dropdown.css', 'wui/css/themes/dark/wui_range_slider.css', 'wui/css/themes/dark/wui_tabs.css', 'wui/css/themes/dark/wui_toolbar.css', 'wui/css/themes/dark/wui_circular_menu.css', 'wui/css/wui.css'],

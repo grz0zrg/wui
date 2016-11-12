@@ -1,7 +1,7 @@
 WUI
 =====
 
-Collection of **easy to use** and **lightweight** (*~5.3kb css*, *~13kb js* gzipped) vanilla GUI widgets for the web.
+Collection of **easy to use** and **lightweight** (*~5.3kb css*, *~12.5kb js* gzipped) vanilla GUI widgets for the web.
 
 **Require no dependencies, all widgets can be used on their own.**
 
@@ -13,7 +13,7 @@ The main advantages compared to other libraries are:
 * Input and Slider widgets can be MIDI controlled with two mode (absolute, relative) and configurable
 * Dialogs can be detached (and everything related to WUI will still work)
 * Circular menu :)
-* Easily customizable
+* Everything easily customizable/hackable
 * Lightweight
 * ...
 
@@ -69,15 +69,29 @@ grunt dist
 *   [WUI_RangeSlider](#rangeslider)
 *   [WUI_CircularMenu](#circularmenu)
 
-The WUI API is simple, all widgets have a method **_"create"_** which take a DOM element (which should contain an identifier) or a DOM element identifier as first argument which is used as a bind target and an option object as a second argument to customize it, WUI_ToolBar has a third argument which is used to specify the content of the toolbar.
+The WUI API is simple, all widgets have a method **_"create"_** which accept a DOM element (which should contain an identifier) or a DOM element identifier as first argument which is used as a bind target and an option object as a second argument to customize it, WUI_ToolBar has a third argument which is used to specify the content of the toolbar.
 
 All **_"create"_** methods return a reference of the widget which can be used later to do stuff with the widget like destroying them, the reference is a string (it is the dialog element id).
 
 All widgets also have a method **_"destroy"_**.
 
+WUI_RangeSlider widget (all widgets soon) have a function **_"getParameters"_** and **_"setParameters"_**, this can be used to save/retrieve widgets parameters.
+
 HTML elements with a specific layout are required to use some widgets (like tabs, see the documentation)
 
-A bit of style hacking may be necessary if you want widgets to suit your need or your taste, the demo page can be helpful.
+A bit of style hacking may be necessary if you want widgets to suit your need or your taste, you can build themes easily with bits of CSS, the demo page can be helpful.
+
+=====
+
+###Hacking
+
+Extending widgets to suit your needs or taste is very easy, widgets code are separated into three sections, **_private fields_**, **_private functions_** and **_public functions_**.
+
+If you want to add an option to a widget, you add a field into the **__known_options_** object in the **_private fields_** section, this is where all the options known by the widget are stored with their default value, the option behavior can then be implemented in the **_create_** function (or used later since it is also stored in the widget specific storage), you access to the option value in the **_create_** function by using the local **_opts_** object.
+
+If you want to add/change advanced behaviors, you can create or modify private or public functions, the object **__widget_list_** which is available in the scope of most widgets serve as a generic storage for all widgets, all created widgets are stored here with their ID as key (**__widget_list["my_widget_id"]_** to access to a specific widget storage), there is at least an **_opts_** field for each widgets which can be used to retrieve/override the widget options.
+
+Themes are done by cloning existing *.css files and modifying them, to do it properly you can clone a theme (*_wui/css/themes/[theme_name]_** folder), rename it, add the corresponding build line into Gruntfile.js (see **_files_** object), build and your minified/gzipped theme will be available in the **__dist_** folder.
 
 =====
 
@@ -494,6 +508,8 @@ Only MIDI input is supported at the moment but it should not be hard to add MIDI
 
 >*   create(id, options)
 *   destroy(wui_rangeslider)
+*   getParameters(wui_rangeslider)
+*   setParameters(wui_rangeslider, parameters)
 *   submitMIDIMessage(midi_event)
   
 <br/>*Example*:
@@ -523,7 +539,11 @@ WUI_RangeSlider.create("my_range_slider", {
     // max number of decimals to display for decimal values (default to 4)
     decimals: 4,
   
+    // the widget default value (used for "reset to default" behaviors)
     default_value: 0,
+    
+    // the widget current value
+    value: 0.5,
   
     // this will place the title on top and the value at the bottom, good for vertical sliders
     title_on_top: true,
@@ -574,6 +594,7 @@ if (navigator.requestMIDIAccess) {
         });
 }
 ```
+
 <br/>
 
 ======
@@ -635,7 +656,7 @@ Not well tested but should work in all modern browsers supporting **_ECMAScript 
 
 It was not built to target mobile devices, but it still support touch events and should work well on iPad and the like.
 
-Tested and work ok with IE 11, Opera 12, Chrome (30, 35, 40), Firefox (31, 37) and Safari (6, 7, 8).
+Tested and work ok with IE 11, Opera 12, Chrome (30, 35, 40, 53), Firefox (31, 37, 49) and Safari (6, 7, 8).
 
 Mostly work (problems with the ToolBar and Dialog) under IE 10 but i do not support it.
 

@@ -68,14 +68,15 @@ var WUI_RangeSlider = new (function() {
 
             on_change: null,
             
-            default_value: 0.5,
+            default_value: 0.0,
+            value: 0.0,
             
             bar: true,
             
             midi: null,
             
             /*
-                can be an object with the following form (example) :
+                can be an object with the following fields (example) :
                     {
                         min: { min: 0, max: 0, val: 0 },
                         max: { min: 0, max: 0, val: 0 },
@@ -92,6 +93,14 @@ var WUI_RangeSlider = new (function() {
             max: 0,
             step: 0,
             scroll_step: 0
+        },
+        
+        // exportable parameters
+        _exportable_parameters = {
+            opts: {},
+            endless: false,
+            midi: {},
+            value: 0
         };
     
     /***********************************************************
@@ -555,7 +564,7 @@ var WUI_RangeSlider = new (function() {
         };
     };
     
-    var _remove_midi_controls = function (id) {
+    var _removeMIDIControls = function (id) {
         var device,
             control,
             
@@ -606,18 +615,21 @@ var WUI_RangeSlider = new (function() {
             
             input;
         
-        if (widget.midi.learn) {
+        if (widget.learn) {
             
-            widget.midi.learn = false;
+            widget.learn = false;
             
             target.style = "";
             target.title = _title.midi_learn_btn;
             
-            widget.midi.learn_elem.title = _title.midi_learn_btn;
+            widget.learn_elem.title = _title.midi_learn_btn;
             
             _midi_learn_current = null;
             
-            _remove_midi_controls(rs_element.id);
+            widget.midi.device = null;
+            widget.midi.controller = null;
+            
+            _removeMIDIControls(rs_element.id);
             
             return;
         }
@@ -626,7 +638,7 @@ var WUI_RangeSlider = new (function() {
             if (_widget_list.hasOwnProperty(key)) {
                 value_obj = _widget_list[key];
                 
-                value_obj.midi.learn = false;
+                value_obj.learn = false;
                 
                 detached_slider = _getDetachedElement(key);
                 
@@ -637,13 +649,13 @@ var WUI_RangeSlider = new (function() {
                     }
                 }
                
-                if (value_obj.midi.learn_elem) {
-                    value_obj.midi.learn_elem.style = "";
+                if (value_obj.learn_elem) {
+                    value_obj.learn_elem.style = "";
                 }
             }
         }
         
-        widget.midi.learn = true;
+        widget.learn = true;
         
         target.style = _midi_learn_enabled_color;
         
@@ -901,20 +913,21 @@ var WUI_RangeSlider = new (function() {
                         device: null,
                         controller: null,
                         
-                        ctrl_type: "abs",
-                        
-                        learn: false,
-                        learn_elem: null
+                        ctrl_type: "abs"
                     },
+                
+                    learn: false,
+                    learn_elem: null,
 
                     value_input: value_input,
                   
-                    value: opts.default_value, 
+                    default_value: opts.default_value, 
+                    value: opts.value
                  };
         
         title_div.innerHTML = opts.title;
         
-        value_input.setAttribute("value", opts.default_value);
+        value_input.setAttribute("value", opts.value);
         value_input.setAttribute("type",  "number");
         value_input.setAttribute("step",  opts.step);
 
@@ -1019,7 +1032,7 @@ var WUI_RangeSlider = new (function() {
                 midi_learn_elem.addEventListener("click", _onMIDILearnBtnClick, false);
                 midi_learn_elem.addEventListener("touchstart", _onMIDILearnBtnClick, false);
                 
-                rs.midi.learn_elem = midi_learn_elem;
+                rs.learn_elem = midi_learn_elem;
                 
                 if (opts.midi["type"]) {
                     rs.midi.ctrl_type = opts.midi.type;
@@ -1045,7 +1058,7 @@ var WUI_RangeSlider = new (function() {
         
         _widget_list[id] = rs;
 
-        _update(range_slider, rs, opts.default_value);
+        _update(range_slider, rs, opts.value);
 
         return id;
     };
@@ -1069,7 +1082,7 @@ var WUI_RangeSlider = new (function() {
             midi_learn_current = null;
         }
         
-        _remove_midi_controls(id);
+        _removeMIDIControls(id);
         
         element = widget.element;
 
@@ -1084,6 +1097,55 @@ var WUI_RangeSlider = new (function() {
         }
 
         delete _widget_list[id];
+    };
+    
+    this.getParameters = function (id) {
+        var widget = _widget_list[id],
+            parameters = { },
+            key;
+        
+        if (widget === undefined) {
+            console.log("Element id '" + id + "' is not a WUI_RangeSlider, getParameters aborted.");
+
+            return;
+        }
+        
+        for (key in widget) {
+            if (widget.hasOwnProperty(key)) {
+                if (_exportable_parameters[key] !== undefined) {
+                    parameters[key] = widget[key];
+                }
+            }
+        }
+        
+        return parameters;
+    };
+    
+    this.setParameters = function (id, parameters) {
+        var widget = _widget_list[id],
+            key;
+        
+        if (widget === undefined) {
+            console.log("Element id '" + id + "' is not a WUI_RangeSlider, setParameters aborted.");
+
+            return;
+        }
+        
+        for (key in widget) {
+            if (widget.hasOwnProperty(key)) {
+                if (parameters[key] !== undefined) {
+                    widget[key] = parameters[key];
+                }
+            }
+        }
+        
+        if (widget.midi.device) {
+            if (widget.midi.controller) {
+                _midi_controls["d" + widget.midi.device]["c" + widget.midi.controller].widgets.push(id);
+            }
+        }
+
+        _update(widget.element, widget, widget.value);
     };
     
     this.submitMIDIMessage = function (midi_event) {
@@ -1136,9 +1198,12 @@ var WUI_RangeSlider = new (function() {
                 }
             }
             
-            widget.midi.learn = false;
-            widget.midi.learn_elem.style = "";
-            widget.midi.learn_elem.title = kdevice + " " + kcontroller;
+            widget.midi.device = device;
+            widget.midi.controller = controller;
+            
+            widget.learn = false;
+            widget.learn_elem.style = "";
+            widget.learn_elem.title = kdevice + " " + kcontroller;
             _midi_learn_current = null;
             
             return;
