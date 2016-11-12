@@ -601,22 +601,15 @@ var WUI_RangeSlider = new (function() {
             rs_element = target.parentElement,
         
             widget = _widget_list[rs_element.id],
-            
-            opts = widget.opts,
-            
-            owner_doc = target.ownerDocument,
-            
+        
             detached_slider,
             
             key,
             value_obj,
             
-            elems,
-            
-            input;
+            elems;
         
         if (widget.learn) {
-            
             widget.learn = false;
             
             target.style = "";

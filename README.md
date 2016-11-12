@@ -1,7 +1,7 @@
 WUI
 =====
 
-Collection of **easy to use** and **lightweight** (*~5.3kb css*, *~12.5kb js* gzipped) vanilla GUI widgets for the web.
+Collection of **easy to use** and **lightweight** (*~5.3kb css*, *~13.1kb js* gzipped) vanilla GUI widgets for the web.
 
 **Require no dependencies, all widgets can be used on their own.**
 
@@ -87,11 +87,11 @@ A bit of style hacking may be necessary if you want widgets to suit your need or
 
 Extending widgets to suit your needs or taste is very easy, widgets code are separated into three sections, **_private fields_**, **_private functions_** and **_public functions_**.
 
-If you want to add an option to a widget, you add a field into the **__known_options_** object in the **_private fields_** section, this is where all the options known by the widget are stored with their default value, the option behavior can then be implemented in the **_create_** function (or used later since it is also stored in the widget specific storage), you access to the option value in the **_create_** function by using the local **_opts_** object.
+If you want to add an option to a widget, you add a field into the **_known_options** object in the **_private fields_** section, this is where all the options known by the widget are stored with their default value, the option behavior can then be implemented in the **_create_** function (or used later since it is also stored in the widget specific storage), you access to the option value in the **_create_** function by using the local **_opts_** object.
 
-If you want to add/change advanced behaviors, you can create or modify private or public functions, the object **__widget_list_** which is available in the scope of most widgets serve as a generic storage for all widgets, all created widgets are stored here with their ID as key (**__widget_list["my_widget_id"]_** to access to a specific widget storage), there is at least an **_opts_** field for each widgets which can be used to retrieve/override the widget options.
+If you want to add/change advanced behaviors, you can create or modify private or public functions, the object **__widget_list_** which is available in the scope of most widgets serve as a generic storage for all widgets, all created widgets are stored here with their ID as key (**_widget_list["my_widget_id"]** to access to a specific widget storage), there is at least an **_opts_** field for each widgets which can be used to retrieve/override the widget options.
 
-Themes are done by cloning existing *.css files and modifying them, to do it properly you can clone a theme (*_wui/css/themes/[theme_name]_** folder), rename it, add the corresponding build line into Gruntfile.js (see **_files_** object), build and your minified/gzipped theme will be available in the **__dist_** folder.
+Themes are done by cloning existing *.css files and modifying them, to do it properly you can clone a theme (*_wui/css/themes/[theme_name]_** folder), rename it, add the corresponding build line into Gruntfile.js (see **_files_** object), build and your minified/gzipped theme will be available in the **_dist_** folder.
 
 =====
 

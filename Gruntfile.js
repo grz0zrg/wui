@@ -41,7 +41,7 @@ module.exports = function(grunt) {
         		},
         		preserveComments: false,
         		screwIE8: true,
-        		mangleProperties: true,
+        		mangleProperties: false,
         		reserveDOMProperties: true
       		},
  
