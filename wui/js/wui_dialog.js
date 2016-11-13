@@ -81,6 +81,7 @@ var WUI_Dialog = new (function() {
 
             on_close: null,
             on_detach: null,
+            on_pre_detach: null,
             on_resize: null
         };
     
@@ -426,6 +427,10 @@ var WUI_Dialog = new (function() {
             child_window = widget.detachable_ref,
 
             css, css_html, i, dbc = dialog.getBoundingClientRect();
+        
+        if (widget.opts.on_pre_detach) {
+            widget.opts.on_pre_detach();
+        }
 
         if (dialog.classList.contains(_class_name.minimized)) {
             w = parseInt(dialog.style.width,  10);

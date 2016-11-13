@@ -81,6 +81,7 @@ var WUI_Dialog = new (function() {
 
             on_close: null,
             on_detach: null,
+            on_pre_detach: null,
             on_resize: null
         };
     
@@ -426,6 +427,10 @@ var WUI_Dialog = new (function() {
             child_window = widget.detachable_ref,
 
             css, css_html, i, dbc = dialog.getBoundingClientRect();
+        
+        if (widget.opts.on_pre_detach) {
+            widget.opts.on_pre_detach();
+        }
 
         if (dialog.classList.contains(_class_name.minimized)) {
             w = parseInt(dialog.style.width,  10);
@@ -2733,7 +2738,7 @@ var WUI_RangeSlider = new (function() {
         if (widget === undefined) {
             console.log("Element id '" + id + "' is not a WUI_RangeSlider, getParameters aborted.");
 
-            return;
+            return null;
         }
         
         for (key in widget) {
@@ -2757,6 +2762,10 @@ var WUI_RangeSlider = new (function() {
             return;
         }
         
+        if (!parameters) {
+            return;
+        }
+        
         for (key in widget) {
             if (widget.hasOwnProperty(key)) {
                 if (parameters[key] !== undefined) {
@@ -2772,6 +2781,18 @@ var WUI_RangeSlider = new (function() {
         }
 
         _update(widget.element, widget, widget.value);
+    };
+    
+    this.setValue = function (id, value) {
+        var widget = _widget_list[id];
+        
+        if (widget === undefined) {
+            console.log("Element id '" + id + "' is not a WUI_RangeSlider, setParameters aborted.");
+
+            return;
+        }
+        
+        _update(widget.element, widget, value);
     };
     
     this.submitMIDIMessage = function (midi_event) {

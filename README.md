@@ -1,7 +1,7 @@
 WUI
 =====
 
-Collection of **easy to use** and **lightweight** (*~5.3kb css*, *~13.1kb js* gzipped) vanilla GUI widgets for the web.
+Collection of **easy to use** and **lightweight** (*~5.3kb css*, *~13.2kb js* gzipped) vanilla GUI widgets for the web.
 
 **Require no dependencies, all widgets can be used on their own.**
 
@@ -510,6 +510,7 @@ Only MIDI input is supported at the moment but it should not be hard to add MIDI
 *   destroy(wui_rangeslider)
 *   getParameters(wui_rangeslider)
 *   setParameters(wui_rangeslider, parameters)
+*   setValue(wui_rangeslider, value)
 *   submitMIDIMessage(midi_event)
   
 <br/>*Example*:
