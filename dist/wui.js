@@ -2144,6 +2144,7 @@ var WUI_RangeSlider = new (function() {
             return;   
         }
         
+/*
         var target = ev.target.parentElement.childNodes[1];
         
         if (target === undefined) {
@@ -2151,8 +2152,8 @@ var WUI_RangeSlider = new (function() {
         }
         
         var hook_element = _getHookElementFromTarget(target),
-            
-            rs_element = hook_element.parentElement.parentElement.parentElement,
+*/  
+            var rs_element = /*hook_element*/ev.target.parentElement/*.parentElement.parentElement*/,
         
             grabbed_widget = _widget_list[rs_element.id];
 
