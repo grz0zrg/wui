@@ -598,6 +598,14 @@ if (navigator.requestMIDIAccess) {
 
 <br/>
 
+Set value programmaticaly (this does not trigger the change function) :
+
+```javascript
+WUI_RangeSlider.setValue(my_slider, value);
+```
+
+<br/>
+
 ======
 
 <a name="circularmenu"></a>
