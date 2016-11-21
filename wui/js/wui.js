@@ -23,6 +23,7 @@ var WUI = new (function() {
         _draggables = [],
 
         _dragged_element = null,
+        _dragged_element_id = null,
 
         _touch_identifier = null,
 
@@ -76,13 +77,21 @@ var WUI = new (function() {
             }
         }
         
-        _dragged_element = ev.target;
+        draggable = _draggables[parseInt(ev.target.dataset.wui_draggable_id, 10)];
+        
+        if (draggable.target_element !== undefined) {
+            _dragged_element = draggable.target_element;
+        } else {
+            _dragged_element = ev.target;
+        }
+        
+        _dragged_element_id = parseInt(_dragged_element.dataset.wui_draggable_id, 10);
         
         document.body.style.cursor = "move";
         
-        draggable = _draggables[parseInt(_dragged_element.dataset.wui_draggable_id, 10)];
-        
         if (draggable.virtual) {
+            draggable = _draggables[_dragged_element_id];
+            
             _drag_x = x - parseInt(draggable.x, 10);
             _drag_y = y - parseInt(draggable.y,  10);
         } else {
@@ -109,7 +118,7 @@ var WUI = new (function() {
 
             i,
 
-            draggable = _draggables[parseInt(_dragged_element.dataset.wui_draggable_id, 10)],
+            draggable = _draggables[_dragged_element_id],
 
             new_x = draggable.x, new_y = draggable.y;
         
@@ -249,8 +258,9 @@ var WUI = new (function() {
      * @param {Object} element DOM Element
      * @param {Callback} function called when the element is being dragged, it has two argument which is the new x/y
      * @param {Boolean} virtual true to keep track of element position WITHOUT updating the element position (updating it is left to users through the callback)
+     * @param {Object} element DOM Element target, the drag will happen on this element, the first argument will just initiate the drag event
      */
-    this.draggable = function (element, on_drag_cb, virtual) {
+    this.draggable = function (element, on_drag_cb, virtual, target_element) {
         if (element.classList.contains(_class_name.draggable)) {
             return;
         }
@@ -265,6 +275,7 @@ var WUI = new (function() {
         _draggables.push({
             cb: on_drag_cb,
             element: element,
+            target_element: target_element,
             axisLock: null,
             virtual: virtual,
             x: parseInt(element.style.left, 10),

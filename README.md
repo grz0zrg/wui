@@ -85,6 +85,8 @@ A bit of style hacking may be necessary if you want widgets to suit your need or
 
 ###Hacking
 
+WUI is itself a big hack so hacking it is just the right way to use it! :)
+
 Extending widgets to suit your needs or taste is very easy, widgets code are separated into three sections, **_private fields_**, **_private functions_** and **_public functions_**.
 
 If you want to add an option to a widget, you add a field into the **_known_options** object in the **_private fields_** section, this is where all the options known by the widget are stored with their default value, the option behavior can then be implemented in the **_create_** function (or used later since it is also stored in the widget specific storage), you access to the option value in the **_create_** function by using the local **_opts_** object.
@@ -115,9 +117,10 @@ Fade in/Fade out method default to 500ms if no duration is provided
 ```javascript
 // make the element draggable
 // a callback for the second argument can be specified to gather the new position, like: function (element, x, y) {  }
-// third argument is a boolean and can be true to make the draggable functionality "virtual" which mean it will NOT modify the element position but still call the callback, it is left to the user to do any appropriate changes, this may be useful to add resizable functionality easily by using it with "lockDraggable", this default to false if not specified
+// third argument is optional, is a boolean and can be true to make the draggable functionality "virtual" which mean it will NOT modify the element position but still call the callback, it is left to the user to do any appropriate changes, this may be useful to add resizable functionality easily by using it with "lockDraggable", this default to false if not specified
+// fourth argument is optional and is used to bind multiple draggable hooks to control a specific DOM target
 // Note: If you want to remove the element while it is draggable, make it undraggable first by calling the appropriate function (undraggable), this is because WUI keep an internal reference of the element and it may cause memory leaks later, calling undraggable will make the reference go away
-WUI.draggable(my_element, function (element, x, y) {  }, false);
+WUI.draggable(my_element, function (element, x, y) {  }, false, target_element);
 
 // make a WUI draggable element undraggable and remove the internal reference
 WUI.undraggable(my_element);
@@ -680,4 +683,4 @@ The Web MIDI API should be supported by the browser if you want to use the MIDI 
 
 =====
 
-This was made for an audio app and the map editor of a wargame engine.
+This was made for audio app. and the UI of a wargame engine.
