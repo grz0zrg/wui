@@ -106,7 +106,7 @@ Fade in/Fade out method default to 500ms if no duration is provided
 <br/>
 *Methods*:
 
->*   draggable(element, on_drag_cb, virtual)
+>*   draggable(element, on_drag_cb, virtual, target_element)
 *   undraggable(element)
 *   lockDraggable(element, axis)
 *   fadeIn(element, duration_ms)

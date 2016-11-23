@@ -47,13 +47,16 @@ var WUI_CircularMenu = new (function() {
 
             i;
 
-        for (i = 0; i < _elems.length; i += 1) {
-            elem = _elems[i];
+        try { // this is in case it is in a detached WUI dialog, it will try to remove something that does not exist if the dialog was closed while the circular menu is still shown
+            for (i = 0; i < _elems.length; i += 1) {
+                elem = _elems[i];
 
-            doc.body.removeChild(elem);
+
+                doc.body.removeChild(elem);
+            }
+        } catch (e) {
+            _elems = [];
         }
-
-        _elems = [];
     };
 
     var _onClickHandler = function (win, doc, cb) {
