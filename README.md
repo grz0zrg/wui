@@ -528,7 +528,7 @@ WUI_RangeSlider.create("my_range_slider", {
     width: 300,
     height: 8,
     
-    // the value range, -100 <-> 100
+    // the value range, -100 <-> 100, optional
     min: -100,
     max: 100,
     

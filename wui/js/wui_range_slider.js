@@ -951,11 +951,11 @@ var WUI_RangeSlider = new (function() {
             
             value_input.style.marginTop = "6px";
             
-            if (options["max"]) {
+            if (options["min"]) {
                 value_input.setAttribute("min",   opts.min);
             }
             
-            if (options["min"]) {
+            if (options["max"]) {
                 value_input.setAttribute("max",   opts.max);
             }
         } else {
