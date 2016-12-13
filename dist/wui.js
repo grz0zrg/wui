@@ -2589,12 +2589,12 @@ var WUI_RangeSlider = new (function() {
             
             value_input.style.marginTop = "6px";
             
-            if (options["min"]) {
-                value_input.setAttribute("min",   opts.min);
+            if (options.hasOwnProperty("min")) {
+                value_input.setAttribute("min", opts.min);
             }
             
-            if (options["max"]) {
-                value_input.setAttribute("max",   opts.max);
+            if (options.hasOwnProperty("max")) {
+                value_input.setAttribute("max", opts.max);
             }
         } else {
             value_input.setAttribute("min",   opts.min);

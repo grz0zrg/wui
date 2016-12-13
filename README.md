@@ -250,6 +250,11 @@ var my_dialog = WUI_Dialog.create("my_dialog", {
     // function called when the dialog has been closed
     on_close: null,
     
+    // function called before the dialog is detached
+    on_pre_detach: function () {
+    
+    },
+    
     // function called when the dialog is detached, the new `window` object is passed as argument
     on_detach: function (new_window) {
         // you can modify the detachable window there, example:
