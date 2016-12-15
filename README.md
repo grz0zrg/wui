@@ -10,10 +10,10 @@ There is a dark and a bright theme, the dark theme is the default theme and is m
 The main advantages compared to other libraries are:
 
 * Widgets can be used on their own (no dependencies)
-* Input and Slider widgets can be MIDI controlled with two mode (absolute, relative) and configurable
+* Input and Slider widgets can be MIDI controlled with two mode (absolute, relative) and can be user-configurable
 * Dialogs can be detached (and everything related to WUI will still work)
-* Circular menu :)
-* Everything easily customizable/hackable
+* Circular menu aka [pie menu](https://en.wikipedia.org/wiki/Pie_menu) aka radial menu :)
+* Easily customizable/hackable
 * Lightweight
 * ...
 
@@ -158,25 +158,25 @@ WUI.fadeOut(my_element, 500, function () { console.log("finished!"); }, true);
 		<div>Tab 1</div>
         <div>Tab 2</div>
 	</div>
-    
+
 	<div>
 		<!-- a list of tabs content -->
 	    <div>
 			Tab 1 content
 	    </div>
-      
+
 	    <div>
 	        Tab 2 content
 	    </div>
 	</div>
 </div>
 ```
- 
+
 ```javascript
 WUI_Tabs.create("my_tabs", {
 	// function called when a tab is clicked (tab index will be passed as argument)
 	on_tab_click: tab_clicked,
-    
+
     // style value for the content height
     height: "calc(100% - 32px)" // this is the default value
 });
@@ -196,7 +196,7 @@ One of the coolest (and maybe 'unique') feature of the dialog widget is the abil
 All WUI widgets work very well with the detachable feature, what you change in the detachable dialog will be changed in the 'original' dialog, this should be the same dialog after all, for example, if you toggle a WUI_ToolBar button in the detached dialog and close it, when you open the dialog again (detached or not) the button will be toggled, the only thing which is not synced is the size of the detached dialog and its position.
 
 <br/>
->**Notes**: 
+>**Notes**:
 >
 >On iPad, the detach feature will work but Safari will open the dialog as a new tab.
 >
@@ -218,9 +218,9 @@ All WUI widgets work very well with the detachable feature, what you change in t
 *   focus(wui_dialog)
 *   setStatusBarContent(wui_dialog, html_content)
 *   getDetachedDialog(wui_dialog)
-  
+
 <br/>*Example*:
-  
+
 ```html
 <div id="my_dialog">
 	<div>
@@ -232,63 +232,63 @@ All WUI widgets work very well with the detachable feature, what you change in t
 ```javascript
 var my_dialog = WUI_Dialog.create("my_dialog", {
 	title: "dialog title",
-    
+
     width: "20%",
     height: "50%",
-    
+
     // 'left', 'center', 'right', default to 'left'
     halign: "left",
     // 'top', 'center', 'bottom', default to 'top'
     valign: "center",
-    
+
     // wether the dialog is opened or not after creation
     open: true,
-    
+
     // wether the dialog is minimized or not after creation
     minimized: false,
-    
+
     // function called when the dialog has been closed
     on_close: null,
-    
+
     // function called before the dialog is detached
     on_pre_detach: function () {
-    
+
     },
-    
+
     // function called when the dialog is detached, the new `window` object is passed as argument
     on_detach: function (new_window) {
         // you can modify the detachable window there, example:
         new_window.document.title = "My detached window"; // replace the detached dialog title
     },
-    
+
     // function called when the dialog is resized, `new_width` and `new_height` is the new dimension of the dialog content
     on_resize: function (new_width, new_height) {
-    
+
     },
-    
+
     modal: false,
-    
+
     // wether the dialog have a status bar
     status_bar: true,
-    
+
     // HTML content of the status bar
     status_bar_content: "status bar content",
-    
+
     closable: false,
     draggable: true,
     minimizable: true,
-    
+
     resizable: true,
-    
+
     detachable: true,
-    
+
     // the minimun width/height the dialog can be when resized (min_width accept a value or "title")
     min_width: "title",
     min_height: 64,
-    
+
     // option to keep the align when resized, example: if the dialog is centered in the window, the dialog will always be in center when it is resized
     keep_align_when_resized: true,
-    
+
     // can be used to position the dialog, default to 0
     top: 0,
     left: 0
@@ -351,18 +351,18 @@ var detached_dialog_window = WUI_Dialog.getDetachedDialog(my_dialog);
 WUI_DropDown.create("my_dropdown", {
 		width: "100px",
 	    height: "24px",
-	
+
 	    // the space between the floating list of items and the dropdown "button"
 	    vspacing: 4,
-	
+
 	    // time before the floating list close
 	    ms_before_hiding: 1000,
-	
+
 	    // default item (id) to be selected after creation
 	    selected_id: 0,
-	
+
 	    vertical: false,
-	
+
 	    // function called when an item is selected, the item index is passed as argument
 	    on_item_selected: item_selected
     },
@@ -393,23 +393,23 @@ The toolbar can be horizontal or vertical, have groups and minimizable groups, h
 ```html
 <div id="my_toolbar"></div>
 ```
-  
+
 ```javascript
 var my_toolbar = WUI_ToolBar.create("my_toolbar", {
     // display the minimize icon for each groups
     allow_groups_minimize: true,
-    
+
     // this will modify the size of the button
     item_width: 32,
     item_height: 32,
-    
+
     // this set the spacing between buttons, aka margin to left/right or top/bottom
     item_hmargin: 0,
     item_vmargin: 0,
-    
+
     icon_width: 32,
     icon_height: 32,
-  
+
     vertical: false
   },
   {  
@@ -418,32 +418,32 @@ var my_toolbar = WUI_ToolBar.create("my_toolbar", {
       {
         // CSS class name
         icon: "pencil-icon",
-        
+
         // button text
         text: "",
-        
+
         // can be "toggle", "dropdown" or nothing for a simple button
         type: "toggle",
-        
+
         // a toggling group id, another button with the same toggling group id will be linked to this one and will be off when this one will be switched on
         toggle_group: 0,
-        
+
         // toggle state of the button after creation, only if it is a toggle button
         toggle_state: true,
-        
+
         // function called when a button is clicked, if the item is of type "toggle", an object containing a field "id" (id of the toolbar tool), "type" (will contain "toggle") and "state" (0 or 1) will be passed as argument
         on_click: toolbar_item_toggle,
-        
+
         // tooltip
         tooltip: "Toggle me!"
       }
     ],
-    
+
     my_second_group_of_tools:    [
       { icon: "undo-icon", on_click: toolbar_item_click, tooltip: "Click me!" },
       { icon: "redo-icon", on_click: toolbar_item_click, tooltip: "Click me!" }
     ],
-    
+
     // a typical menu with a list of clickable items
     my_menu: [
       {
@@ -451,27 +451,27 @@ var my_toolbar = WUI_ToolBar.create("my_toolbar", {
         on_click: toolbar_item_click,
         tooltip: "Click me!",
         type: "dropdown",
-        
+
         // define where the list of items will appear around the item when it will be opened
         // can be "s", "sw", "se", "nw", "ne", anything else will default to "n" (north)
         orientation: "n",
-        
+
         // define the width of the list items
         // can be a CSS width (auto, 64px etc) or "tb_item" so the list items have the same width as the toolbar item button
         dropdown_items_width: "tb_item",
-        
+
         // items of the dropdown are defined here
         items: [
           {
             title: "New",
-            
+
             // function called when the item is clicked
             on_click: my_new_file
           },
-          
+
           {
             title: "Open",
-            
+
             // function called when the item is clicked
             on_click: my_open_file
           }
@@ -485,6 +485,20 @@ You can toggle a specific button programmatically with:
 
 ```javascript
 WUI_ToolBar.toggle(my_toolbar, 0, true); // the last argument is optional and mean that the toggle event will call the onClick function
+```
+
+<br/>
+You can integrate [Font Awesome](http://fontawesome.io/) easily with the CSS icon class name attribute, for example for a CSS icon class named "app-home-icon":
+
+```css
+.wui-toolbar-item.app-home-icon:before {
+    font-size: 24px; // you may need to change that
+    content: "\f015";
+    font-family: FontAwesome;
+    margin-left: 4px; // you may need to change that if font-size change
+    margin-top: 4px;
+    position: absolute;
+}
 ```
 
 <br/>
@@ -520,7 +534,7 @@ Only MIDI input is supported at the moment but it should not be hard to add MIDI
 *   setParameters(wui_rangeslider, parameters)
 *   setValue(wui_rangeslider, value)
 *   submitMIDIMessage(midi_event)
-  
+
 <br/>*Example*:
 
 ```html
@@ -532,41 +546,41 @@ WUI_RangeSlider.create("my_range_slider", {
     // width/height of the slider, if you make a vertical slider, you should swap theses values
     width: 300,
     height: 8,
-    
+
     // the value range, -100 <-> 100, optional
     min: -100,
     max: 100,
-    
+
     // standard increment when dragging
     step: 1,
-    
+
     // on mouse wheel increment
     scroll_step: 2,
-    
+
     vertical: false,
 
     // max number of decimals to display for decimal values (default to 4)
     decimals: 4,
-  
+
     // the widget default value (used for "reset to default" behaviors)
     default_value: 0,
-    
+
     // the widget current value
     value: 0.5,
-  
+
     // this will place the title on top and the value at the bottom, good for vertical sliders
     title_on_top: true,
-  
+
     title: "my range slider",
-    
+
     // enable the slider to be controllable by MIDI
     // can be a boolean (or anything) if you do not need to configure it, otherwise an object with a fiel "type" with value "rel" or "abs", by default the control type is set to "abs"
     midi: false,
-  
+
     // used to line up multiple sliders perfectly
     title_min_width: 150,
     value_min_width: 48,
-    
+
     // allow the user to configure the parameters of the slider, a settings button will appear around the slider and when it is clicked, a box with input fields will allow the user to change range and step values
     // this can be usefull if an "unlimited" slider is needed or simply to allow the step to be changed by the user
     // Note: if you want a few parameters to be configurable, just remove those you don't want in that object
@@ -579,7 +593,7 @@ WUI_RangeSlider.create("my_range_slider", {
     	step: { min: 0.1, max: 2 },
     	scroll_step: { max: 5 }
     },
-  
+
     // function to call when the slider value change with the value passed as argument
     on_change: slider_change
   });
@@ -632,18 +646,18 @@ Items are simple round buttons, an icon class name can be specified, a tooltip a
 <br/>*Method*:
 
 >*   create(options, items)
-  
+
 <br/>*Example*:
 
 ```javascript
 WUI_CircularMenu.create({
     x: 64,
     y: 64,
-    
+
     element: null, // if an element is specified, the menu will be shown around it
-    
+
     angle: 90, // offset the items positions by 90°
-    
+
     // radius
     rx: 64,
     ry: 64,

@@ -4492,14 +4492,18 @@ var WUI = new (function() {
      * @param {Boolean} hide_when_fade_finish  If true, add a "display: none;" style class automatically when the fade out effect finish
      */
     this.fadeOut = function (element, duration_ms, fade_finish_cb, hide_when_fade_finish) {
+        var transition;
+
         if (duration_ms === undefined || duration_ms === null) {
             duration_ms = 500;
         }
 
+        transition_str = "visibility 0s ease-in-out " + duration_ms + "ms, opacity " + duration_ms + "ms ease-in-out";
+
         if (element.style['WebkitTransition'] === undefined) {
-            element.style.transition = "visibility 0s ease-in-out " + duration_ms + "ms, opacity " + duration_ms + "ms ease-in-out";
+            element.style.transition = transition_str;
         } else {
-            element.style.WebkitTransition = "visibility 0s ease-in-out " + duration_ms + "ms, opacity " + duration_ms + "ms ease-in-out";
+            element.style.WebkitTransition = transition_str;
         }
 
         element.addEventListener('transitionend', _hideHandler(element, fade_finish_cb, hide_when_fade_finish), false);
@@ -4514,14 +4518,18 @@ var WUI = new (function() {
      * @param {Object} element DOM Element
      */
     this.fadeIn = function (element, duration_ms) {
+        var transition;
+
         if (duration_ms === undefined || duration_ms === null) {
             duration_ms = 500;
         }
 
+        transition_str = "visibility 0s ease-in-out 0s, opacity " + duration_ms + "ms ease-in-out";
+
         if (element.style['WebkitTransition'] === undefined) {
-            element.style.transition = "visibility 0s ease-in-out 0s, opacity " + duration_ms + "ms ease-in-out";
+            element.style.transition = transition_str;
         } else {
-            element.style.WebkitTransition = "visibility 0s ease-in-out 0s, opacity " + duration_ms + "ms ease-in-out";
+            element.style.WebkitTransition = transition_str;
         }
 
         element.classList.remove(_class_name.hide_fi_500);
