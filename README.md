@@ -492,10 +492,10 @@ You can integrate [Font Awesome](http://fontawesome.io/) easily with the CSS ico
 
 ```css
 .wui-toolbar-item.app-home-icon:before {
-    font-size: 24px; // you may need to change that
+    font-size: 24px; /*you may need to change that*/
     content: "\f015";
     font-family: FontAwesome;
-    margin-left: 4px; // you may need to change that if font-size change
+    margin-left: 4px; /*you may need to change that if font-size change*/
     margin-top: 4px;
     position: absolute;
 }
