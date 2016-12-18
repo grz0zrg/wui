@@ -501,6 +501,8 @@ You can integrate [Font Awesome](http://fontawesome.io/) easily with the CSS ico
 }
 ```
 
+If you find this too cumbersome to setup, you can render Font Awesome icons to images with this tool: [fa2png](http://fa2png.io/)
+
 <br/>
 
 ======
@@ -624,6 +626,23 @@ Set value programmaticaly (this does not trigger the change function) :
 
 ```javascript
 WUI_RangeSlider.setValue(my_slider, value);
+```
+
+<br/>
+
+Export the widget parameters :
+
+```javascript
+var parameters = WUI_RangeSlider.getParameters(my_slider);
+// parameters contain opts (containing all options fields), endless, midi and value field
+```
+
+<br/>
+
+Import parameters :
+
+```javascript
+WUI_RangeSlider.setParameters(my_slider, parameters);
 ```
 
 <br/>
