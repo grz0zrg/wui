@@ -622,10 +622,10 @@ if (navigator.requestMIDIAccess) {
 
 <br/>
 
-Set value programmaticaly (this does not trigger the change function) :
+Set value programmaticaly (last argument is optional and can be used to trigger the change function by setting it to true) :
 
 ```javascript
-WUI_RangeSlider.setValue(my_slider, value);
+WUI_RangeSlider.setValue(my_slider, my_value, trigger_on_change);
 ```
 
 <br/>
