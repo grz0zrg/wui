@@ -1274,10 +1274,15 @@ var WUI_RangeSlider = new (function() {
 
                         _onChange(widget.opts.on_change, new_value);
                     } else if (widget.midi.ctrl_type === "rel") {
+                        var step = widget.opts.step;
+                        if (step === "any") {
+                            step = 0.5;
+                        }
+                        
                         if (ctrl_obj.prev_value > value) {
-                            ctrl_obj.increments = -widget.opts.step;
+                            ctrl_obj.increments = -step;
 
-                            new_value = widget.value - widget.opts.step;
+                            new_value = widget.value - step;
 
                             if (new_value < widget.opts.min && !widget.endless) {
                                 continue;
@@ -1285,9 +1290,9 @@ var WUI_RangeSlider = new (function() {
 
                             ctrl_obj.prev_value = value;
                         } else if (ctrl_obj.prev_value < value) {
-                            ctrl_obj.increments = widget.opts.step;
+                            ctrl_obj.increments = step;
 
-                            new_value = widget.value + widget.opts.step;
+                            new_value = widget.value + step;
 
                             if (new_value > widget.opts.max && !widget.endless) {
                                 continue;
