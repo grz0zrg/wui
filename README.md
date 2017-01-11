@@ -1,7 +1,7 @@
 WUI
 =====
 
-Collection of **easy to use** and **lightweight** (*~5.3kb css*, *~13.2kb js* gzipped) vanilla GUI widgets for the web.
+Collection of **easy to use** and **lightweight** (*~5.3kb css*, *~13.3kb js* gzipped) vanilla GUI widgets for the web.
 
 **Require no dependencies, all widgets can be used on their own.**
 
@@ -553,7 +553,7 @@ WUI_RangeSlider.create("my_range_slider", {
     min: -100,
     max: 100,
 
-    // standard increment when dragging
+    // standard increment when dragging NOTE : can be "any" if you need to accept both decimals and integers for the validation ("step" is just the bare "step" input attribute value actually!)
     step: 1,
 
     // on mouse wheel increment

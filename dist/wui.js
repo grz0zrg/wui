@@ -1818,6 +1818,8 @@ var WUI_RangeSlider = new (function() {
             return ev_target;
         } else if (ev_target.classList.contains(_class_name.filler)) {
             return ev_target.firstElementChild;
+        } else if (!ev_target.firstElementChild) {
+            return null;
         }
 
         return ev_target.firstElementChild.firstElementChild;
@@ -2112,15 +2114,23 @@ var WUI_RangeSlider = new (function() {
         ev.preventDefault();
         ev.stopPropagation();
 
-        var hook_element = _getHookElementFromTarget(ev.target),
-
-            rs_element = hook_element.parentElement.parentElement.parentElement,
-
-            grabbed_widget = _widget_list[rs_element.id],
-
+        var hook_element,
+            rs_element,
+            grabbed_widget,
             delta = ev.wheelDelta ? ev.wheelDelta / 40 : ev.detail ? -ev.detail : 0,
+            value;
 
-            value = grabbed_widget.value;
+        hook_element = _getHookElementFromTarget(ev.target);
+
+        if (hook_element === null) {
+            rs_element = ev.target.parentElement;
+            grabbed_widget = _widget_list[rs_element.id];
+        } else {
+            rs_element = hook_element.parentElement.parentElement.parentElement;
+            grabbed_widget = _widget_list[rs_element.id];
+        }
+
+        value = grabbed_widget.value;
 
         if (delta >= 0) {
             value += grabbed_widget.opts.scroll_step;
@@ -2128,10 +2138,12 @@ var WUI_RangeSlider = new (function() {
             value -= grabbed_widget.opts.scroll_step;
         }
 
-        if (value > grabbed_widget.opts.max) {
-            value = grabbed_widget.opts.max;
-        } else if (value < grabbed_widget.opts.min) {
-            value = grabbed_widget.opts.min;
+        if (!grabbed_widget.endless) {
+            if (value > grabbed_widget.opts.max) {
+                value = grabbed_widget.opts.max;
+            } else if (value < grabbed_widget.opts.min) {
+                value = grabbed_widget.opts.min;
+            }
         }
 
         _update(rs_element, grabbed_widget, value);
@@ -2168,6 +2180,13 @@ var WUI_RangeSlider = new (function() {
                 opts = widget.opts;
 
             if ((target.validity) && (!target.validity.valid)) {
+                if (conf_key === "min" ||
+                    conf_key === "max") {
+                        widget.endless = true;
+                } else if (conf_key === "step") {
+                    widget.value_input.step = "any";
+                }
+
                 return;
             }
 
@@ -2179,6 +2198,8 @@ var WUI_RangeSlider = new (function() {
                 //if (opts.min < 0) {
                     opts.range = opts.max - opts.min;
                 //}
+
+                widget.endless = false;
             } else if (conf_key === "max") {
                 opts.max = _truncateDecimals(target.value, opts.decimals);
 
@@ -2189,6 +2210,8 @@ var WUI_RangeSlider = new (function() {
                 //if (opts.min < 0) {
                     opts.range = opts.max - opts.min;
                 //}
+
+                widget.endless = false;
             } else if (conf_key === "step") {
                 opts.step = _truncateDecimals(target.value, opts.decimals);
 
@@ -2381,7 +2404,8 @@ var WUI_RangeSlider = new (function() {
                         configure_container.appendChild(owner_doc.createElement("div"));
                     }
 
-                    input_element.setAttribute("type",  "number");
+                    input_element.setAttribute("type", "number");
+                    input_element.setAttribute("step", "any");
 
                     if (key_value !== undefined) {
                         if (key_value.min !== undefined) {
@@ -2613,6 +2637,8 @@ var WUI_RangeSlider = new (function() {
 
         if (!options.max && !options.min) {
             rs.endless = true;
+            opts.min = undefined;
+            opts.max = undefined;
         }
 
         if (opts.configurable) {
@@ -2681,10 +2707,10 @@ var WUI_RangeSlider = new (function() {
             bar.addEventListener("touchstart", _rsMouseDown, false);
 
             hook.addEventListener("dblclick", _rsDblClick, false);
-
-            bar.addEventListener("mousewheel", _rsMouseWheel, false);
-            bar.addEventListener("DOMMouseScroll", _rsMouseWheel, false);
         }
+
+        value_input.addEventListener("mousewheel", _rsMouseWheel, false);
+        value_input.addEventListener("DOMMouseScroll", _rsMouseWheel, false);
 
         value_input.addEventListener("input", _inputChange, false);
 
