@@ -2705,12 +2705,14 @@ var WUI_RangeSlider = new (function() {
         if (opts.bar) {
             bar.addEventListener("mousedown", _rsMouseDown, false);
             bar.addEventListener("touchstart", _rsMouseDown, false);
+            bar.addEventListener("mousewheel", _rsMouseWheel, false);
+            bar.addEventListener("DOMMouseScroll", _rsMouseWheel, false);
 
             hook.addEventListener("dblclick", _rsDblClick, false);
+        } else {
+            value_input.addEventListener("mousewheel", _rsMouseWheel, false);
+            value_input.addEventListener("DOMMouseScroll", _rsMouseWheel, false);
         }
-
-        value_input.addEventListener("mousewheel", _rsMouseWheel, false);
-        value_input.addEventListener("DOMMouseScroll", _rsMouseWheel, false);
 
         value_input.addEventListener("input", _inputChange, false);
 
