@@ -492,7 +492,7 @@ var WUI_RangeSlider = new (function() {
             grabbed_widget = _widget_list[rs_element.id];
         }
 
-        value = grabbed_widget.value;
+        value = parseFloat(grabbed_widget.value);
 
         if (delta >= 0) {
             value += grabbed_widget.opts.scroll_step;
@@ -501,7 +501,7 @@ var WUI_RangeSlider = new (function() {
         }
 
         if (!grabbed_widget.endless) {
-            if (value > grabbed_widget.opts.max) {
+            if (grabbed_widget.opts.max && value > grabbed_widget.opts.max) {
                 value = grabbed_widget.opts.max;
             } else if (value < grabbed_widget.opts.min) {
                 value = grabbed_widget.opts.min;
@@ -974,17 +974,22 @@ var WUI_RangeSlider = new (function() {
             bar.style.display = "none";
 
             value_input.style.marginTop = "6px";
+        }
 
-            if (options.hasOwnProperty("min")) {
-                value_input.setAttribute("min", opts.min);
-            }
-
-            if (options.hasOwnProperty("max")) {
-                value_input.setAttribute("max", opts.max);
-            }
+        if (options.hasOwnProperty("min")) {
+            value_input.setAttribute("min", opts.min);
         } else {
-            value_input.setAttribute("min",   opts.min);
-            value_input.setAttribute("max",   opts.max);
+            opts.min = undefined;
+        }
+
+        if (options.hasOwnProperty("max")) {
+            value_input.setAttribute("max", opts.max);
+        } else {
+            opts.max = undefined;
+
+            if (opts.min === undefined) {
+                rs.endless = true;
+            }
         }
 
         bar.appendChild(filler);
@@ -996,12 +1001,6 @@ var WUI_RangeSlider = new (function() {
         rs.hook = hook;
 
         range_slider.appendChild(value_input);
-
-        if (!options.max && !options.min) {
-            rs.endless = true;
-            opts.min = undefined;
-            opts.max = undefined;
-        }
 
         if (opts.configurable) {
             var configurable_opts = 0;
@@ -1278,7 +1277,7 @@ var WUI_RangeSlider = new (function() {
                         if (step === "any") {
                             step = 0.5;
                         }
-                        
+
                         if (ctrl_obj.prev_value > value) {
                             ctrl_obj.increments = -step;
 
