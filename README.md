@@ -47,18 +47,16 @@ There is also a minified and gzipped up to date ready-to-use css file for each t
 <br/>
 If you need a single (or more) widget, you can find minified files of each widget in the **_dist/widgets_** folder
 
-=====
-
 #### Building with [Node](https://nodejs.org/) and [Grunt](http://gruntjs.com/)
+=====
 
 ```
 npm install
 grunt dist
 ```
 
-=====
-
 ### Introduction
+=====
 
 *   [WUI](#wui_main)
 *   [WUI_Tabs](#tabs)
@@ -81,9 +79,8 @@ HTML elements with a specific layout are required to use some widgets (like tabs
 
 A bit of style hacking may be necessary if you want widgets to suit your need or your taste, you can build themes easily with bits of CSS, the demo page can be helpful.
 
-=====
-
 ### Hacking
+=====
 
 WUI is itself a big hack so hacking it is just the right way to use it! :)
 
@@ -95,10 +92,9 @@ If you want to add/change advanced behaviors, you can create or modify private o
 
 Themes are done by cloning existing *.css files and modifying them, to do it properly you can clone a theme (*_wui/css/themes/[theme_name]_** folder), rename it, add the corresponding build line into Gruntfile.js (see **_files_** object), build and your minified/gzipped theme will be available in the **_dist_** folder.
 
-=====
-
 <a name="wui_main"></a>
 ### WUI ###
+=====
 
 Not really a widget but a collection of tools, can be helpful if you want to add draggable/resizable functionality to an element or apply fade in/out.
 
@@ -137,10 +133,9 @@ WUI.fadeOut(my_element, 500, function () { console.log("finished!"); }, true);
 
 <br/>
 
-=====
-
 <a name="tabs"></a>
 ### Tabs ###
+=====
 
 *Methods*:
 
@@ -184,10 +179,9 @@ WUI_Tabs.create("my_tabs", {
 
 <br/>
 
-=====
-
 <a name="dialog"></a>
 ### Dialog/Panel ###
+=====
 
 Dialogs can be draggable, closable, minimizable, resizable, detachable, modal and act as panels, they also go in front of others when you move them.
 
@@ -333,6 +327,7 @@ var detached_dialog_window = WUI_Dialog.getDetachedDialog(my_dialog);
 
 <a name="dropdown"></a>
 ### DropDown ###
+=====
 
 >A simple and automatically opening/closing dropdown.
 
@@ -372,10 +367,9 @@ WUI_DropDown.create("my_dropdown", {
 ```
 <br/>
 
-======
-
 <a name="toolbar"></a>
 ### ToolBar ###
+=====
 
 The toolbar can be horizontal or vertical, have groups and minimizable groups, have three type of buttons, simple, toggle and dropdown (useful to make menu bar), a set of toggle buttons can be linked (grouped), buttons can be an icon, a text or both.
 
@@ -505,17 +499,15 @@ If you find this too cumbersome to setup, you can render Font Awesome icons to i
 
 <br/>
 
-======
-
 <a name="input"></a>
 ### Input ###
+=====
 
 WUI does not support an input widget out of the box but there is a shortcut "WUI_Input" which is just a RangeSlider in disguise, you must set the "bar" option to false and you get an input and it share the same properties like MIDI support and so on, see RangeSlider widget for options and methods.
 
-======
-
 <a name="rangeslider"></a>
 ### RangeSlider ###
+=====
 
 Range slider widget can be horizontal or vertical, can be user configurable (step, min, max etc options can be set by the user as he want it), have a negative/positive range, the value can be changed with the mouse wheel, by moving the hook point by dragging, by a MIDI controller or by clicking on the slider bar, a double click on the slider will reset the value to its default value, the value also appear as an input which perform automatically all sanity check and will indicate if the value is correct or not (red)
 
@@ -647,10 +639,9 @@ WUI_RangeSlider.setParameters(my_slider, parameters);
 
 <br/>
 
-======
-
 <a name="circularmenu"></a>
 ### CircularMenu ###
+=====
 
 Show a menu with items arranged in a circle/ellipse.
 
@@ -699,6 +690,7 @@ WUI_CircularMenu.create({
 
 <a name="compat"></a>
 # Compatibility #
+=====
 
 Not well tested but should work in all modern browsers supporting **_ECMAScript 5_** and **_CSS3_**.
 
@@ -712,9 +704,8 @@ The Web MIDI API should be supported by the browser if you want to use the MIDI 
 
 <a name="license"></a>
 # License #
+=====
 
 [Revised BSD](https://github.com/grz0zrg/wui/blob/master/LICENSE)
 
-=====
-
-This was made for audio app. and the UI of a wargame engine.
+This was made for an [audio app.](https://github.com/grz0zrg/fsynth) and the UI of a wargame engine.
