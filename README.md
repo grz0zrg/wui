@@ -21,12 +21,12 @@ Good for single page apps, audio apps, experiments and the like.
 
 <br/>
 
-####Demo
+#### Demo
 - [Demo](http://grz0zrg.github.io/wui-demo/)
 <br/>
 - [Demo repository](https://github.com/grz0zrg/wui-demo)
 
-####Links
+#### Links
 - [Documentation](#doc)
 - [Compatibility](#compat)
 - [License](#license)
@@ -34,7 +34,7 @@ Good for single page apps, audio apps, experiments and the like.
 <a name="doc"></a>
 # Documentation #
 
-#####Usage
+##### Usage
 
 There is a minified and gzipped up to date ready-to-use js file in the **_dist_** folder, to use the entire library, just include it in your HTML file
 
@@ -49,7 +49,7 @@ If you need a single (or more) widget, you can find minified files of each widge
 
 =====
 
-####Building with [Node](https://nodejs.org/) and [Grunt](http://gruntjs.com/)
+#### Building with [Node](https://nodejs.org/) and [Grunt](http://gruntjs.com/)
 
 ```
 npm install
@@ -58,7 +58,7 @@ grunt dist
 
 =====
 
-###Introduction
+### Introduction
 
 *   [WUI](#wui_main)
 *   [WUI_Tabs](#tabs)
@@ -83,7 +83,7 @@ A bit of style hacking may be necessary if you want widgets to suit your need or
 
 =====
 
-###Hacking
+### Hacking
 
 WUI is itself a big hack so hacking it is just the right way to use it! :)
 
@@ -697,8 +697,6 @@ WUI_CircularMenu.create({
 ```
 <br/>
 
-=====
-
 <a name="compat"></a>
 # Compatibility #
 
@@ -711,8 +709,6 @@ Tested and work ok with IE 11, Opera 12, Chrome (30, 35, 40, 53), Firefox (31, 3
 Mostly work (problems with the ToolBar and Dialog) under IE 10 but i do not support it.
 
 The Web MIDI API should be supported by the browser if you want to use the MIDI features.
-
-=====
 
 <a name="license"></a>
 # License #
