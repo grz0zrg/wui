@@ -1,5 +1,5 @@
-WUI
-
+# WUI #
+=====
 
 Collection of **easy to use** and **lightweight** (*~5.3kb css*, *~13.3kb js* gzipped) vanilla GUI widgets for the web.
 
