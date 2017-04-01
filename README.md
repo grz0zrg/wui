@@ -1,5 +1,5 @@
 WUI
-=====
+
 
 Collection of **easy to use** and **lightweight** (*~5.3kb css*, *~13.3kb js* gzipped) vanilla GUI widgets for the web.
 
@@ -19,11 +19,8 @@ The main advantages compared to other libraries are:
 
 Good for single page apps, audio apps, experiments and the like.
 
-<br/>
-
 #### Demo
 - [Demo](http://grz0zrg.github.io/wui-demo/)
-<br/>
 - [Demo repository](https://github.com/grz0zrg/wui-demo)
 
 #### Links
@@ -44,11 +41,11 @@ There is also a minified and gzipped up to date ready-to-use css file for each t
 <link rel="stylesheet" type="text/css" href="wui.min.css"/>
 <script type="text/javascript" src="wui.min.js"></script>
 ```
-<br/>
+
 If you need a single (or more) widget, you can find minified files of each widget in the **_dist/widgets_** folder
 
 #### Building with [Node](https://nodejs.org/) and [Grunt](http://gruntjs.com/)
-=====
+
 
 ```
 npm install
@@ -56,7 +53,7 @@ grunt dist
 ```
 
 ### Introduction
-=====
+
 
 *   [WUI](#wui_main)
 *   [WUI_Tabs](#tabs)
@@ -80,7 +77,7 @@ HTML elements with a specific layout are required to use some widgets (like tabs
 A bit of style hacking may be necessary if you want widgets to suit your need or your taste, you can build themes easily with bits of CSS, the demo page can be helpful.
 
 ### Hacking
-=====
+
 
 WUI is itself a big hack so hacking it is just the right way to use it! :)
 
@@ -94,12 +91,12 @@ Themes are done by cloning existing *.css files and modifying them, to do it pro
 
 <a name="wui_main"></a>
 ### WUI ###
-=====
+
 
 Not really a widget but a collection of tools, can be helpful if you want to add draggable/resizable functionality to an element or apply fade in/out.
 
 Fade in/Fade out method default to 500ms if no duration is provided
-<br/>
+
 *Methods*:
 
 >*   draggable(element, on_drag_cb, virtual, target_element)
@@ -108,7 +105,7 @@ Fade in/Fade out method default to 500ms if no duration is provided
 *   fadeIn(element, duration_ms)
 *   fadeOut(element, duration_ms, fade_finish_cb, hide_when_fade_finish)
 
-<br/>*Example*:
+*Example*:
 
 ```javascript
 // make the element draggable
@@ -131,11 +128,11 @@ WUI.fadeIn(my_element, 500);
 WUI.fadeOut(my_element, 500, function () { console.log("finished!"); }, true);
 ```
 
-<br/>
+
 
 <a name="tabs"></a>
 ### Tabs ###
-=====
+
 
 *Methods*:
 
@@ -144,7 +141,7 @@ WUI.fadeOut(my_element, 500, function () { console.log("finished!"); }, true);
 *   getContentElement(wui_tabs, tab_index)
 *   getTabName(wui_tabs, tab_index)
 
-<br/>*Example*:
+*Example*:
 
 ```html
 <div id="my_tabs">
@@ -177,11 +174,11 @@ WUI_Tabs.create("my_tabs", {
 });
 ```
 
-<br/>
+
 
 <a name="dialog"></a>
 ### Dialog/Panel ###
-=====
+
 
 Dialogs can be draggable, closable, minimizable, resizable, detachable, modal and act as panels, they also go in front of others when you move them.
 
@@ -189,21 +186,21 @@ One of the coolest (and maybe 'unique') feature of the dialog widget is the abil
 
 All WUI widgets work very well with the detachable feature, what you change in the detachable dialog will be changed in the 'original' dialog, this should be the same dialog after all, for example, if you toggle a WUI_ToolBar button in the detached dialog and close it, when you open the dialog again (detached or not) the button will be toggled, the only thing which is not synced is the size of the detached dialog and its position.
 
-<br/>
+
 >**Notes**:
 >
 >On iPad, the detach feature will work but Safari will open the dialog as a new tab.
 >
->=====
+>
 > The detach feature keep track of events by overriding `addEventListener`, in order to work correctly the WUI_Dialog/WUI library should be loaded before you or other libs add events.
 >
->=====
+>
 >When a dialog is detached, it will add back event listeners added with `addEventListener` only (and also inline events), if you attach events to elements in the dialog content using `elem.onclick` etc, the event will not be added back, also since the dialog content will be in another window/document, events attached to the initial window or document and acting on the dialog content will not work, because the dialog is now in another window, you will have to take care of attaching to/using `element.ownerDocument` or `element.parentWindow` instead of `document` or `window`.
 >
->=====
+>
 >Dialogs `zIndex` is between 100 and 101.
 
-<br/>*Methods*:
+*Methods*:
 
 >*   create(id, options)
 *   destroy(wui_dialog)
@@ -213,7 +210,7 @@ All WUI widgets work very well with the detachable feature, what you change in t
 *   setStatusBarContent(wui_dialog, html_content)
 *   getDetachedDialog(wui_dialog)
 
-<br/>*Example*:
+*Example*:
 
 ```html
 <div id="my_dialog">
@@ -288,55 +285,55 @@ var my_dialog = WUI_Dialog.create("my_dialog", {
     left: 0
 });
 ```
-<br/>
+
 Closed and want to open it again?
 
 ```javascript
 // second argument is optional (default to false) and tell wether the dialog is opened in its own window
 WUI_Dialog.open(my_dialog, false);
 ```
-<br/>
+
 
 Open and want to close it programmatically?
 
 ```javascript
 WUI_Dialog.close(my_dialog, true); // last argument is optional (default to false) mean the on_close function will be called
 ```
-<br/>
+
 
 Focusing a specific dialog
 
 ```javascript
 WUI_Dialog.focus(my_dialog);
 ```
-<br/>
+
 
 Want to change the status bar content?
 
 ```javascript
 WUI_Dialog.setStatusBarContent(my_dialog, "My new status bar content");
 ```
-<br/>
+
 
 Need access to the detached dialog window object?
 
 ```javascript
 var detached_dialog_window = WUI_Dialog.getDetachedDialog(my_dialog);
 ```
-<br/>
+
 
 <a name="dropdown"></a>
 ### DropDown ###
-=====
+
 
 >A simple and automatically opening/closing dropdown.
 
-<br/>*Method*:
+*Method*:
 
 >*   create(id, options, entry_name_array)
 *   destroy(wui_dropdown)
 
-<br/>*Example*:
+*Example*:
 
 ```html
 <div id="my_dropdown"></div>
@@ -365,15 +362,15 @@ WUI_DropDown.create("my_dropdown", {
     ["First item", "Second item", "Third item"]
 );
 ```
-<br/>
+
 
 <a name="toolbar"></a>
 ### ToolBar ###
-=====
+
 
 The toolbar can be horizontal or vertical, have groups and minimizable groups, have three type of buttons, simple, toggle and dropdown (useful to make menu bar), a set of toggle buttons can be linked (grouped), buttons can be an icon, a text or both.
 
-<br/>*Method*:
+*Method*:
 
 >*   create(id, options, tools)
 *   destroy(wui_toolbar)
@@ -382,7 +379,7 @@ The toolbar can be horizontal or vertical, have groups and minimizable groups, h
 *   toggle(wui_toolbar, tool_id, propagate)
 *   getItemElement(wui_toolbar, tool_id)
 
-<br/>*Example*:
+*Example*:
 
 ```html
 <div id="my_toolbar"></div>
@@ -474,14 +471,14 @@ var my_toolbar = WUI_ToolBar.create("my_toolbar", {
     ]
   });
 ```
-<br/>
+
 You can toggle a specific button programmatically with:
 
 ```javascript
 WUI_ToolBar.toggle(my_toolbar, 0, true); // the last argument is optional and mean that the toggle event will call the onClick function
 ```
 
-<br/>
+
 You can integrate [Font Awesome](http://fontawesome.io/) easily with the CSS icon class name attribute, for example for a CSS icon class named "app-home-icon":
 
 ```css
@@ -497,17 +494,17 @@ You can integrate [Font Awesome](http://fontawesome.io/) easily with the CSS ico
 
 If you find this too cumbersome to setup, you can render Font Awesome icons to images with this tool: [fa2png](http://fa2png.io/)
 
-<br/>
+
 
 <a name="input"></a>
 ### Input ###
-=====
+
 
 WUI does not support an input widget out of the box but there is a shortcut "WUI_Input" which is just a RangeSlider in disguise, you must set the "bar" option to false and you get an input and it share the same properties like MIDI support and so on, see RangeSlider widget for options and methods.
 
 <a name="rangeslider"></a>
 ### RangeSlider ###
-=====
+
 
 Range slider widget can be horizontal or vertical, can be user configurable (step, min, max etc options can be set by the user as he want it), have a negative/positive range, the value can be changed with the mouse wheel, by moving the hook point by dragging, by a MIDI controller or by clicking on the slider bar, a double click on the slider will reset the value to its default value, the value also appear as an input which perform automatically all sanity check and will indicate if the value is correct or not (red)
 
@@ -520,7 +517,7 @@ The "abs" MIDI mode is based on the "min" and "max" property, it act as a percen
 
 Only MIDI input is supported at the moment but it should not be hard to add MIDI output later on.
 
-<br/>*Method*:
+*Method*:
 
 >*   create(id, options)
 *   destroy(wui_rangeslider)
@@ -529,7 +526,7 @@ Only MIDI input is supported at the moment but it should not be hard to add MIDI
 *   setValue(wui_rangeslider, value)
 *   submitMIDIMessage(midi_event)
 
-<br/>*Example*:
+*Example*:
 
 ```html
 <div id="my_range_slider"></div>
@@ -592,7 +589,7 @@ WUI_RangeSlider.create("my_range_slider", {
     on_change: slider_change
   });
 ```
-<br/>
+
 
 MIDI usage example :
 
@@ -612,7 +609,7 @@ if (navigator.requestMIDIAccess) {
 }
 ```
 
-<br/>
+
 
 Set value programmaticaly (last argument is optional and can be used to trigger the change function by setting it to true) :
 
@@ -620,7 +617,7 @@ Set value programmaticaly (last argument is optional and can be used to trigger 
 WUI_RangeSlider.setValue(my_slider, my_value, trigger_on_change);
 ```
 
-<br/>
+
 
 Export the widget parameters :
 
@@ -629,7 +626,7 @@ var parameters = WUI_RangeSlider.getParameters(my_slider);
 // parameters contain opts (containing all options fields), endless, midi and value field
 ```
 
-<br/>
+
 
 Import parameters :
 
@@ -637,11 +634,11 @@ Import parameters :
 WUI_RangeSlider.setParameters(my_slider, parameters);
 ```
 
-<br/>
+
 
 <a name="circularmenu"></a>
 ### CircularMenu ###
-=====
+
 
 Show a menu with items arranged in a circle/ellipse.
 
@@ -653,11 +650,11 @@ You can use the "angle" option (degree) to offset the items position by an amoun
 
 Items are simple round buttons, an icon class name can be specified, a tooltip and a callback.
 
-<br/>*Method*:
+*Method*:
 
 >*   create(options, items)
 
-<br/>*Example*:
+*Example*:
 
 ```javascript
 WUI_CircularMenu.create({
@@ -686,11 +683,11 @@ WUI_CircularMenu.create({
     { icon: "css-icon-class", tooltip: "fourth button", on_click: function () { } },
   ]);
 ```
-<br/>
+
 
 <a name="compat"></a>
 # Compatibility #
-=====
+
 
 Not well tested but should work in all modern browsers supporting **_ECMAScript 5_** and **_CSS3_**.
 
@@ -704,7 +701,7 @@ The Web MIDI API should be supported by the browser if you want to use the MIDI 
 
 <a name="license"></a>
 # License #
-=====
+
 
 [Revised BSD](https://github.com/grz0zrg/wui/blob/master/LICENSE)
 
