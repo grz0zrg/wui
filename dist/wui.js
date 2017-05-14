@@ -4166,8 +4166,7 @@ var WUI_CircularMenu = new (function() {
     var _onClickHandler = function (win, doc, cb) {
         var handler = function (ev) {
             ev.preventDefault();
-console.log("_onClickHandler", ev.target);
-console.log("");
+
             cb();
 
             _destroy(doc);
