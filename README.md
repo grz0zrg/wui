@@ -12,6 +12,7 @@ The main advantages compared to other libraries are:
 * Input and Slider widgets can be MIDI controlled with two mode (absolute, relative) and can be user-configurable
 * Dialogs can be detached (and everything related to WUI will still work)
 * Circular menu aka [pie menu](https://en.wikipedia.org/wiki/Pie_menu) aka radial menu :)
+* Events are optimized (meaning that there is few listeners for each widgets)
 * Easily customizable/hackable
 * Lightweight
 * ...
@@ -255,6 +256,17 @@ var my_dialog = WUI_Dialog.create("my_dialog", {
     on_resize: function (new_width, new_height) {
 
     },
+
+    // you can add header buttons easily by using this (such as a help "?" button)
+    header_btn: [
+        {
+            title: "Help",
+            on_click: function () {
+                // code called when the header button is clicked, redirecting to a documentation for example
+            },
+            class_name: "" // class name to use (you will generally need it if you want to show an icon like "?", use the background-image property to do so)
+        }
+    ],
 
     modal: false,
 
