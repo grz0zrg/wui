@@ -100,10 +100,10 @@ Fade in/Fade out method default to 500ms if no duration is provided
 *Methods*:
 
 >*   draggable(element, on_drag_cb, virtual, target_element)
-*   undraggable(element)
-*   lockDraggable(element, axis)
-*   fadeIn(element, duration_ms)
-*   fadeOut(element, duration_ms, fade_finish_cb, hide_when_fade_finish)
+>*   undraggable(element)
+>*   lockDraggable(element, axis)
+>*   fadeIn(element, duration_ms)
+>*   fadeOut(element, duration_ms, fade_finish_cb, hide_when_fade_finish)
 
 *Example*:
 
@@ -137,9 +137,9 @@ WUI.fadeOut(my_element, 500, function () { console.log("finished!"); }, true);
 *Methods*:
 
 >*   create(id, options)
-*   destroy(wui_tabs)
-*   getContentElement(wui_tabs, tab_index)
-*   getTabName(wui_tabs, tab_index)
+>*   destroy(wui_tabs)
+>*   getContentElement(wui_tabs, tab_index)
+>*   getTabName(wui_tabs, tab_index)
 
 *Example*:
 
@@ -203,12 +203,12 @@ All WUI widgets work very well with the detachable feature, what you change in t
 *Methods*:
 
 >*   create(id, options)
-*   destroy(wui_dialog)
-*   open(wui_dialog, detach)
-*   close(wui_dialog, propagate)
-*   focus(wui_dialog)
-*   setStatusBarContent(wui_dialog, html_content)
-*   getDetachedDialog(wui_dialog)
+>*   destroy(wui_dialog)
+>*   open(wui_dialog, detach)
+>*   close(wui_dialog, propagate)
+>*   focus(wui_dialog)
+>*   setStatusBarContent(wui_dialog, html_content)
+>*   getDetachedDialog(wui_dialog)
 
 *Example*:
 
@@ -342,7 +342,7 @@ var detached_dialog_window = WUI_Dialog.getDetachedDialog(my_dialog);
 *Method*:
 
 >*   create(id, options, entry_name_array)
-*   destroy(wui_dropdown)
+>*   destroy(wui_dropdown)
 
 *Example*:
 
@@ -384,11 +384,11 @@ The toolbar can be horizontal or vertical, have groups and minimizable groups, h
 *Method*:
 
 >*   create(id, options, tools)
-*   destroy(wui_toolbar)
-*   hideGroup(wui_toolbar, group_index)
-*   showGroup(wui_toolbar, group_index)
-*   toggle(wui_toolbar, tool_id, propagate)
-*   getItemElement(wui_toolbar, tool_id)
+>*   destroy(wui_toolbar)
+>*   hideGroup(wui_toolbar, group_index)
+>*   showGroup(wui_toolbar, group_index)
+>*   toggle(wui_toolbar, tool_id, propagate)
+>*   getItemElement(wui_toolbar, tool_id)
 
 *Example*:
 
@@ -531,11 +531,11 @@ Only MIDI input is supported at the moment but it should not be hard to add MIDI
 *Method*:
 
 >*   create(id, options)
-*   destroy(wui_rangeslider)
-*   getParameters(wui_rangeslider)
-*   setParameters(wui_rangeslider, parameters)
-*   setValue(wui_rangeslider, value)
-*   submitMIDIMessage(midi_event)
+>*   destroy(wui_rangeslider)
+>*   getParameters(wui_rangeslider)
+>*   setParameters(wui_rangeslider, parameters)
+>*   setValue(wui_rangeslider, value)
+>*   submitMIDIMessage(midi_event)
 
 *Example*:
 
