@@ -659,7 +659,7 @@ The menu can be shown around an element or a position, if an element is specifie
 
 You can use the "angle" option (degree) to offset the items position by an amount.
 
-Items are simple round buttons, an icon class name can be specified, a tooltip and a callback.
+Items are simple round buttons with or without HTML content, an icon class name can be specified, a tooltip and a callback.
 
 *Method*:
 
@@ -688,7 +688,7 @@ WUI_CircularMenu.create({
     window: null
   },
   [
-    { icon: "css-icon-class", tooltip: "first button",  on_click: function () { } },
+    { content: "<strong>1</strong>", tooltip: "first button with textual (HTML) content",  on_click: function () { } },
     { icon: "css-icon-class", tooltip: "second button", on_click: function () { } },
     { icon: "css-icon-class", tooltip: "third button",  on_click: function () { } },
     { icon: "css-icon-class", tooltip: "fourth button", on_click: function () { } },

@@ -38,3 +38,9 @@
 
     transition-delay: 0s;
 }
+
+.wui-circularmenu-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
