@@ -1,6 +1,6 @@
 # WUI #
 
-Collection of **easy to use** and **lightweight** (*~5.3kb css*, *~13.4kb js* gzipped) vanilla GUI widgets for the web.
+Collection of **easy to use** and **lightweight** (*~5.3kb css*, *~13.5kb js* gzipped) vanilla GUI widgets for the web.
 
 **Require no dependencies, all widgets can be used on their own.**
 
@@ -533,8 +533,8 @@ Only MIDI input is supported at the moment but it should not be hard to add MIDI
 >*   create(id, options)
 >*   destroy(wui_rangeslider)
 >*   getParameters(wui_rangeslider)
->*   setParameters(wui_rangeslider, parameters)
->*   setValue(wui_rangeslider, value)
+>*   setParameters(wui_rangeslider, parameters, trigger_on_change_boolean)
+>*   setValue(wui_rangeslider, value, trigger_on_change_boolean)
 >*   submitMIDIMessage(midi_event)
 
 *Example*:
@@ -639,7 +639,7 @@ var parameters = WUI_RangeSlider.getParameters(my_slider);
 
 
 
-Import parameters :
+Import parameters (last argument is optional and can be used to trigger the change function by setting it to true) :
 
 ```javascript
 WUI_RangeSlider.setParameters(my_slider, parameters);

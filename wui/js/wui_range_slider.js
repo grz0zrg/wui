@@ -1081,6 +1081,8 @@ var WUI_RangeSlider = new (function() {
 
         _update(range_slider, rs, opts.value);
 
+        _onChange(rs.opts.on_change, rs.value);
+
         return id;
     };
 
@@ -1142,7 +1144,7 @@ var WUI_RangeSlider = new (function() {
         return parameters;
     };
 
-    this.setParameters = function (id, parameters) {
+    this.setParameters = function (id, parameters, trigger_on_change) {
         var widget = _widget_list[id],
             key;
 
@@ -1171,6 +1173,10 @@ var WUI_RangeSlider = new (function() {
         }
 
         _update(widget.element, widget, widget.value);
+
+        if (trigger_on_change) {
+          _onChange(widget.opts.on_change, widget.value);
+        }
     };
 
     this.setValue = function (id, value, trigger_on_change) {
