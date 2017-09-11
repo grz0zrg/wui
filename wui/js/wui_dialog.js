@@ -98,7 +98,18 @@ var WUI_Dialog = new (function() {
     if (!Element.prototype['_addEventListener']) {
         Element.prototype._addEventListener = Element.prototype.addEventListener;
         Element.prototype.addEventListener = function(a, b, c) {
-            this._addEventListener(a, b, c);
+            if (a === "mousewheel" || a === "DOMMouseScroll" ||
+              a === "mousedown" || a === "touchstart" || a === "touchmove") {
+                if (c) {
+                    c.passive = true;
+                } else {
+                    c = { passive: true };
+                }
+                this._addEventListener(a, b, c);
+            } else {
+                this._addEventListener(a, b, c);
+            }
+
             if (!this['eventListenerList']) {
                 this['eventListenerList'] = {};
             }
@@ -667,7 +678,7 @@ var WUI_Dialog = new (function() {
 
             dragged_dialog;
 
-        ev.preventDefault();
+        //ev.preventDefault();
 
         if (_dragged_dialog === null) {
             if (touches) {

@@ -408,7 +408,7 @@ var WUI_RangeSlider = new (function() {
     };
 
     var _rsMouseDown = function (ev) {
-        ev.preventDefault();
+        //ev.preventDefault();
         ev.stopPropagation();
 
         var rs_element = null,
@@ -473,7 +473,7 @@ var WUI_RangeSlider = new (function() {
     };
 
     var _rsMouseWheel = function (ev) {
-        ev.preventDefault();
+        //ev.preventDefault();
         ev.stopPropagation();
 
         var hook_element,
