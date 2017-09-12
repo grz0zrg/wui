@@ -114,18 +114,6 @@ var WUI_Dialog = new (function() {
             this._addEventListener(a, b, c);
 
             if (_withinDialog(this)) {
-                if (a === "mousewheel" || a === "DOMMouseScroll" ||
-                  a === "mousedown" || a === "touchstart" || a === "touchmove") {
-                    if (c) {
-                        c.passive = true;
-                    } else {
-                        c = { passive: true };
-                    }
-                    this._addEventListener(a, b, c);
-                } else {
-                    this._addEventListener(a, b, c);
-                }
-
                 if (!this['eventListenerList']) {
                     this['eventListenerList'] = {};
                 }
@@ -134,8 +122,6 @@ var WUI_Dialog = new (function() {
                     this.eventListenerList[a] = [];
                 }
                 this.eventListenerList[a].push(b);
-            } else {
-                this._addEventListener(a, b, c);
             }
         };
         Element.prototype._removeEventListener = Element.prototype.removeEventListener;
@@ -697,7 +683,7 @@ var WUI_Dialog = new (function() {
 
             dragged_dialog;
 
-        //ev.preventDefault();
+        ev.preventDefault();
 
         if (_dragged_dialog === null) {
             if (touches) {
