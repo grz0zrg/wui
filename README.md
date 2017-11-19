@@ -421,6 +421,9 @@ var my_toolbar = WUI_ToolBar.create("my_toolbar", {
         // CSS class name
         icon: "pencil-icon",
 
+        // CSS class name when toggled, default to the value of icon if not present
+        toggled_icon: "pencil-icon",
+
         // button text
         text: "",
 
@@ -440,7 +443,10 @@ var my_toolbar = WUI_ToolBar.create("my_toolbar", {
         on_rclick: null,
 
         // tooltip
-        tooltip: "Toggle me!"
+        tooltip: "Toggle me!",
+
+        // tooltip when toggled, default to the value of tooltip if not present
+        tooltip_toggled: "Toggle me!"
       }
     ],
 
