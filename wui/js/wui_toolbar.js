@@ -52,13 +52,21 @@ var WUI_ToolBar = new (function() {
         Functions.
     ************************************************************/
 
+    var _log = function (content) {
+        if (!window.WUI_Reporting) {
+            return;
+        }
+
+        if (typeof console !== "undefined") {
+            console.log(content);
+        }
+    };
+
     var _getWidget = function (toolbar_id) {
         var widget = _widget_list[toolbar_id];
 
         if (widget === undefined) {
-            if (typeof console !== "undefined") {
-                console.log("_getWidget failed, the element id \"" + toolbar_id + "\" is not a WUI_ToolBar.");
-            }
+            _log("_getWidget failed, the element id \"" + toolbar_id + "\" is not a WUI_ToolBar.");
 
             return null;
         }
@@ -453,7 +461,7 @@ var WUI_ToolBar = new (function() {
     };
 
     var _createFailed = function () {
-        console.log("WUI_RangeSlider 'create' failed, first argument not an id nor a DOM element.");
+        _log("WUI_RangeSlider 'create' failed, first argument not an id nor a DOM element.");
     };
 
     /***********************************************************
@@ -503,7 +511,7 @@ var WUI_ToolBar = new (function() {
         }
 
         if (_widget_list[id] !== undefined) {
-            console.log("WUI_Toolbar id '" + id + "' already created, aborting.");
+            _log("WUI_Toolbar id '" + id + "' already created, aborting.");
 
             return;
         }
@@ -812,7 +820,7 @@ var WUI_ToolBar = new (function() {
             i;
 
         if (widget === undefined) {
-            console.log("Element id '" + id + "' is not a WUI_ToolBar, destroying aborted.");
+            _log("Element id '" + id + "' is not a WUI_ToolBar, destroying aborted.");
 
             return;
         }

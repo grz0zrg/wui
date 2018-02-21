@@ -109,6 +109,16 @@ var WUI_RangeSlider = new (function() {
         Functions.
     ************************************************************/
 
+    var _log = function (content) {
+        if (!window.WUI_Reporting) {
+            return;
+        }
+
+        if (typeof console !== "undefined") {
+            console.log(content);
+        }
+    };
+
     // find the same slider element from a detached WUI_Dialog
     var _getDetachedElement = function (id) {
         var node = document.getElementById(id),
@@ -809,7 +819,7 @@ var WUI_RangeSlider = new (function() {
     };
 
     var _createFailed = function () {
-        console.log("WUI_RangeSlider 'create' failed, first argument not an id nor a DOM element.");
+        _log("WUI_RangeSlider 'create' failed, first argument not an id nor a DOM element.");
     };
 
     /***********************************************************
@@ -846,7 +856,7 @@ var WUI_RangeSlider = new (function() {
         }
 
         if (_widget_list[id] !== undefined) {
-            console.log("WUI_RangeSlider id '" + id + "' already created, aborting.");
+            _log("WUI_RangeSlider id '" + id + "' already created, aborting.");
 
             return;
         }
@@ -1059,7 +1069,7 @@ var WUI_RangeSlider = new (function() {
 
                 range_slider.appendChild(midi_learn_elem);
             } else {
-                console.log("WUI_RangeSlider id '" + id + "' : Web MIDI API is disabled. (not supported by your browser?)");
+                _log("WUI_RangeSlider id '" + id + "' : Web MIDI API is disabled. (not supported by your browser?)");
             }
         }
 
@@ -1096,7 +1106,7 @@ var WUI_RangeSlider = new (function() {
             container_element;
 
         if (widget === undefined) {
-            console.log("Element id '" + id + "' is not a WUI_RangeSlider, destroying aborted.");
+            _log("Element id '" + id + "' is not a WUI_RangeSlider, destroying aborted.");
 
             return;
         }
@@ -1128,7 +1138,7 @@ var WUI_RangeSlider = new (function() {
             key;
 
         if (widget === undefined) {
-            console.log("Element id '" + id + "' is not a WUI_RangeSlider, getParameters aborted.");
+            _log("Element id '" + id + "' is not a WUI_RangeSlider, getParameters aborted.");
 
             return null;
         }
@@ -1149,7 +1159,7 @@ var WUI_RangeSlider = new (function() {
             key;
 
         if (widget === undefined) {
-            console.log("Element id '" + id + "' is not a WUI_RangeSlider, setParameters aborted.");
+            _log("Element id '" + id + "' is not a WUI_RangeSlider, setParameters aborted.");
 
             return;
         }
@@ -1183,7 +1193,7 @@ var WUI_RangeSlider = new (function() {
         var widget = _widget_list[id];
 
         if (widget === undefined) {
-            console.log("Element id '" + id + "' is not a WUI_RangeSlider, setParameters aborted.");
+            _log("Element id '" + id + "' is not a WUI_RangeSlider, setParameters aborted.");
 
             return;
         }

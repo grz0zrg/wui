@@ -7,12 +7,12 @@ var WUI_DropDown = new (function() {
 
     /***********************************************************
         Private section.
-        
+
         Fields.
     ************************************************************/
-    
+
     var _widget_list = {},
-        
+
         _class_name = {
             dropdown:   "wui-dropdown",
             item:       "wui-dropdown-item",
@@ -21,28 +21,38 @@ var WUI_DropDown = new (function() {
             open:       "wui-dropdown-open",
             on:         "wui-dropdown-on"
         },
-        
+
         _known_options = {
             width: "auto",
             height: 24,
-            
+
             ms_before_hiding: 2000,
-            
+
             vertical: false,
-            
+
             vspacing: 0,
-            
+
             selected_id: 0, // default item selected
-            
+
             on_item_selected: null
         };
-    
+
     /***********************************************************
         Private section.
-        
+
         Functions.
     ************************************************************/
-    
+
+    var _log = function (content) {
+        if (!window.WUI_Reporting) {
+            return;
+        }
+
+        if (typeof console !== "undefined") {
+            console.log(content);
+        }
+    };
+
     var _getElementOffset = function (element) {
         var owner_doc = element.ownerDocument,
             box = element.getBoundingClientRect(),
@@ -50,7 +60,7 @@ var WUI_DropDown = new (function() {
             docEl = owner_doc.documentElement,
 
             owner_win = owner_doc.defaultView || owner_doc.parentWindow,
-        
+
             scrollTop = owner_win.pageYOffset || docEl.scrollTop || body.scrollTop,
             scrollLeft = owner_win.pageXOffset || docEl.scrollLeft || body.scrollLeft,
 
@@ -62,7 +72,7 @@ var WUI_DropDown = new (function() {
 
         return { top: Math.round(top), left: Math.round(left) };
     };
-    
+
     var _createFloatingContent = function (doc, widget) {
         var floating_content = doc.createElement("div"),
             div_item = null,
@@ -117,10 +127,10 @@ var WUI_DropDown = new (function() {
         }
 
         widget.floating_content = null;
-        
+
         widget.close_timeout = null;
     };
-    
+
     var _click = function (ev) {
         ev.preventDefault();
         ev.stopPropagation();
@@ -153,55 +163,55 @@ var WUI_DropDown = new (function() {
         ev.stopPropagation();
 
         var current_element = ev.target,
-            
+
             widget,
-            
+
             floating_content = null,
-            
+
             floating_content_childs = null,
-            
+
             i;
-        
+
         if (current_element.classList.contains(_class_name.item)) {
             floating_content = current_element.parentElement;
-            
+
             widget = _widget_list[floating_content.dataset.linkedto];
         } else {
-            return;   
+            return;
         }
-        
+
         floating_content_childs = floating_content.getElementsByTagName('div');
 
         for (i = 0; i < floating_content_childs.length; i += 1) {
             floating_content_childs[i].classList.remove(_class_name.selected);
         }
-        
+
         current_element.classList.add(_class_name.selected);
-        
+
         widget.selected_id = parseInt(current_element.dataset.index, 10);
         widget.target_element.lastElementChild.innerHTML = current_element.textContent;
-        
+
         if (widget.element !== widget.target_element) {
             widget.element.lastElementChild.innerHTML = current_element.textContent;
         }
-        
+
         if (widget.opts.on_item_selected !== undefined) {
-            widget.opts.on_item_selected(current_element.dataset.index);  
+            widget.opts.on_item_selected(current_element.dataset.index);
         }
 
         _deleteFloatingContent(current_element.ownerDocument, widget.target_element, widget);
     };
-    
+
     var _mouseOver = function (ev) {
         ev.preventDefault();
         ev.stopPropagation();
 
         var current_element = ev.target,
-            
+
             widget = null,
-            
+
             offset = null,
-            
+
             floating_content = null,
 
             owner_doc = current_element.ownerDocument,
@@ -209,7 +219,7 @@ var WUI_DropDown = new (function() {
 
         if (current_element.classList.contains(_class_name.dropdown)) {
             widget = _widget_list[current_element.id];
-            
+
             if (widget.floating_content === null) {
                 current_element.classList.add(_class_name.on);
 
@@ -233,22 +243,22 @@ var WUI_DropDown = new (function() {
         } else {
             return;
         }
-        
+
         owner_win.clearTimeout(widget.close_timeout);
 
         current_element.addEventListener("mouseleave", _mouseLeave, false);
     };
-    
+
     var _mouseLeave = function (ev) {
         ev.preventDefault();
 
         var current_element = ev.target,
-            
+
             widget = null,
 
             owner_doc = current_element.ownerDocument,
             owner_win = owner_doc.defaultView || owner_doc.parentWindow;
-    
+
         if (current_element.classList.contains(_class_name.content)) {
             widget = _widget_list[current_element.dataset.linkedto];
         } else if (current_element.classList.contains(_class_name.item)) {
@@ -256,19 +266,19 @@ var WUI_DropDown = new (function() {
         } else {
             widget = _widget_list[current_element.id];
         }
-            
+
         widget.close_timeout = owner_win.setTimeout(_deleteFloatingContent, widget.opts.ms_before_hiding, owner_doc, widget.target_element, widget);
 
         current_element.removeEventListener("mouseleave", _mouseLeave, false);
     };
 
     var _createFailed = function () {
-        console.log("WUI_RangeSlider 'create' failed, first argument not an id nor a DOM element.");
+        _log("WUI_RangeSlider 'create' failed, first argument not an id nor a DOM element.");
     };
-    
+
     /***********************************************************
         Public section.
-        
+
         Functions.
     ************************************************************/
 
@@ -276,39 +286,39 @@ var WUI_DropDown = new (function() {
         var dropdown,
 
             opts = {},
-        
+
             key;
-        
+
         if ((typeof id) === "string") {
             dropdown = document.getElementById(id);
         } else if ((typeof id) === "object") {
             if ((typeof id.innerHTML) !== "string") {
                 _createFailed();
-                
+
                 return;
             }
-            
+
             dropdown = id;
 
             id = dropdown.id;
         } else {
             _createFailed();
-            
+
             return;
         }
-        
+
         if (_widget_list[id] !== undefined) {
-            console.log("WUI_DropDown id '" + id + "' already created, aborting.");
-            
+            _log("WUI_DropDown id '" + id + "' already created, aborting.");
+
             return;
         }
-        
+
         for (key in _known_options) {
             if (_known_options.hasOwnProperty(key)) {
                 opts[key] = _known_options[key];
             }
         }
-        
+
         if (options !== undefined) {
             for (key in options) {
                 if (options.hasOwnProperty(key)) {
@@ -318,30 +328,30 @@ var WUI_DropDown = new (function() {
                 }
             }
         }
-        
+
         dropdown.classList.add(_class_name.dropdown);
-        
+
         dropdown.style.width = opts.width;
         dropdown.style.height = opts.height;
-        
+
         var div_icon = document.createElement("div");
         div_icon.classList.add("wui-dropdown-icon");
 
         dropdown.appendChild(div_icon);
-        
+
         var div_button = document.createElement("div");
         div_button.classList.add("wui-dropdown-text");
-        
+
         if (content_array.length !== 0) {
             div_button.innerHTML = content_array[opts.selected_id];
         }
-        
+
         dropdown.appendChild(div_button);
-        
+
         dropdown.addEventListener("click", _click, false);
-        
+
         dropdown.addEventListener("mouseover", _mouseOver, false);
-        
+
         var dd = {
             element: dropdown,
 
@@ -350,30 +360,30 @@ var WUI_DropDown = new (function() {
             selected_id: opts.selected_id,
 
             content_array: content_array,
-            
+
             opts: opts,
-            
+
             button_item: div_button,
-            
+
             hover_count: 0,
-            
+
             target_element: null,
 
             close_timeout: null
         };
-        
+
         _widget_list[id] = dd;
 
         return id;
     };
-    
+
     this.destroy = function (id) {
         var widget = _widget_list[id],
 
             element;
 
         if (widget === undefined) {
-            console.log("Element id '" + id + "' is not a WUI_DropDown, destroying aborted.");
+            _log("Element id '" + id + "' is not a WUI_DropDown, destroying aborted.");
 
             return;
         }

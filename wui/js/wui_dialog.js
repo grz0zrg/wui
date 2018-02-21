@@ -147,6 +147,16 @@ var WUI_Dialog = new (function() {
         Functions.
     ************************************************************/
 
+    var _log = function (content) {
+        if (!window.WUI_Reporting) {
+            return;
+        }
+
+        if (typeof console !== "undefined") {
+            console.log(content);
+        }
+    };
+
     var _removeDetachedWindow = function (widget) {
         var i = 0;
 
@@ -531,9 +541,9 @@ var WUI_Dialog = new (function() {
             //_removeDetachedWindow(widget);
             _close(dialog, true, true, true);
 
-            /*if (widget.modal_element) {
+            if (widget.modal_element) {
                 document.body.removeChild(widget.modal_element);
-            }*/
+            }
         }, false);
 
         _detached_windows.push(child_window);
@@ -875,7 +885,7 @@ var WUI_Dialog = new (function() {
     };
 
     var _createFailed = function () {
-        console.log("WUI_RangeSlider 'create' failed, first argument not an id nor a DOM element.");
+        _log("WUI_RangeSlider 'create' failed, first argument not an id nor a DOM element.");
     };
 
     /***********************************************************
@@ -927,7 +937,7 @@ var WUI_Dialog = new (function() {
         }
 
         if (_widget_list[id] !== undefined) {
-            console.log("WUI_Dialog id '" + id + "' already created, aborting.");
+            _log("WUI_Dialog id '" + id + "' already created, aborting.");
 
             return;
         }
@@ -1127,9 +1137,7 @@ var WUI_Dialog = new (function() {
             detach_ref;
 
         if (widget === undefined) {
-            if (typeof console !== "undefined") {
-                console.log("Cannot setStatusBarContent of WUI dialog \"" + id + "\".");
-            }
+            _log("Cannot setStatusBarContent of WUI dialog \"" + id + "\".");
 
             return;
         }
@@ -1156,9 +1164,7 @@ var WUI_Dialog = new (function() {
             div, i, dialog;
 
         if (widget === undefined) {
-            if (typeof console !== "undefined") {
-                console.log("Cannot open WUI dialog \"" + id + "\".");
-            }
+            _log("Cannot open WUI dialog \"" + id + "\".");
 
             return;
         }
@@ -1205,9 +1211,7 @@ var WUI_Dialog = new (function() {
         var widget = _widget_list[id];
 
         if (widget === undefined) {
-            if (typeof console !== "undefined") {
-                console.log("Cannot focus WUI dialog \"" + id + "\".");
-            }
+            _log("Cannot focus WUI dialog \"" + id + "\".");
 
             return;
         }
@@ -1219,9 +1223,7 @@ var WUI_Dialog = new (function() {
         var widget = _widget_list[id];
 
         if (widget === undefined) {
-            if (typeof console !== "undefined") {
-                console.log("Cannot close WUI dialog \"" + id + "\".");
-            }
+            _log("Cannot close WUI dialog \"" + id + "\".");
 
             return;
         }
@@ -1235,7 +1237,7 @@ var WUI_Dialog = new (function() {
             element;
 
         if (widget === undefined) {
-            console.log("Element id '" + id + "' is not a WUI_Dialog, destroying aborted.");
+            _log("Element id '" + id + "' is not a WUI_Dialog, destroying aborted.");
 
             return;
         }
@@ -1279,7 +1281,7 @@ var WUI_Dialog = new (function() {
 
         if (widget === undefined) {
             if (dialog_id !== undefined) {
-                console.log("WUI_Dialog.getDetachedDialog: Element id '" + dialog_id + "' is not a WUI_Dialog.");
+                _log("WUI_Dialog.getDetachedDialog: Element id '" + dialog_id + "' is not a WUI_Dialog.");
             }
 
             return null;
