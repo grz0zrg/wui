@@ -87,9 +87,18 @@ If you want to add an option to a widget, you add a field into the **_known_opti
 
 If you want to add/change advanced behaviors, you can create or modify private or public functions, the object **_widget_list** which is available in the scope of most widgets serve as a generic storage for all widgets, all created widgets are stored here with their ID as key (**_widget_list["my_widget_id"]** to access to a specific widget storage), there is at least an **_opts_** field for each widgets which can be used to retrieve/override the widget options.
 
-Themes are done by cloning existing *.css files and modifying them, to do it properly you can clone a theme (*_wui/css/themes/[theme_name]_** folder), rename it, add the corresponding build line into Gruntfile.js (see **_files_** object), build and your minified/gzipped theme will be available in the **_dist_** folder.
+Themes are done by cloning existing `.css` files and modifying them, to do it properly you can clone a theme `wui/css/themes/[theme_name] folder`, rename it, add the corresponding build line into Gruntfile.js (see **_files_** object), build and your minified/gzipped theme will be available in the **_dist_** folder.
 
 <a name="wui_main"></a>
+
+### Reporting
+
+By default, console.log reporting is disabled, to turn it on introduce the global variable `WUI_Reporting` this will enable output to the console which may be useful to lookup issues.
+
+```javascript
+window.WUI_Reporting = true;
+```
+
 ### WUI ###
 
 
