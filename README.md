@@ -89,8 +89,6 @@ If you want to add/change advanced behaviors, you can create or modify private o
 
 Themes are done by cloning existing `.css` files and modifying them, to do it properly you can clone a theme `wui/css/themes/[theme_name] folder`, rename it, add the corresponding build line into Gruntfile.js (see **_files_** object), build and your minified/gzipped theme will be available in the **_dist_** folder.
 
-<a name="wui_main"></a>
-
 ### Reporting
 
 By default, console.log reporting is disabled, to turn it on introduce the global variable `WUI_Reporting` this will enable output to the console which may be useful to lookup issues.
@@ -98,6 +96,8 @@ By default, console.log reporting is disabled, to turn it on introduce the globa
 ```javascript
 window.WUI_Reporting = true;
 ```
+
+<a name="wui_main"></a>
 
 ### WUI ###
 
@@ -191,7 +191,7 @@ WUI_Tabs.create("my_tabs", {
 
 Dialogs can be draggable, closable, minimizable, resizable, detachable, modal and act as panels, they also go in front of others when you move them.
 
-One of the coolest (and maybe 'unique') feature of the dialog widget is the ability to be detached from the window it is on and act as a proper window without breaking the content (including events), this may be very useful, the user can detach any dialogs and move them on other screens etc.
+One of the coolest and rather unique feature of the dialog widget is the ability to be detached from the window it is on and act as a proper window without breaking the content (including events), this may be very useful, the user can detach any dialogs and move them on other screens etc.
 
 All WUI widgets work very well with the detachable feature, what you change in the detachable dialog will be changed in the 'original' dialog, this should be the same dialog after all, for example, if you toggle a WUI_ToolBar button in the detached dialog and close it, when you open the dialog again (detached or not) the button will be toggled, the only thing which is not synced is the size of the detached dialog and its position.
 
@@ -201,7 +201,7 @@ All WUI widgets work very well with the detachable feature, what you change in t
 >On iPad, the detach feature will work but Safari will open the dialog as a new tab.
 >
 >
-> The detach feature keep track of events by overriding `addEventListener`, in order to work correctly the WUI_Dialog/WUI library should be loaded before you or other libs add events.
+>The detach feature keep track of events by overriding `addEventListener`, it will only keep track of  events that are added on an element inside the dialog which mean that the calls to `addEventListener` must be made after the element is attached to a node inside the dialog, in order to work correctly the WUI_Dialog/WUI library should be loaded before you or other libs add events.
 >
 >
 >When a dialog is detached, it will add back event listeners added with `addEventListener` only (and also inline events), if you attach events to elements in the dialog content using `elem.onclick` etc, the event will not be added back, also since the dialog content will be in another window/document, events attached to the initial window or document and acting on the dialog content will not work, because the dialog is now in another window, you will have to take care of attaching to/using `element.ownerDocument` or `element.parentWindow` instead of `document` or `window`.
