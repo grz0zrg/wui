@@ -23,6 +23,7 @@ var WUI_ToolBar = new (function() {
             item:           "wui-toolbar-item",
             group:          "wui-toolbar-group",
             vertical_group: "wui-toolbar-group-vertical",
+            group_title:    "wui-toolbar-group-title",
             tb:             "wui-toolbar",
 
             // dropdown
@@ -40,6 +41,8 @@ var WUI_ToolBar = new (function() {
 
             icon_width: 32,
             icon_height: 32,
+
+            show_groups_title: false,
 
             allow_groups_minimize: false,
 
@@ -711,6 +714,13 @@ var WUI_ToolBar = new (function() {
                     } else { // default to standard button
                         tool_element.classList.add(_class_name.button);
                     }
+                }
+
+                if (opts.show_groups_title) {
+                    var group_title = document.createElement("div");
+                    group_title.classList.add(_class_name.group_title);
+                    group_title.innerHTML = index;
+                    group_element.appendChild(group_title);
                 }
 
                 toolbar.appendChild(group_element);

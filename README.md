@@ -1,6 +1,6 @@
 # WUI #
 
-Collection of **easy to use** and **lightweight** (*~5.3kb css*, *~13.6kb js* gzipped) vanilla GUI widgets for the web.
+Collection of **easy to use** and **lightweight** (*~5.3kb css*, *~13.7kb js* gzipped) vanilla GUI widgets for the web.
 
 **Require no dependencies, all widgets can be used on their own.**
 
@@ -409,6 +409,9 @@ The toolbar can be horizontal or vertical, have groups and minimizable groups, h
 var my_toolbar = WUI_ToolBar.create("my_toolbar", {
     // display the minimize icon for each groups
     allow_groups_minimize: true,
+    
+    // show groups title (key) below the toolbar buttons
+    show_groups_title: false,
 
     // this will modify the size of the button
     item_width: 32,

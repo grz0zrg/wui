@@ -828,19 +828,19 @@
 .wui-toolbar {
     width: auto;
     height: auto;
-    
+
     display: -webkit-box;
-    
+
     display: -webkit-flex;
-    
+
     display: -ms-flexbox;
-    
+
     display: flex;
-    
+
     -webkit-flex-wrap: wrap;
 
     -ms-flex-wrap: wrap;
-    
+
     flex-wrap: wrap;
     -webkit-box-pack: center;
     -webkit-justify-content: center;
@@ -851,7 +851,7 @@
     -webkit-user-select: none;
     -ms-user-select: none;
     user-select: none;
-    
+
     -webkit-box-align: center;
 
     -webkit-align-items: center;
@@ -866,14 +866,14 @@
     color: #ffffff;
 
     padding-top: 2px;
-    
+
     font-size: 8pt;
     letter-spacing: .05pc;
-    
+
     text-shadow: 1px 1px 1px #000000;
 
     font-family: monospace;
-    
+
     z-index: 9;
 
     pointer-events: all;
@@ -881,13 +881,13 @@
 
 .wui-toolbar-vertical {
     -webkit-box-orient: vertical;
-    
+
     -webkit-box-direction: normal;
-    
+
     -webkit-flex-direction: column;
-    
+
     -ms-flex-direction: column;
-    
+
     flex-direction: column;
 
     margin: 0 auto;
@@ -908,7 +908,7 @@
 .wui-toolbar-spacer {
     width: 0px;
     height: 26px;
-    
+
     margin-left: 4px;
     margin-right: 4px;
     margin-top: 3px;
@@ -917,7 +917,7 @@
 .wui-toolbar-spacer-vertical {
     height: 0px;
     width: 26px;
-    
+
     margin-left: 2px;
 
     margin-top: 4px;
@@ -927,23 +927,23 @@
 .wui-toolbar-text {
     padding-left: 4px;
     padding-right: 4px;
-    
+
     text-align: center;
 }
 
 .wui-toolbar-item {
     width: auto;
     height: auto;
-    
+
     min-height: 32px;
     min-width: 32px;
-    
+
     display: inline-block;
-    
+
     margin: auto;
-    
+
     background-color: #7B9CB3;
-    
+
     border-radius: 4px;
 
     background-repeat: no-repeat;
@@ -954,7 +954,7 @@
 
 .wui-toolbar-item-vertical {
     display: block !important;
-    
+
     margin-left: 0px !important;
     margin-right: 0px !important;
     margin-top: 8px;
@@ -1098,6 +1098,14 @@
     -webkit-transition-delay: 0s;
 
     transition-delay: 0s;
+}
+
+.wui-toolbar-group-title {
+    width: 100%;
+    text-align: center;
+    padding-top: 2px;
+    padding-bottom: 2px;
+    font-size: 10px;
 }
 
 .wui-circularmenu-item {
