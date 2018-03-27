@@ -412,6 +412,9 @@ var my_toolbar = WUI_ToolBar.create("my_toolbar", {
     
     // show groups title (key) below the toolbar buttons
     show_groups_title: false,
+    
+    // groups title orientation (either "s"/bottom or "n"/top)
+    groups_title_orientation: "s",
 
     // this will modify the size of the button
     item_width: 32,

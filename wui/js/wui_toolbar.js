@@ -43,6 +43,7 @@ var WUI_ToolBar = new (function() {
             icon_height: 32,
 
             show_groups_title: false,
+            groups_title_orientation: "s",
 
             allow_groups_minimize: false,
 
@@ -720,7 +721,12 @@ var WUI_ToolBar = new (function() {
                     var group_title = document.createElement("div");
                     group_title.classList.add(_class_name.group_title);
                     group_title.innerHTML = index;
-                    group_element.appendChild(group_title);
+
+                    if (opts.groups_title_orientation === "s") {
+                        group_element.appendChild(group_title);
+                    } else {
+                        group_element.insertBefore(group_title, group_element.firstChild);
+                    }
                 }
 
                 toolbar.appendChild(group_element);
