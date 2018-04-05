@@ -1,6 +1,6 @@
 # WUI #
 
-Collection of **easy to use** and **lightweight** (*~5.3kb css*, *~13.7kb js* gzipped) vanilla GUI widgets for the web.
+Collection of **easy to use** and **lightweight** (*~5.3kb css*, *~13.7kb js* gzipped) **vanilla** GUI widgets for the web.
 
 **Require no dependencies, all widgets can be used on their own.**
 
@@ -12,12 +12,13 @@ The main advantages compared to other libraries are:
 * Input and Slider widgets can be MIDI controlled with two mode (absolute, relative) and can be user-configurable
 * Dialogs can be detached (and everything related to WUI will still work)
 * Circular menu aka [pie menu](https://en.wikipedia.org/wiki/Pie_menu) aka radial menu :)
+* Quick forms creation with standard forms elements and WUI elements (WIP)
 * Events are optimized (meaning that there is few listeners for each widgets)
 * Easily customizable/hackable
 * Lightweight
 * ...
 
-Good for single page apps, audio apps, experiments and the like.
+Great for single page apps, audio apps, experiments and the like.
 
 #### Demo
 - [Demo](http://grz0zrg.github.io/wui-demo/)
@@ -60,17 +61,18 @@ grunt dist
 *   [WUI_Dialog](#dialog)
 *   [WUI_DropDown](#dropdown)
 *   [WUI_ToolBar](#toolbar)
+*   [WUI_Form](#form)
 *   [WUI_Input](#input)
 *   [WUI_RangeSlider](#rangeslider)
 *   [WUI_CircularMenu](#circularmenu)
 
-The WUI API is simple, all widgets have a method **_"create"_** which accept a DOM element (which should contain an identifier) or a DOM element identifier as first argument which is used as a bind target and an option object as a second argument to customize it, WUI_ToolBar has a third argument which is used to specify the content of the toolbar.
+The WUI API is simple, all widgets have a method **_"create"_** which accept a DOM element (which should contain an identifier) or a DOM element identifier as first argument which is used as a bind target and an option object as a second argument to customize it, WUI_ToolBar, WUI_Form and WUI_DropDown has a third argument which is used to specify the items.
 
 All **_"create"_** methods return a reference of the widget which can be used later to do stuff with the widget like destroying them, the reference is a string (it is the dialog element id).
 
 All widgets also have a method **_"destroy"_**.
 
-WUI_RangeSlider widget (all widgets soon) have a function **_"getParameters"_** and **_"setParameters"_**, this can be used to save/retrieve widgets parameters.
+WUI_RangeSlider widget have a method **_"getParameters"_** and **_"setParameters" which can be used to save/retrieve the widget parameters.
 
 HTML elements with a specific layout are required to use some widgets (like tabs, see the documentation)
 
@@ -383,7 +385,6 @@ WUI_DropDown.create("my_dropdown", {
 );
 ```
 
-
 <a name="toolbar"></a>
 ### ToolBar ###
 
@@ -410,7 +411,7 @@ var my_toolbar = WUI_ToolBar.create("my_toolbar", {
     // display the minimize icon for each groups
     allow_groups_minimize: true,
     
-    // show groups title (key) below the toolbar buttons
+    // show groups title (key) below or above the toolbar buttons (also work with vertical toolbar)
     show_groups_title: false,
     
     // groups title orientation (either "s"/bottom or "n"/top)
@@ -514,7 +515,7 @@ WUI_ToolBar.toggle(my_toolbar, 0, true); // the last argument is optional and me
 ```
 
 
-You can integrate [Font Awesome](http://fontawesome.io/) easily with the CSS icon class name attribute, for example for a CSS icon class named "app-home-icon":
+You can integrate [Font Awesome](http://fontawesome.io/) easily with the CSS icon class name attribute, for example for a CSS icon class named `app-home-icon`:
 
 ```css
 .wui-toolbar-item.app-home-icon:before {
@@ -529,7 +530,49 @@ You can integrate [Font Awesome](http://fontawesome.io/) easily with the CSS ico
 
 If you find this too cumbersome to setup, you can render Font Awesome icons to images with this tool: [fa2png](http://fa2png.io/)
 
+<a name="form"></a>
+### Form (WIP) ###
 
+
+Form widget is a powerful feature allowing to design complete 'settings' panel and things requiring form elements, quickly, easily, integrate high level functionalities, it accept standard HTML form elements and WUI_Input, WUI_RangeSlider, WUI_DropDown.
+
+*Methods*:
+
+>* create(id, options, items)
+>*   destroy(wui_form)
+
+*Example*:
+
+```html
+<div id="my_form"></div>
+```
+
+```javascript
+WUI_Form.create("my_form", {
+	// there is no options at the moment
+}, 
+{
+	// properties added to this object are recognized automatically as new FIELDSET by the widget, the property name is used for the fieldset legend
+	"Form : First group": [
+		// list of form items
+		{
+			// a WUI_DropDown
+			type: "WUI_DropDown",
+			// WUI_DropDown options
+			opts: {
+				width: "100px",
+				vspacing: 4,
+				ms_before_hiding: 1000,
+				selected_id: 0,
+				vertical: false,
+				on_item_selected: function () {}
+			},
+			// WUI_DropDown items
+			items: ["First item", "Second item", "Third item"]
+		}
+	]
+});
+```
 
 <a name="input"></a>
 ### Input ###

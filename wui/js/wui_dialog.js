@@ -764,6 +764,8 @@ var WUI_Dialog = new (function() {
         owner_win.addEventListener('mouseup', _onStopResize, false);
         owner_win.addEventListener('touchend', _onStopResize, false);
 
+        _focus(_dragged_dialog);
+
         _resized_dialog = dialog;
     };
 
@@ -1247,6 +1249,8 @@ var WUI_Dialog = new (function() {
         element = widget.dialog;
 
         element.parentElement.removeChild(element);
+
+        widget.observer.disconnect();
 
         delete _widget_list[id];
     };

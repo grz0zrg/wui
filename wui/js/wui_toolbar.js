@@ -13,18 +13,20 @@ var WUI_ToolBar = new (function() {
     var _widget_list = {},
 
         _class_name = {
-            minimize_icon:  "wui-toolbar-minimize-icon",
-            maximize_icon:  "wui-toolbar-maximize-icon",
-            button:         "wui-toolbar-button",
-            minimize_group: "wui-toolbar-minimize-group",
-            minimize_gr_v:  "wui-toolbar-minimize-group-vertical",
-            toggle:         "wui-toolbar-toggle",
-            toggle_on:      "wui-toolbar-toggle-on",
-            item:           "wui-toolbar-item",
-            group:          "wui-toolbar-group",
-            vertical_group: "wui-toolbar-group-vertical",
-            group_title:    "wui-toolbar-group-title",
-            tb:             "wui-toolbar",
+            minimize_icon:          "wui-toolbar-minimize-icon",
+            maximize_icon:          "wui-toolbar-maximize-icon",
+            button:                 "wui-toolbar-button",
+            minimize_group:         "wui-toolbar-minimize-group",
+            minimize_gr_v:          "wui-toolbar-minimize-group-vertical",
+            toggle:                 "wui-toolbar-toggle",
+            toggle_on:              "wui-toolbar-toggle-on",
+            item:                   "wui-toolbar-item",
+            group:                  "wui-toolbar-group",
+            vertical_group:         "wui-toolbar-group-vertical",
+            group_title:            "wui-toolbar-group-title",
+            group_title_vertical:   "wui-toolbar-group-title-vertical",
+            group_title_vertical_s: "wui-toolbar-group-title-vertical-s",
+            tb:                     "wui-toolbar",
 
             // dropdown
             dd_content:     "wui-toolbar-dropdown-content",
@@ -719,11 +721,17 @@ var WUI_ToolBar = new (function() {
 
                 if (opts.show_groups_title) {
                     var group_title = document.createElement("div");
-                    group_title.classList.add(_class_name.group_title);
+
+                    if (opts.vertical) {
+                        group_title.classList.add(_class_name.group_title_vertical);
+                    } else {
+                        group_title.classList.add(_class_name.group_title);
+                    }
                     group_title.innerHTML = index;
 
                     if (opts.groups_title_orientation === "s") {
                         group_element.appendChild(group_title);
+                        group_title.classList.add(_class_name.group_title_vertical_s);
                     } else {
                         group_element.insertBefore(group_title, group_element.firstChild);
                     }
