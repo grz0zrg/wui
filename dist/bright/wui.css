@@ -1,5 +1,28 @@
 .wui-form {
-    width: 100%;
+    padding: 8px;
+}
+
+.wui-form fieldset {
+    border: ridge 1px #444444;
+    background-color: #888888;
+}
+
+.wui-form legend {
+    padding-bottom: 4px;
+}
+
+.wui-form label {
+    display: inline-block;
+    text-align: right;
+    font-size: 10pt;
+}
+
+.wui-form-main-group {
+    margin-bottom: 12px;
+}
+
+.wui-form-sub-group {
+    margin: 14px;
 }
 
 .wui-dialog {

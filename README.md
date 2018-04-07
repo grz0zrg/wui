@@ -1,6 +1,6 @@
 # WUI #
 
-Collection of **easy to use** and **lightweight** (*~5.3kb css*, *~13.7kb js* gzipped) **vanilla** GUI widgets for the web.
+Collection of **easy to use** and **lightweight** (*~5.4kb css*, *~14.9kb js* gzipped) **vanilla** GUI widgets for the web.
 
 **Require no dependencies, all widgets can be used on their own.**
 
@@ -12,7 +12,7 @@ The main advantages compared to other libraries are:
 * Input and Slider widgets can be MIDI controlled with two mode (absolute, relative) and can be user-configurable
 * Dialogs can be detached (and everything related to WUI will still work)
 * Circular menu aka [pie menu](https://en.wikipedia.org/wiki/Pie_menu) aka radial menu :)
-* Quick forms creation with standard forms elements and WUI elements (WIP)
+* Quick forms creation with standard HTML5 forms elements and WUI elements (WIP)
 * Events are optimized (meaning that there is few listeners for each widgets)
 * Easily customizable/hackable
 * Lightweight
@@ -531,10 +531,9 @@ You can integrate [Font Awesome](http://fontawesome.io/) easily with the CSS ico
 If you find this too cumbersome to setup, you can render Font Awesome icons to images with this tool: [fa2png](http://fa2png.io/)
 
 <a name="form"></a>
-### Form (WIP) ###
+### Form ###
 
-
-Form widget is a powerful feature allowing to design complete 'settings' panel and things requiring form elements, quickly, easily, integrate high level functionalities, it accept standard HTML form elements and WUI_Input, WUI_RangeSlider, WUI_DropDown.
+The form widget is a powerful feature allowing to design complete 'settings' panel and things requiring form elements, quickly, easily, integrate high level functionalities, it accept standard HTML5 form elements and WUI_Input, WUI_RangeSlider, WUI_DropDown.
 
 *Methods*:
 
@@ -549,7 +548,7 @@ Form widget is a powerful feature allowing to design complete 'settings' panel a
 
 ```javascript
 WUI_Form.create("my_form", {
-	// there is no options at the moment
+	width: "auto"
 }, 
 {
 	// properties added to this object are recognized automatically as new FIELDSET by the widget, the property name is used for the fieldset legend
@@ -569,6 +568,36 @@ WUI_Form.create("my_form", {
 			},
 			// WUI_DropDown items
 			items: ["First item", "Second item", "Third item"]
+		},
+		{
+			// a standard <select> with legend
+			type: "select",
+            label: "My choice",
+            wrap: true, // wrap it in a div (for line-break)
+            attr: {
+            	// you can put any DOM attributes here to apply customizations
+        	},
+        	value: "",
+        	
+        	// specific datalist/select attributes
+        	options: [
+                {
+        			// required attributes
+					name: "option1",
+        			// optional attributes
+        			disabled: false,
+        			selected: false,
+        			value: "option1",
+        
+                    attr: {
+                        // you can put any DOM attributes here to apply customizations to the <option> element
+                    }
+                },
+                {
+					name: "option2"
+                },
+        		"option3" // also work (but not customizable)
+    		]
 		}
 	]
 });

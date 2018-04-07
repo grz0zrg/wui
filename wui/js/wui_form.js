@@ -13,11 +13,13 @@ var WUI_Form = new (function() {
     var _widget_list = {},
 
         _class_name = {
-            form: "wui-form"
+            form: "wui-form",
+            main_group: "wui-form-main-group",
+            sub_group: "wui-form-sub-group"
         },
 
         _known_options = {
-
+            width: "auto"
         },
 
         _identifier_patterns = {
@@ -25,8 +27,63 @@ var WUI_Form = new (function() {
             std_item: "wui_form_std_item_"
         },
 
+        // this is the type="" (value) mapped to a HTML element (key)
+        _form_type_table = {
+            "checkbox": "input",
+            "text": "input",
+            "color": "input",
+            "date": "input",
+            "datetime-local": "input",
+            "email": "input",
+            "file": "input",
+            "hidden": "input",
+            "image": "input",
+            "month": "input",
+            "number": "input",
+            "radio": "input",
+            "range": "input",
+            "reset": "input",
+            "search": "input",
+            "submit": "input",
+            "tel": "input",
+            "time": "input",
+            "url": "input",
+            "week": "input",
+            "password": "input"
+        },
+
         _allowed_form_items = [
-            "button", "datalist", "input", "label", "legend", "meter", "optgroup", "option", "select", "textarea"
+            "button",
+            "datalist",
+            "input",
+            "label",
+            "legend",
+            "meter",
+            "select",
+            "textarea",
+
+            // <input> see _form_type_table
+            "checkbox",
+            "text",
+            "color",
+            "date",
+            "datetime-local",
+            "email",
+            "file",
+            "hidden",
+            "image",
+            "month",
+            "number",
+            "radio",
+            "range",
+            "reset",
+            "search",
+            "submit",
+            "tel",
+            "time",
+            "url",
+            "week",
+            "password"
         ],
 
         _allowed_wui_items = [
@@ -49,8 +106,23 @@ var WUI_Form = new (function() {
         }
     };
 
-    var _addFormItems = function (legend_name, element, frame_object, index) {
+    var _copyAttributes = function (src, dst) {
+        var key;
+
+        for (key in src) {
+            if (src.hasOwnProperty(key)) {
+                if (dst[key] === undefined) {
+                    dst.setAttribute(key, src[key]);
+                }
+            }
+        }
+    };
+
+    var _addFormItems = function (legend_name, class_names, element, frame_object, index) {
         var i = 0,
+            j = 0,
+
+            key,
 
             fields_count = index,
 
@@ -58,11 +130,27 @@ var WUI_Form = new (function() {
             frame_item,
             frame_legend,
             wui_form_elem,
-            form_elem;
+
+            div_elem,
+            form_elem,
+            label_elem,
+            option_elem,
+            option_parent,
+            opt_group_elem,
+            datalist_input_elem,
+            sub_group_class,
+
+            final_elem,
+
+            option;
 
         frame_elem = document.createElement("fieldset");
         frame_legend = document.createElement("legend");
         frame_legend.innerHTML = legend_name;
+
+        if (class_names !== undefined) {
+            frame_elem.className = class_names;
+        }
 
         frame_elem.appendChild(frame_legend);
 
@@ -70,13 +158,122 @@ var WUI_Form = new (function() {
             frame_item = frame_object[i];
 
             if (frame_item["type"]) {
-                if (_allowed_form_items.indexOf(frame_item.type) !== -1) { // standard form items
-                    form_elem = document.createElement(frame_item.type);
+                if (_allowed_form_items.indexOf(frame_item.type) !== -1) { // standard HTML form items
+                    div_elem = null;
+
+                    if (_form_type_table[frame_item.type]) {
+                        form_elem = document.createElement(_form_type_table[frame_item.type]);
+                        form_elem.type = frame_item.type;
+
+                        final_elem = form_elem;
+                    } else {
+                        form_elem = document.createElement(frame_item.type);
+                        final_elem = form_elem;
+                    }
+
+                    if (frame_item["wrap"]) {
+                        div_elem = document.createElement("div");
+                        div_elem.appendChild(form_elem);
+                        final_elem = div_elem;
+                    }
+
                     form_elem.id = _identifier_patterns.std_item + fields_count;
 
-                    // TODO
+                    if (frame_item["label"]) {
+                        label_elem = document.createElement("label");
+                        label_elem.setAttribute("for", form_elem.id);
 
-                    frame_elem.appendChild(form_elem);
+                        label_elem.innerHTML = frame_item.label;
+
+                        if (div_elem === null) {
+                            frame_elem.appendChild(label_elem);
+                        } else {
+                            final_elem.insertBefore(label_elem, form_elem);
+                        }
+
+                        if (frame_item.type === "input") {
+                            label_elem.appendChild(form_elem);
+                            final_elem = label_elem;
+                        }
+                    }
+
+                    if (frame_item["attr"]) {
+                        _copyAttributes(frame_item.attr, form_elem);
+                    }
+
+                    if (frame_item.type === "select" || frame_item.type === "datalist") {
+                        if (frame_item.type === "datalist") {
+                            datalist_input_elem = document.createElement("input");
+                            datalist_input_elem.setAttribute("list", form_elem.id);
+
+                            if (frame_item["id"]) {
+                                datalist_input_elem.setAttribute("id", frame_item.id);
+                            }
+
+                            if (frame_item["name"]) {
+                                datalist_input_elem.setAttribute("name", frame_item.name);
+                            }
+
+                            final_elem.appendChild(datalist_input_elem);
+                        }
+
+                        if (frame_item["options"]) {
+                            option_parent = form_elem;
+
+                            for (j = 0; j < frame_item.options.length; j += 1) {
+                                option = frame_item.options[j];
+
+                                if ((typeof option) === "object") {
+                                    if (option["group"]) {
+                                        option_parent = document.createElement("optgroup");
+                                        option_parent.setAttribute("label", option.group);
+                                        if (option["group_attr"]) {
+                                            _copyAttributes(option.group_attr, option_parent);
+                                        }
+                                        form_elem.appendChild(option_parent);
+                                    }
+                                }
+
+                                option_elem = document.createElement("option");
+
+                                if ((typeof option) === "string") {
+                                    option_elem.innerHTML = option;
+                                    option_parent.appendChild(option_elem);
+                                } else if ((typeof option) === "object") {
+                                    if (option["name"]) {
+                                        option_elem.innerHTML = option.name;
+                                        option_parent.appendChild(option_elem);
+
+                                        if (option["label"]) {
+                                            option_elem.setAttribute("label", option.label);
+                                        }
+
+                                        if ((typeof option["disabled"]) === "booleans") {
+                                            option_elem.setAttribute("disabled", option.disabled);
+                                        }
+
+                                        if ((typeof option["selected"]) === "booleans") {
+                                            option_elem.setAttribute("selected", option.selected);
+                                        }
+
+                                        if (option["value"]) {
+                                            option_elem.setAttribute("value", option.value);
+                                        }
+
+                                        if (option["attr"]) {
+                                            _copyAttributes(option.attr, option_elem);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    if (frame_item["value"]) {
+                        final_elem.value = frame_item.value;
+                    }
+
+                    frame_elem.appendChild(final_elem);
 
                     fields_count += 1;
                 } else if (_allowed_wui_items.indexOf(frame_item.type) !== -1) { // WUI items
@@ -93,7 +290,14 @@ var WUI_Form = new (function() {
                 } else if (frame_item.type === "fieldset") {
                     if (frame_item["items"]) {
                         if (frame_item["name"]) {
-                            fields_count = _addFormItems(frame_item.name, frame_elem, frame_item.items, fields_count);
+                            if (frame_item["class"]) {
+                                sub_group_class = frame_item.class;
+                                sub_group_class += " " + _class_name.sub_group;
+                            } else {
+                                sub_group_class = _class_name.sub_group;
+                            }
+
+                            fields_count = _addFormItems(frame_item.name, sub_group_class, frame_elem, frame_item.items, fields_count);
                         }
                     }
                 }
@@ -174,9 +378,11 @@ var WUI_Form = new (function() {
             if (items.hasOwnProperty(key)) {
                 frame = items[key];
 
-                total_items = _addFormItems(key, element, frame, 0);
+                total_items = _addFormItems(key, _class_name.main_group, element, frame, 0);
             }
         }
+
+        element.style.width = opts.width;
 
         element.classList.add(_class_name.form);
 

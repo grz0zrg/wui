@@ -764,7 +764,7 @@ var WUI_Dialog = new (function() {
         owner_win.addEventListener('mouseup', _onStopResize, false);
         owner_win.addEventListener('touchend', _onStopResize, false);
 
-        _focus(_dragged_dialog);
+        _focus(dialog);
 
         _resized_dialog = dialog;
     };
