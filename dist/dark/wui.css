@@ -3,12 +3,18 @@
 }
 
 .wui-form fieldset {
-    border: ridge 1px #dddddd;
+    border: ridge 1px #ababab;
     background-color: #222222;
 }
 
 .wui-form legend {
     padding-bottom: 4px;
+}
+
+.wui-form input {
+    vertical-align: middle;
+    margin-top: 0;
+    margin-bottom: 0;
 }
 
 .wui-form label {
@@ -19,10 +25,61 @@
 
 .wui-form-main-group {
     margin-bottom: 12px;
+    text-align: center;
 }
 
 .wui-form-sub-group {
-    margin: 14px;
+    margin-top: 14px;
+    margin-bottom: 14px;
+    margin-left: 4px;
+    margin-right: 4px;
+    vertical-align: top;
+    text-align: left;
+}
+
+.wui-form-sub-group-div {
+    margin-top: 4px;
+    margin-bottom: 4px;
+}
+
+.wui-form-inline {
+    display: inline-block;
+}
+
+.wui-form-align-right {
+    text-align: right;
+}
+
+.wui-form input[type="radio"] {
+    width: auto;
+}
+
+.wui-form-tn input, .wui-form-tn select {
+    width: 75px;
+    border: 0;
+    margin: 0;
+    padding: 0;
+}
+
+.wui-form-sm input, .wui-form-sm select {
+    width: 100px;
+    border: 0;
+    margin: 0;
+    padding: 0;
+}
+
+.wui-form-md input, .wui-form-md select {
+    width: 200px;
+    border: 0;
+    margin: 0;
+    padding: 0;
+}
+
+.wui-form-xl input, .wui-form-xl select {
+    width: 300px;
+    border: 0;
+    margin: 0;
+    padding: 0;
 }
 
 .wui-dialog {

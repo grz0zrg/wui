@@ -15,11 +15,19 @@ var WUI_Form = new (function() {
         _class_name = {
             form: "wui-form",
             main_group: "wui-form-main-group",
-            sub_group: "wui-form-sub-group"
+            sub_group: "wui-form-sub-group",
+            sub_group_div: "wui-form-sub-group-div",
+            tn: "wui-form-tn",
+            sm: "wui-form-sm",
+            md: "wui-form-md",
+            xl: "wui-form-xl",
+            align_right: "wui-form-align-right",
+            inline: "wui-form-inline"
         },
 
         _known_options = {
-            width: "auto"
+            width: "auto",
+            on_change: null
         },
 
         _identifier_patterns = {
@@ -111,14 +119,18 @@ var WUI_Form = new (function() {
 
         for (key in src) {
             if (src.hasOwnProperty(key)) {
-                if (dst[key] === undefined) {
-                    dst.setAttribute(key, src[key]);
-                }
+                dst.setAttribute(key, src[key]);
             }
         }
     };
 
-    var _addFormItems = function (legend_name, class_names, element, frame_object, index) {
+    var _getOnChange = function (obj, cb) {
+        return function (ev) {
+            cb(ev, obj);
+        };
+    }
+
+    var _addFormItems = function (legend_name, attr_list, element, frame_object, index, opts) {
         var i = 0,
             j = 0,
 
@@ -138,18 +150,23 @@ var WUI_Form = new (function() {
             option_parent,
             opt_group_elem,
             datalist_input_elem,
-            sub_group_class,
+            sub_group_attr,
 
             final_elem,
 
             option;
 
-        frame_elem = document.createElement("fieldset");
-        frame_legend = document.createElement("legend");
-        frame_legend.innerHTML = legend_name;
+        if (legend_name === undefined) {
+            frame_elem = document.createElement("div");
+            frame_legend = document.createElement("legend");
+        } else {
+            frame_elem = document.createElement("fieldset");
+            frame_legend = document.createElement("legend");
+            frame_legend.innerHTML = legend_name;
+        }
 
-        if (class_names !== undefined) {
-            frame_elem.className = class_names;
+        if (attr_list !== undefined) {
+            _copyAttributes(attr_list, frame_elem);
         }
 
         frame_elem.appendChild(frame_legend);
@@ -177,7 +194,15 @@ var WUI_Form = new (function() {
                         final_elem = div_elem;
                     }
 
-                    form_elem.id = _identifier_patterns.std_item + fields_count;
+                    form_elem.id = _identifier_patterns.std_item + fields_count + "_" + element.id;
+
+                    if (opts.on_change) {
+                        form_elem.addEventListener("change", _getOnChange({}, opts.on_change));
+                    }
+
+                    if (frame_item["group"]) {
+                        form_elem.name = frame_item.group;
+                    }
 
                     if (frame_item["label"]) {
                         label_elem = document.createElement("label");
@@ -270,7 +295,7 @@ var WUI_Form = new (function() {
                     }
 
                     if (frame_item["value"]) {
-                        final_elem.value = frame_item.value;
+                        form_elem.value = frame_item.value;
                     }
 
                     frame_elem.appendChild(final_elem);
@@ -289,16 +314,56 @@ var WUI_Form = new (function() {
                     }
                 } else if (frame_item.type === "fieldset") {
                     if (frame_item["items"]) {
-                        if (frame_item["name"]) {
-                            if (frame_item["class"]) {
-                                sub_group_class = frame_item.class;
-                                sub_group_class += " " + _class_name.sub_group;
-                            } else {
-                                sub_group_class = _class_name.sub_group;
-                            }
+                        sub_group_attr = {
+                            "style": ""
+                        };
 
-                            fields_count = _addFormItems(frame_item.name, sub_group_class, frame_elem, frame_item.items, fields_count);
+                        if (frame_item["class"]) {
+                            sub_group_attr["class"] = frame_item.class;
+                            sub_group_attr["class"] += " " + _class_name.sub_group;
+                        } else {
+                            sub_group_attr["class"] = _class_name.sub_group;
                         }
+
+                        if (frame_item["style"]) {
+                            sub_group_attr.style += frame_item.style;
+                        }
+
+                        if (frame_item["width"]) {
+                            sub_group_attr.style += "width: " + frame_item["width"];
+                        }
+
+                        if (frame_item["height"]) {
+                            sub_group_attr.style += "height: " + frame_item["height"];
+                        }
+
+                        if (frame_item["content_align"] === "right") {
+                            sub_group_attr["class"] += " " + _class_name.align_right;
+                        }
+
+                        if (frame_item["inline"]) {
+                            sub_group_attr["class"] += " " + _class_name.inline;
+                        }
+
+                        if (frame_item["items_size"]) {
+                            if (frame_item.items_size === "tn") {
+                              sub_group_attr["class"] += " " + _class_name.tn;
+                            } else if (frame_item.items_size === "sm") {
+                                sub_group_attr["class"] += " " + _class_name.sm;
+                            } else if (frame_item.items_size === "md") {
+                                sub_group_attr["class"] += " " + _class_name.md;
+                            } else if (frame_item.items_size === "xl") {
+                                sub_group_attr["class"] += " " + _class_name.xl;
+                            }
+                        } else {
+                            sub_group_attr["class"] += " " + _class_name.sm;
+                        }
+
+                        if (frame_item["name"] === undefined) {
+                            sub_group_attr["class"] += " " + _class_name.sub_group_div;
+                        }
+
+                        fields_count = _addFormItems(frame_item["name"], sub_group_attr, frame_elem, frame_item.items, fields_count, opts);
                     }
                 }
             }
@@ -378,7 +443,7 @@ var WUI_Form = new (function() {
             if (items.hasOwnProperty(key)) {
                 frame = items[key];
 
-                total_items = _addFormItems(key, _class_name.main_group, element, frame, 0);
+                total_items = _addFormItems(key, { "class": _class_name.main_group }, element, frame, 0, opts);
             }
         }
 
@@ -414,7 +479,7 @@ var WUI_Form = new (function() {
 
         // delete WUI form items
         for (i = 0; i < widget.total_items; i += 1) {
-            wui_form_item = document.getElementById(_identifier_patterns.wui_item + i);
+            wui_form_item = document.getElementById(_identifier_patterns.wui_item + i + "_" + element.id);
             if (wui_form_item) {
                 for (j = 0; j < _allowed_wui_items.length; j += 1) {
                     window[_allowed_wui_items[j]].destroy(wui_form_item);

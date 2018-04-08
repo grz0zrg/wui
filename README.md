@@ -533,7 +533,9 @@ If you find this too cumbersome to setup, you can render Font Awesome icons to i
 <a name="form"></a>
 ### Form ###
 
-The form widget is a powerful feature allowing to design complete 'settings' panel and things requiring form elements, quickly, easily, integrate high level functionalities, it accept standard HTML5 form elements and WUI_Input, WUI_RangeSlider, WUI_DropDown.
+The form widget is a powerful feature allowing to design complete 'settings' panel and things requiring form elements with coherent styling, quickly, easily with integration of some high level functionalities (such as hide/show items group), it accept standard HTML5 form elements and WUI_Input, WUI_RangeSlider, WUI_DropDown.
+
+See the demo page for a detailed example of configuration options.
 
 *Methods*:
 
@@ -544,6 +546,9 @@ The form widget is a powerful feature allowing to design complete 'settings' pan
 
 ```html
 <div id="my_form"></div>
+<!--
+	You can also use <form id="my_form"></form> for standard HTML forms
+-->
 ```
 
 ```javascript
