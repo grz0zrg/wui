@@ -130,7 +130,7 @@ var WUI_Form = new (function() {
         };
     }
 
-    var _addFormItems = function (legend_name, attr_list, element, frame_object, index, opts) {
+    var _addFormItems = function (id, legend_name, attr_list, element, frame_object, index, opts) {
         var i = 0,
             j = 0,
 
@@ -194,7 +194,7 @@ var WUI_Form = new (function() {
                         final_elem = div_elem;
                     }
 
-                    form_elem.id = _identifier_patterns.std_item + fields_count + "_" + element.id;
+                    form_elem.id = _identifier_patterns.std_item + fields_count + "_" + id;
 
                     if (opts.on_change) {
                         form_elem.addEventListener("change", _getOnChange({}, opts.on_change));
@@ -202,6 +202,10 @@ var WUI_Form = new (function() {
 
                     if (frame_item["group"]) {
                         form_elem.name = frame_item.group;
+                    }
+
+                    if (frame_item["name"]) {
+                        form_elem.dataset.eName = frame_item["name"];
                     }
 
                     if (frame_item["label"]) {
@@ -363,7 +367,7 @@ var WUI_Form = new (function() {
                             sub_group_attr["class"] += " " + _class_name.sub_group_div;
                         }
 
-                        fields_count = _addFormItems(frame_item["name"], sub_group_attr, frame_elem, frame_item.items, fields_count, opts);
+                        fields_count = _addFormItems(id, frame_item["name"], sub_group_attr, frame_elem, frame_item.items, fields_count, opts);
                     }
                 }
             }
@@ -443,7 +447,7 @@ var WUI_Form = new (function() {
             if (items.hasOwnProperty(key)) {
                 frame = items[key];
 
-                total_items = _addFormItems(key, { "class": _class_name.main_group }, element, frame, 0, opts);
+                total_items = _addFormItems(id, key, { "class": _class_name.main_group }, element, frame, 0, opts);
             }
         }
 
