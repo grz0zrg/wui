@@ -1,10 +1,10 @@
 # WUI #
 
-Collection of **easy to use** and **lightweight** (*~5.4kb css*, *~14.9kb js* gzipped) **vanilla** GUI widgets for the web.
+Collection of **easy to use**, **independent** and **lightweight** (*~5.4kb css*, *~14.9kb js* gzipped) **vanilla** GUI widgets for the web.
 
 **Require no dependencies, all widgets can be used on their own.**
 
-There is a dark and a bright theme, the dark theme is the default theme and is more polished than the bright one.
+There is a dark and a bright theme, the **dark theme is the default theme** and is more polished than the bright one.
 
 The main advantages compared to other libraries are:
 
@@ -12,13 +12,13 @@ The main advantages compared to other libraries are:
 * Input and Slider widgets can be MIDI controlled with two mode (absolute, relative) and can be user-configurable
 * Dialogs can be detached (and everything related to WUI will still work)
 * Circular menu aka [pie menu](https://en.wikipedia.org/wiki/Pie_menu) aka radial menu :)
-* Quick forms creation with standard HTML5 forms elements and WUI elements (WIP)
+* Quick forms creation with standard HTML5 forms elements and WUI elements
 * Events are optimized (meaning that there is few listeners for each widgets)
 * Easily customizable/hackable
 * Lightweight
 * ...
 
-Great for single page apps, audio apps, experiments and the like.
+Great for single page apps (audio apps, games etc.), experiments and the like.
 
 #### Demo
 - [Demo](http://grz0zrg.github.io/wui-demo/)
@@ -535,12 +535,16 @@ If you find this too cumbersome to setup, you can render Font Awesome icons to i
 
 The form widget is a powerful feature allowing to design complete 'settings' panel and things requiring form elements with coherent styling, quickly, easily with integration of some high level functionalities (such as hide/show items group), it accept standard HTML5 form elements and WUI_Input, WUI_RangeSlider, WUI_DropDown.
 
+The form widget has two important methods `getParameters` and `setParameters` which allow to respectively serialize and deserialize entire forms data (and subsequently trigger `change` event if needed) as JSON, **a form item must have an unique name to be serializable**.
+
 See the demo page for a detailed example of configuration options.
 
 *Methods*:
 
 >* create(id, options, items)
->*   destroy(wui_form)
+>* destroy(wui_form)
+>* getParameters(wui_form)
+>* setParameters(wui_form, parameters, trigger_on_change_boolean)
 
 *Example*:
 

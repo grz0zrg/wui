@@ -124,9 +124,42 @@ var WUI_Form = new (function() {
         }
     };
 
-    var _getOnChange = function (obj, cb) {
+    var _getOnChange = function (obj, cb, cb2) {
         return function (ev) {
-            cb(ev, obj);
+            // we keep track of the data
+            if (ev.target) {
+                if (obj["name"]) {
+                    if (obj.type === "checkbox") {
+                        _widget_list[obj.wid].sitems[obj.name].value = ev.target.checked;
+
+                        obj.value = ev.target.checked;
+                    } else {
+                        _widget_list[obj.wid].sitems[obj.name].value = ev.target.value;
+
+                        obj.value = ev.target.value;
+                    }
+                } else {
+                    if (obj.type === "checkbox") {
+                        obj.value = ev.target.checked;
+                    } else {
+                        obj.value = ev.target.value;
+                    }
+                }
+            } else {
+                if (obj["name"]) {
+                    _widget_list[obj.wid].sitems[obj.name].value = ev;
+                }
+
+                obj.value = ev;
+            }
+
+            if (cb !== undefined) {
+                cb(obj.value, ev, obj);
+            }
+
+            if (cb2 !== undefined) {
+                cb2(obj.value, ev, obj);
+            }
         };
     }
 
@@ -196,16 +229,25 @@ var WUI_Form = new (function() {
 
                     form_elem.id = _identifier_patterns.std_item + fields_count + "_" + id;
 
-                    if (opts.on_change) {
-                        form_elem.addEventListener("change", _getOnChange({}, opts.on_change));
-                    }
-
                     if (frame_item["group"]) {
                         form_elem.name = frame_item.group;
                     }
 
                     if (frame_item["name"]) {
-                        form_elem.dataset.eName = frame_item["name"];
+                        _widget_list[id].items[frame_item.name] = { elem: form_elem };
+                        _widget_list[id].sitems[frame_item.name] = { value: 0 };
+                    }
+
+                    if (frame_item.type === "textarea" || frame_item.type === "text") {
+                        form_elem.addEventListener("input", _getOnChange({wid: id, name: frame_item["name"], type: frame_item.type}, opts["on_change"]));
+                    } else if (frame_item.type === "button") {
+                        form_elem.addEventListener("click", _getOnChange({wid: id, name: frame_item["name"], type: frame_item.type}, opts["on_change"]));
+                    } else {
+                        form_elem.addEventListener("change", _getOnChange({wid: id, name: frame_item["name"], type: frame_item.type}, opts["on_change"]));
+                    }
+
+                    if (frame_item["content"]) {
+                        form_elem.innerHTML = frame_item["content"];
                     }
 
                     if (frame_item["label"]) {
@@ -300,6 +342,8 @@ var WUI_Form = new (function() {
 
                     if (frame_item["value"]) {
                         form_elem.value = frame_item.value;
+
+                        //_widget_list[id]
                     }
 
                     frame_elem.appendChild(final_elem);
@@ -309,6 +353,22 @@ var WUI_Form = new (function() {
                     if (window[frame_item.type]) {
                         wui_form_elem = document.createElement("div");
                         wui_form_elem.id = _identifier_patterns.wui_item + fields_count;
+
+                        if (frame_item["name"]) {
+                            _widget_list[id].items[frame_item.name] = { elem: wui_form_elem };
+                            _widget_list[id].sitems[frame_item.name] = { value: 0 };
+                        }
+
+                        // wrap detected events to keep tracks of data
+                        if (frame_item["opts"]) {
+                            if (frame_item.opts.on_change) {
+                                frame_item.opts.on_change = _getOnChange({wid: id, name: frame_item["name"]}, frame_item.opts.on_change, opts["on_change"]);
+                            }
+
+                            if (frame_item.opts.on_item_selected) {
+                                frame_item.opts.on_item_selected = _getOnChange({wid: id, name: frame_item["name"]}, frame_item.opts.on_item_selected, opts["on_change"]);
+                            }
+                        }
 
                         window[frame_item.type].create(wui_form_elem, frame_item["opts"], frame_item["items"]);
 
@@ -367,13 +427,15 @@ var WUI_Form = new (function() {
                             sub_group_attr["class"] += " " + _class_name.sub_group_div;
                         }
 
-                        fields_count += _addFormItems(id, frame_item["name"], sub_group_attr, frame_elem, frame_item.items, fields_count, opts);
+                        fields_count = _addFormItems(id, frame_item["name"], sub_group_attr, frame_elem, frame_item.items, fields_count, opts);
                     }
                 }
             }
         }
 
         element.appendChild(frame_elem);
+
+
 
         return fields_count;
     };
@@ -443,23 +505,27 @@ var WUI_Form = new (function() {
             }
         }
 
+        _widget_list[id] = {
+            element: element,
+            total_items: total_items,
+            items: {}, // items reference
+            sitems: {}, // serializable item data
+            opts : opts
+        };
+
         for (key in items) {
             if (items.hasOwnProperty(key)) {
                 frame = items[key];
 
-                total_items = _addFormItems(id, key, { "class": _class_name.main_group }, element, frame, 0, opts);
+                total_items += _addFormItems(id, key, { "class": _class_name.main_group }, element, frame, total_items, opts);
             }
         }
+
+        _widget_list[id].total_items = total_items;
 
         element.style.width = opts.width;
 
         element.classList.add(_class_name.form);
-
-        _widget_list[id] = {
-            element: element,
-            total_items: total_items,
-            opts : opts
-        };
 
         return id;
     };
@@ -492,6 +558,55 @@ var WUI_Form = new (function() {
         }
 
         delete _widget_list[id];
+    };
+
+    this.getParameters = function (id) {
+        var widget = _widget_list[id],
+            parameters = { },
+            key;
+
+        if (widget === undefined) {
+            _log("Element id '" + id + "' is not a WUI_Form, getParameters aborted.");
+
+            return null;
+        }
+
+        for (key in widget.sitems) {
+            if (widget.sitems.hasOwnProperty(key)) {
+                parameters[key] = widget.sitems[key];
+            }
+        }
+
+        return parameters;
+    };
+
+    this.setParameters = function (id, parameters, trigger_on_change) {
+        var widget = _widget_list[id],
+            ev,
+            key;
+
+        if (widget === undefined) {
+            _log("Element id '" + id + "' is not a WUI_Form, setParameters aborted.");
+
+            return;
+        }
+
+        if (!parameters) {
+            return;
+        }
+
+        for (key in parameters) {
+            if (parameters.hasOwnProperty(key)) {
+                if (widget.items[key]) {
+                    widget.sitems[key] = parameters[key];
+
+                    if (trigger_on_change) {
+                        widget.items[key].elem.value = parameters[key].value;
+                        widget.items[key].elem.checked = parameters[key].checked;
+                    }
+                }
+            }
+        }
     };
 })();
 
