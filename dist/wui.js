@@ -656,7 +656,8 @@ var WUI_Dialog = new (function() {
             transition:     "wui-dialog-transition",
             dim_transition: "wui-dialog-dim-transition",
             modal:          "wui-dialog-modal",
-            status_bar:     "wui-dialog-status-bar"
+            status_bar:     "wui-dialog-status-bar",
+            title_wrapper:  "wui-dialog-title-wrapper"
         },
 
         _known_options = {
@@ -1604,6 +1605,7 @@ var WUI_Dialog = new (function() {
             header_title = document.createElement("div");
 
             header_title_wrapper.style.display = "inline-block";
+            header_title_wrapper.className = _class_name.title_wrapper;
 
             header_title.className = "wui-dialog-title";
             header_title_wrapper.innerHTML = opts.title;
@@ -1720,6 +1722,8 @@ var WUI_Dialog = new (function() {
                                 resize_handler: resize_handler,
 
                                 header_minimaxi_btn: header_minimaxi_btn,
+                                
+                                header_title: header_title_wrapper,
 
                                 opts: opts,
 
@@ -1741,6 +1745,49 @@ var WUI_Dialog = new (function() {
         }
 
         return id;
+    };
+
+    this.getTitle = function (id) {
+        var widget = _widget_list[id];
+
+        if (widget === undefined) {
+            _log("Cannot getTitle of WUI dialog \"" + id + "\".");
+
+            return;
+        }
+
+        if (widget.header_title) {
+            return widget.header_title.innerHTML;
+        }
+    };
+
+    this.setTitle = function (id, content) {
+        var widget = _widget_list[id],
+
+            title_bar,
+
+            detach_ref;
+
+        if (widget === undefined) {
+            _log("Cannot setTitle of WUI dialog \"" + id + "\".");
+
+            return;
+        }
+
+        if (widget.header_title) {
+            widget.header_title.innerHTML = content;
+
+            detach_ref = widget.detachable_ref;
+            if (detach_ref) {
+                if (!detach_ref.closed) {
+                    title_bar = detach_ref.document.body.getElementsByClassName(_class_name.title_wrapper);
+
+                    if (title_bar.length > 0) {
+                        title_bar[0].innerHTML = content;
+                    }
+                }
+            }
+        }
     };
 
     this.setStatusBarContent = function (id, content) {
@@ -1861,8 +1908,6 @@ var WUI_Dialog = new (function() {
         element = widget.dialog;
 
         element.parentElement.removeChild(element);
-
-        widget.observer.disconnect();
 
         delete _widget_list[id];
     };

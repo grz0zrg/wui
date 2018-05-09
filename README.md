@@ -1,6 +1,6 @@
 # WUI #
 
-Collection of **easy to use**, **independent** and **lightweight** (*~5.4kb css*, *~14.9kb js* gzipped) **vanilla** GUI widgets for the web.
+Collection of **easy to use**, **independent** and **lightweight** (*~5.4kb css*, *~15.5kb js* gzipped) **vanilla** GUI widgets for the web.
 
 **Require no dependencies, all widgets can be used on their own.**
 
@@ -219,6 +219,8 @@ All WUI widgets work very well with the detachable feature, what you change in t
 >*   close(wui_dialog, propagate)
 >*   focus(wui_dialog)
 >*   setStatusBarContent(wui_dialog, html_content)
+>*   setTitle(wui_dialog, html_content)
+>*   getTitle(wui_dialog)
 >*   getDetachedDialog(wui_dialog)
 
 *Example*:
@@ -336,6 +338,11 @@ Want to change the status bar content?
 WUI_Dialog.setStatusBarContent(my_dialog, "My new status bar content");
 ```
 
+Want to change the title bar content ?
+
+```javascript
+WUI_Dialog.setTitle(my_dialog, "My new title");
+```
 
 Need access to the detached dialog window object?
 
