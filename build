@@ -1,0 +1,9 @@
+#!/bin/sh
+
+grunt dist
+cp dist/wui.min.js ../demo/wui/wui.min.js
+cp dist/wui.js ../demo/wui/wui.js
+cp dist/dark/wui.css ../demo/wui/dark/wui.css
+cp dist/dark/wui.min.css ../demo/wui/dark/wui.min.css
+cp dist/bright/wui.css ../demo/wui/bright/wui.css
+cp dist/bright/wui.min.css ../demo/wui/bright/wui.min.css
