@@ -12,7 +12,7 @@ The main advantages compared to other libraries are:
 * Input and Slider widgets can be MIDI controlled with two mode (absolute, relative) and can be user-configurable
 * Dialogs can be detached (and everything related to WUI will still work)
 * Circular menu aka [pie menu](https://en.wikipedia.org/wiki/Pie_menu) aka radial menu :)
-* Quick forms creation with standard HTML5 forms elements and WUI elements
+* Quick forms creation with standard HTML5 forms elements and WUI elements (WIP/Experimental)
 * Events are optimized (meaning that there is few listeners for each widgets)
 * Easily customizable/hackable
 * Lightweight
