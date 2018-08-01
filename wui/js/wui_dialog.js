@@ -45,7 +45,8 @@ var WUI_Dialog = new (function() {
             dim_transition: "wui-dialog-dim-transition",
             modal:          "wui-dialog-modal",
             status_bar:     "wui-dialog-status-bar",
-            title_wrapper:  "wui-dialog-title-wrapper"
+            title_wrapper:  "wui-dialog-title-wrapper",
+            detached:       "wui-dialog-detach-window-body"
         },
 
         _known_options = {
@@ -96,8 +97,9 @@ var WUI_Dialog = new (function() {
 
     var _withinDialog = function (e) {
         var node = e.parentElement;
-        while (node != null) {
-            if (node.classList.contains(_class_name.dialog)) {
+        while (node !== null) {
+            if (node.classList.contains(_class_name.dialog) ||
+                node.classList.contains(_class_name.detached)) {
                 return true;
             }
 
@@ -111,25 +113,25 @@ var WUI_Dialog = new (function() {
     // a tricky solution but the only one i know of until a standard pop up or someone has a better solution
     if (!Element.prototype['_addEventListener']) {
         Element.prototype._addEventListener = Element.prototype.addEventListener;
-        Element.prototype.addEventListener = function(a, b, c) {
-            this._addEventListener(a, b, c);
-
+        Element.prototype.addEventListener = function (a, b, c, d) {
+            this._addEventListener(a, b, c, d);
+            
             if (_withinDialog(this)) {
-                if (!this['eventListenerList']) {
+                if (this['eventListenerList'] === undefined) {
                     this['eventListenerList'] = {};
                 }
-
-                if(!this.eventListenerList[a]) {
+                
+                if (this.eventListenerList[a] === undefined) {
                     this.eventListenerList[a] = [];
                 }
                 this.eventListenerList[a].push(b);
             }
         };
         Element.prototype._removeEventListener = Element.prototype.removeEventListener;
-        Element.prototype.removeEventListener = function(a, b, c) {
+        Element.prototype.removeEventListener = function (a, b, c) {
             if (this['eventListenerList']) {
                 var events = this.eventListenerList[a], i;
-                if(events) {
+                if (events) {
                     for (i = 0; i < events.length; i += 1) {
                         if (events[i] === b) {
                             events.splice(i, 1);
@@ -421,24 +423,26 @@ var WUI_Dialog = new (function() {
         var key, i;
 
         do {
-            if(elem.nodeType == 1) {
+            if (elem.nodeType == 1) {
                 if (elem['eventListenerList']) {
                     for (key in elem.eventListenerList) {
-                        if (key === 'length' || !elem.eventListenerList.hasOwnProperty(key)) continue;
-                            for (i = 0; i < elem.eventListenerList[key].length; i += 1) {
-                                target.addEventListener(key, elem.eventListenerList[key][i], false);
-                            }
+                        if (key === 'length' || !elem.eventListenerList.hasOwnProperty(key)) {
+                            continue;
+                        }
+
+                        for (i = 0; i < elem.eventListenerList[key].length; i += 1) {
+                            target.addEventListener(key, elem.eventListenerList[key][i]);
                         }
                     }
                 }
-                if(elem.hasChildNodes()) {
-                    _addListenerWalk(elem.firstChild, target.firstChild);
-                }
-
-                elem = elem.nextSibling;
-                target = target.nextSibling;
             }
-            while (elem && target);
+            if (elem.hasChildNodes()) {
+                _addListenerWalk(elem.firstChild, target.firstChild);
+            }
+
+            elem = elem.nextSibling;
+            target = target.nextSibling;
+        } while (elem && target);
     };
 
     var _detach = function (dialog) {
@@ -516,7 +520,7 @@ var WUI_Dialog = new (function() {
                                      '<title>' + stripped_title + '</title>',
                                      css_html,
                                      '</head>',
-                                     '<body id="' + dialog.id + "\" class=\"wui-dialog-detach-window-body\" onload=\"parent.opener.WUI_Dialog.childWindowLoaded(document.body.id)\">",
+                                     '<body id="' + dialog.id + "\" class=\"" + _class_name.detached + "\" onload=\"parent.opener.WUI_Dialog.childWindowLoaded(document.body.id)\">",
                                      //dialog.children[1].outerHTML,
                                      '</body>',
                                      '</html>'].join(''));
@@ -1295,7 +1299,7 @@ var WUI_Dialog = new (function() {
             element;
 
         if (widget === undefined) {
-            _log("Element id '" + id + "' is not a WUI_Dialog, destroying aborted.");
+            _log("Element id '" + id + "' is not a WUI_Dialog, destroying aborted.");_focus(_dragged_dialog);
 
             return;
         }
