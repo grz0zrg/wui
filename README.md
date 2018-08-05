@@ -250,6 +250,9 @@ var my_dialog = WUI_Dialog.create("my_dialog", {
 
     // wether the dialog is minimized or not after creation
     minimized: false,
+    
+    // function called when the dialog has been opened
+    on_open: null,
 
     // function called when the dialog has been closed
     on_close: null,

@@ -83,6 +83,7 @@ var WUI_Dialog = new (function() {
 
             minimized: false,
 
+            on_open: null,
             on_close: null,
             on_detach: null,
             on_pre_detach: null,
@@ -585,7 +586,7 @@ var WUI_Dialog = new (function() {
 
         var key, widget;
 
-        for(key in _widget_list) {
+        for (key in _widget_list) {
             if (_widget_list.hasOwnProperty(key)) {
                 widget = _widget_list[key];
 
@@ -1267,6 +1268,10 @@ var WUI_Dialog = new (function() {
         dialog.classList.add(_class_name.open);
 
         _focus(dialog);
+
+        if (widget.opts.on_open) {
+            widget.opts.on_open();
+        }
     };
 
     this.focus = function (id) {
