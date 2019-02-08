@@ -801,7 +801,7 @@ var WUI_Dialog = new (function() {
             }
         }
 
-        if (widget.dialog.classList.contains(_class_name.closed)) {
+        if (widget.dialog.classList.contains(_class_name.closed) && !widget.detachable_ref) {
             return;
         }
 
@@ -821,7 +821,7 @@ var WUI_Dialog = new (function() {
             }
         }
 
-        if (!widget.dialog.classList.contains(_class_name.open)) {
+        if (!widget.dialog.classList.contains(_class_name.open) && !widget.detachable_ref) {
             return;
         }
 
