@@ -690,6 +690,10 @@ var WUI_ToolBar = new (function() {
                         tool_element.classList.add(tool.icon);
                     }
 
+                    if (tool.id !== undefined) {
+                        tool_element.id = tool.id;
+                    }
+
                     // handle button type
                     if (tool.type === "toggle") {
                         tool_element.classList.add(_class_name.toggle);

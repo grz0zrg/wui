@@ -1,6 +1,6 @@
 # WUI #
 
-Collection of **easy to use**, **independent** and **lightweight** (*~5.4kb css*, *~15.5kb js* gzipped) **vanilla** GUI widgets for the web.
+Collection of **easy to use**, **independent** and **lightweight** (*~5.6kb css*, *~15.6kb js* gzipped) **vanilla** GUI widgets for the web.
 
 **Require no dependencies, all widgets can be used on their own.**
 
@@ -217,6 +217,7 @@ All WUI widgets work very well with the detachable feature, what you change in t
 >*   destroy(wui_dialog)
 >*   open(wui_dialog, detach)
 >*   close(wui_dialog, propagate)
+>*   closeAll(propagate)
 >*   focus(wui_dialog)
 >*   setStatusBarContent(wui_dialog, html_content)
 >*   setTitle(wui_dialog, html_content)
@@ -444,6 +445,9 @@ var my_toolbar = WUI_ToolBar.create("my_toolbar", {
 	// properties added to this object are recognized automatically as new groups by the widget
     my_first_group_of_tools: [
       {
+        // id attribute
+        id: "my_pencil_tool",
+
         // CSS class name
         icon: "pencil-icon",
 
@@ -548,6 +552,8 @@ The form widget is a powerful feature allowing to design complete 'settings' pan
 The form widget has two important methods `getParameters` and `setParameters` which allow to respectively serialize and deserialize entire forms data (and subsequently trigger `change` event if needed) as JSON, **a form item must have an unique name to be serializable**.
 
 See the demo page for a detailed example of configuration options.
+
+Note : Work in progress / experimental feature; may be broken
 
 *Methods*:
 

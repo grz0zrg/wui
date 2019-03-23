@@ -1975,6 +1975,16 @@ var WUI_Dialog = new (function() {
         return null;
     };
 
+    this.closeAll = function (propagate) {
+        var id, widget;
+        for (id in _widget_list) {
+            widget = _widget_list[id];
+            if (widget) {
+                _close(widget.dialog, true, propagate, true);
+            }
+        }
+    };
+
     document.addEventListener("keyup", _onKeyUp, false);
 })();
 
@@ -4703,6 +4713,10 @@ var WUI_ToolBar = new (function() {
 
                     if (tool.icon !== undefined) {
                         tool_element.classList.add(tool.icon);
+                    }
+
+                    if (tool.id !== undefined) {
+                        tool_element.id = tool.id;
                     }
 
                     // handle button type

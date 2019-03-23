@@ -1363,5 +1363,15 @@ var WUI_Dialog = new (function() {
         return null;
     };
 
+    this.closeAll = function (propagate) {
+        var id, widget;
+        for (id in _widget_list) {
+            widget = _widget_list[id];
+            if (widget) {
+                _close(widget.dialog, true, propagate, true);
+            }
+        }
+    };
+
     document.addEventListener("keyup", _onKeyUp, false);
 })();

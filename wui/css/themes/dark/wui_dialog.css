@@ -180,6 +180,11 @@
 
 .wui-dialog-minimized {
     height: 32px !important;
+    border-bottom-color: #111 !important;
+    border-left-color: #333 !important;
+    border-right-color: #333 !important;
+    border-top-color: #333 !important;
+    min-height: auto !important;
 }
 
 .wui-dialog-btn {
