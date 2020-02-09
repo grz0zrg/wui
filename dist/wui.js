@@ -1916,7 +1916,7 @@ var WUI_Dialog = new (function() {
             element;
 
         if (widget === undefined) {
-            _log("Element id '" + id + "' is not a WUI_Dialog, destroying aborted.");_focus(_dragged_dialog);
+            _log("Element id '" + id + "' is not a WUI_Dialog, destroying aborted.");
 
             return;
         }
