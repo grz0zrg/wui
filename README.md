@@ -1,6 +1,6 @@
 # WUI #
 
-Collection of **easy to use**, **independent** and **lightweight** (*~5.6kb css*, *~15.6kb js* gzipped) **vanilla** GUI widgets for the web.
+Collection of **easy to use**, **independent** and **lightweight** (*~5.6kb css*, *~15.7kb js* gzipped) **vanilla** GUI widgets for the web.
 
 **Require no dependencies, all widgets can be used on their own.**
 
@@ -216,6 +216,7 @@ All WUI widgets work very well with the detachable feature, what you change in t
 >*   create(id, options)
 >*   destroy(wui_dialog)
 >*   open(wui_dialog, detach)
+>*   centerAll()
 >*   close(wui_dialog, propagate)
 >*   closeAll(propagate)
 >*   focus(wui_dialog)
@@ -353,7 +354,6 @@ Need access to the detached dialog window object?
 ```javascript
 var detached_dialog_window = WUI_Dialog.getDetachedDialog(my_dialog);
 ```
-
 
 <a name="dropdown"></a>
 ### DropDown ###

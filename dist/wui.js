@@ -1203,7 +1203,7 @@ var WUI_Dialog = new (function() {
                 widget = _widget_list[key];
 
                 if (widget.opts.closable &&
-                    widget.dialog.style.zIndex === "101" &&
+                    (widget.dialog.style.zIndex === "101" || widget.dialog.style.zIndex === "16777271"  || widget.dialog.style.zIndex === "16777270") &&
                     widget.dialog.classList.contains(_class_name.open)) {
                     _self.close(key, true);
 
@@ -1981,6 +1981,27 @@ var WUI_Dialog = new (function() {
             widget = _widget_list[id];
             if (widget) {
                 _close(widget.dialog, true, propagate, true);
+            }
+        }
+    };
+
+    this.centerAll = function () {
+        var id, widget;
+        for (id in _widget_list) {
+            widget = _widget_list[id];
+            if (widget) {
+                var opts = widget.opts,
+                
+                    dialog = widget.dialog,
+    
+                    parent_width = dialog.parentElement.offsetWidth,
+                    parent_height = dialog.parentElement.offsetHeight,
+    
+                    dialog_width = dialog.offsetWidth,
+                    dialog_height = dialog.offsetHeight;
+
+                dialog.style.left = Math.round((parent_width - dialog_width) / 2 + opts.left) + "px";
+                dialog.style.top = Math.round((parent_height - dialog_height) / 2 + opts.top) + "px";
             }
         }
     };
