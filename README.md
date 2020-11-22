@@ -809,10 +809,10 @@ WUI_CircularMenu.create({
     window: null
   },
   [
-    { content: "<strong>1</strong>", tooltip: "first button with textual (HTML) content",  on_click: function () { } },
-    { icon: "css-icon-class", tooltip: "second button", on_click: function () { } },
-    { icon: "css-icon-class", tooltip: "third button",  on_click: function () { } },
-    { icon: "css-icon-class", tooltip: "fourth button", on_click: function () { } },
+    { content: "<strong>1</strong>", tooltip: "first button with textual (HTML) content",  on_click: function () { }, on_right_click: function () { }, on_middle_click: function () { } },
+    { icon: "css-icon-class", tooltip: "second button", on_click: function () { }, on_right_click: function () { }, on_middle_click: function () { } },
+    { icon: "css-icon-class", tooltip: "third button",  on_click: function () { }, on_right_click: function () { }, on_middle_click: function () { } },
+    { icon: "css-icon-class", tooltip: "fourth button", on_click: function () { }, on_right_click: function () { }, on_middle_click: function () { } },
   ]);
 ```
 

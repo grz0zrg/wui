@@ -16,10 +16,6 @@
     user-select: none;
 }
 
-.wui-tab-enabled:first-letter {
-    color: burlywood !important;
-}
-
 .wui-tab-enabled {
     color: #ffffff !important;
 

@@ -6,9 +6,9 @@
   "license": "BSD-3-Clause",
   "description": "Collection of easy to use and lightweight vanilla GUI widgets for the web.",
   "homepage": "https://github.com/grz0zrg/wui",
-  "repository" : {
-    "type" : "git",
-    "url" : "https://github.com/grz0zrg/wui.git"
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/grz0zrg/wui.git"
   },
   "devDependencies": {
     "grunt": "^0.4.0",
