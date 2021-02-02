@@ -1,6 +1,6 @@
 # WUI #
 
-Collection of **easy to use**, **independent** and **lightweight** (*~5.6kb css*, *~15.7kb js* gzipped) **vanilla** GUI widgets for the web.
+Collection of **easy to use**, **independent** and **lightweight** (*~5.6kb css*, *~15.8kb js* gzipped) **vanilla** GUI widgets for the web.
 
 **Require no dependencies, all widgets can be used on their own.**
 
