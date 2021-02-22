@@ -1,6 +1,6 @@
 # WUI #
 
-Collection of **easy to use**, **independent** and **lightweight** (*~5.6kb css*, *~15.8kb js* gzipped) **vanilla** GUI widgets for the web.
+Collection of **easy to use**, **independent** and **lightweight** (*~5.6kb css*, *~15.9kb js* gzipped) **vanilla** GUI widgets for the web.
 
 **Require no dependencies, all widgets can be used on their own.**
 
@@ -644,8 +644,12 @@ One of the coolest (and maybe 'unique') feature of the WUI slider widget is the 
 
 To assign a MIDI controller, the widget implement a sort of MIDI learn function, you click on a square on MIDI enabled sliders and, when a MIDI data is received, the controller is automatically assigned to that widget and you can start to control it from your MIDI interface...
 
+The MIDI learn square tooltip show the device / controller / MIDI mode when it is assigned to a device.
+
 The "rel" MIDI mode allow infinite values, it work well with "endless" rotary controls (also called encoders).
 The "abs" MIDI mode is based on the "min" and "max" property, it act as a percentage of the range, if you want to match MIDI spec, just assign "0" and "127" for "min" and "max" option.
+
+Default mode is "abs". When "min" and "max" property are not defined and the range cannot be computed the widget automatically fallback to "rel" MIDI mode.
 
 Only MIDI input is supported at the moment but it should not be hard to add MIDI output later on.
 
