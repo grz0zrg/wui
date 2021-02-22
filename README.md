@@ -21,7 +21,7 @@ The main advantages compared to other libraries are:
 Great for single page apps (audio apps, games etc.), experiments and the like.
 
 #### Demo
-- [Demo](http://grz0zrg.github.io/wui-demo/)
+- [Demo](https://grz0zrg.github.io/wui-demo/)
 - [Demo repository](https://github.com/grz0zrg/wui-demo)
 
 #### Links
