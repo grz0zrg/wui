@@ -10,6 +10,7 @@ The main advantages compared to other libraries are:
 
 * Widgets can be used on their own (no dependencies)
 * Input and Slider widgets can be MIDI controlled with two mode (absolute, relative) and can be user-configurable
+* MIDI learn can be used as a widget of its own through the `midi_square_only` option of input / slider widget
 * Dialogs can be detached (and everything related to WUI will still work)
 * Circular menu aka [pie menu](https://en.wikipedia.org/wiki/Pie_menu) aka radial menu :)
 * Quick forms creation with standard HTML5 forms elements and WUI elements (WIP/Experimental)
@@ -640,8 +641,10 @@ WUI does not support an input widget out of the box but there is a shortcut "WUI
 
 Range slider widget can be horizontal or vertical, can be user configurable (step, min, max etc options can be set by the user as he want it), have a negative/positive range, the value can be changed with the mouse wheel, by moving the hook point by dragging, by a MIDI controller or by clicking on the slider bar, a double click on the slider will reset the value to its default value, the value also appear as an input which perform automatically all sanity check and will indicate if the value is correct or not (red)
 
-One of the coolest (and maybe 'unique') feature of the WUI slider widget is the ability to be controlled entirely from MIDI controllers with absolute and relative mode, it is as easy as calling a function when a MIDIMessage is received and all MIDI enabled sliders will be usable with any MIDI interfaces.
+There is one special option to hide all the widget and only show the MIDI learn square, this allow to enable MIDI learn capabilities to any custom widgets or use it as standalone.
 
+One of the coolest (and maybe 'unique') feature of the WUI slider widget is the ability to be controlled entirely from MIDI controllers with absolute and relative mode, it is as easy as calling a function when a MIDIMessage is received and all MIDI enabled sliders will be usable with any MIDI interfaces.
+0
 To assign a MIDI controller, the widget implement a sort of MIDI learn function, you click on a square on MIDI enabled sliders and, when a MIDI data is received, the controller is automatically assigned to that widget and you can start to control it from your MIDI interface...
 
 The MIDI learn square tooltip show the device / controller / MIDI mode when it is assigned to a device.
@@ -703,6 +706,9 @@ WUI_RangeSlider.create("my_range_slider", {
     // enable the slider to be controllable by MIDI
     // can be a boolean (or anything) if you do not need to configure it, otherwise an object with a fiel "type" with value "rel" or "abs", by default the control type is set to "abs"
     midi: false,
+
+    // only show the MIDI learn square (nothing else!) this may be usefull if you don't need the widget at all but just want to use the MIDI learn feature with some kind of custom widget or alone
+    midi_square_only: false,
 
     // used to line up multiple sliders perfectly
     title_min_width: 150,
