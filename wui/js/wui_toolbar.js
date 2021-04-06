@@ -116,7 +116,8 @@ var WUI_ToolBar = new (function() {
     };
 
     var _propagate = function (tool, type, state) {
-        if (tool.on_click !== undefined &&
+        if (tool &&
+            tool.on_click !== undefined &&
             tool.on_click !== null) {
             var o = {
                 id: tool.id,
@@ -394,7 +395,7 @@ var WUI_ToolBar = new (function() {
 
         my_tool = widget.tools[element.dataset.tool_id];
 
-        if (my_tool.type === "dropdown") {
+        if (my_tool && my_tool.type === "dropdown") {
             if (element.classList.contains(_class_name.toggle_on)) {
                 _removeDdFloatingContent(my_tool, element);
 
