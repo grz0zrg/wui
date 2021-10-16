@@ -212,7 +212,7 @@ All WUI widgets work very well with the detachable feature, what you change in t
 >
 >Dialogs `zIndex` is between 100 and 101.
 >
->Any CSS (must have rel="stylesheet" type="text/css" attributes) / Style defined in the <head> will be attached back when dialog is detached.
+>Any CSS (must have rel="stylesheet" type="text/css" attributes) / Style defined in the head will be attached back when dialog is detached.
 
 *Methods*:
 
