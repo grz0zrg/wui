@@ -145,6 +145,7 @@ WUI.fadeOut(my_element, 500, function () { console.log("finished!"); }, true);
 <a name="tabs"></a>
 ### Tabs ###
 
+Note : Must be called after WUI_Dialog.create if tabs are within a dialog and if the dialog is detachable.
 
 *Methods*:
 
